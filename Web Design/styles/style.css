@@ -14,3 +14,25 @@ h3 {
     font-size: 14pt;
 
 }
+
+#wrapper {
+	margin:auto;
+	background-color: #ADD8E6;
+	width: 40em;
+	padding: 5px;
+}
+
+#header {
+	height: 75px;
+	border-bottom: 2px, dotted;
+	border-color: #B2BCC6;
+
+}
+
+#header img {
+	height: 70px;
+	float: left;
+	padding-right: 10px;
+	text-anchor: right;
+	padding-top: 20px;
+}
