@@ -52,15 +52,19 @@ h3 {
   padding-top: 20px;
 }
 
+.clearme {
+  clear: both;
+}
+
 #footer {
   border-top: 2px dotted #B2BCC6;
 }
 
 .snippet {
   border-left: 1px solid #003399;
-  padding: 10px;
+  padding-left: 10px;
 }
 
 .myquote {
-  
+  font-style: italic;
 }
