@@ -24,8 +24,7 @@ h3 {
 
 #header {
 	height: 75px;
-	border-bottom: 2px, dotted;
-	border-color: #B2BCC6;
+	border-bottom: 2px dotted #B2BCC6;
 
 }
 
@@ -33,6 +32,35 @@ h3 {
 	height: 70px;
 	float: left;
 	padding-right: 10px;
-	text-anchor: right;
-	padding-top: 20px;
+}
+
+#header h2 {
+  padding-top: 20px;
+}
+
+#nav {
+  float: left;
+  width: 16em;
+}
+
+#container {
+  float: right;
+  width: 23em;
+}
+
+#nav li {
+  padding-top: 20px;
+}
+
+#footer {
+  border-top: 2px dotted #B2BCC6;
+}
+
+.snippet {
+  border-left: 1px solid #003399;
+  padding: 10px;
+}
+
+.myquote {
+  
 }
