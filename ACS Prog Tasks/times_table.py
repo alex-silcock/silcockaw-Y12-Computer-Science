@@ -26,5 +26,3 @@ if num1 <= 10:
         
 #endwhile
             
-    
-
