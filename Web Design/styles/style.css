@@ -1,0 +1,70 @@
+body {
+    color: #003399;
+    font-family: Candara, Arial;
+    font-size: 12pt;
+
+}
+
+h2 {
+    font-size: 16pt;
+
+}
+
+h3 {
+    font-size: 14pt;
+
+}
+
+#wrapper {
+	margin:auto;
+	background-color: #ADD8E6;
+	width: 40em;
+	padding: 5px;
+}
+
+#header {
+	height: 75px;
+	border-bottom: 2px dotted #B2BCC6;
+
+}
+
+#header img {
+	height: 70px;
+	float: left;
+	padding-right: 10px;
+}
+
+#header h2 {
+  padding-top: 20px;
+}
+
+#nav {
+  float: left;
+  width: 16em;
+}
+
+#container {
+  float: right;
+  width: 23em;
+}
+
+#nav li {
+  padding-top: 20px;
+}
+
+.clearme {
+  clear: both;
+}
+
+#footer {
+  border-top: 2px dotted #B2BCC6;
+}
+
+.snippet {
+  border-left: 1px solid #003399;
+  padding-left: 10px;
+}
+
+.myquote {
+  font-style: italic;
+}
