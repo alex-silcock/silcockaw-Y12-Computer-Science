@@ -1,4 +1,4 @@
-#Taking two user input integers
+#taking two user input integers
 
 int1 = int(input("Enter your first number "))
 int2 = int(input("Enter your second number "))
