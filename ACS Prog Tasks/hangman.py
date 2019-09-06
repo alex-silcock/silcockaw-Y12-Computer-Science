@@ -16,6 +16,7 @@ for x in hangman_word:
 for x in range (length_word):
     list_start.append("*")
 
+#double-letters: loop through list and if it exists more than once then output it however many times in the new list
 
 while count > 0:
 
