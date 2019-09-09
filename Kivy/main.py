@@ -12,7 +12,7 @@ class MyGrid(GridLayout):
         self.cols = 1
 
         self.inside = GridLayout()
-        self.inside.cold = 2
+        self.inside.cols = 2
 
         self.inside.add_widget(Label(text="Name: "))
         self.name = TextInput(multiline=False)
