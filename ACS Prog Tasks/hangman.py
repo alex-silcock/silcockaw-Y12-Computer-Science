@@ -36,7 +36,3 @@ while count > 0:
         list_guesses.append(user_guess)
         print(list_guesses)
         print(list_start)
-
- 
-
-        

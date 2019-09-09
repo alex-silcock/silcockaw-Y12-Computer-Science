@@ -17,8 +17,6 @@ class MyGrid(Widget):
         print("Name: ", self.name.text, "Email: ", self.email.text)
         self.name.text = ""
         self.email.text = ""
-        
-
 
 
 class MyApp(App):
