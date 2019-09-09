@@ -4,32 +4,21 @@ from kivy.uix.label import Label
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
-from kivy.uix.slider import Slider
+from kivy.uix.widget import Widget
+from kivy.properties import ObjectProperty
 
-class MyGrid(GridLayout):
-    def __init__(self, **kwargs):
-        super(MyGrid, self).__init__(**kwargs)
-        self.cols = 1
 
-        self.inside = GridLayout()
-        self.inside.cols = 2
 
-        self.inside.add_widget(Label(text="Name: "))
-        self.name = TextInput(multiline=False)
-        self.inside.add_widget(self.name)
+class MyGrid(Widget):
+    name = ObjectProperty(None)
+    email = ObjectProperty(None)
+
+    def btn(self):
+        print("Name: ", self.name.text, "Email: ", self.email.text)
+        self.name.text = ""
+        self.email.text = ""
         
-        self.inside.add_widget(Label(text="Last Name: "))
-        self.lastname = TextInput(multiline=False)
-        self.inside.add_widget(self.lastname)
 
-        self.inside.add_widget(Label(text="Email: "))
-        self.email = TextInput(multiline=False)
-        self.inside.add_widget(self.email)
-
-        self.add_widget(self.inside)
-
-        self.submit = Button(text="Submit", font_size=40)
-        self.add_widget(self.submit)
 
 
 class MyApp(App):
