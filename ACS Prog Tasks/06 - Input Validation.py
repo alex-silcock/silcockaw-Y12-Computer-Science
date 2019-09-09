@@ -23,8 +23,6 @@ if num1 <= 10:
     for a in range (1, 13):
         print(num1, "x", a, "=", num1 * a)
         a += 1
-        
-#endwhile
+#end if     
+#end while
             
-    
-
