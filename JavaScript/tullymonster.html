@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>The Tully Monster</title>
+	<style>
+		body {font-family: arial, "sans-serif";}
+	</style>
+</head>
+<body>
+
+<h1>The Tully Monster</h1>
+
+<p>The Tully Monster is a fossilised creature believed to have lived 300 million years ago. It was discovered by and named after Francis Tully in 1958.</p>
+
+<img src="Tully Monster/TullyMonster.png">
+
+<form name="question">
+<p id="box">Question - How long was the Tully Monster?</p> 
+<button type="button" onclick="validate()">Answer: <input type="text" name="answer"></button>
+
+
+</form>
+
+<p id="box2">Click below to find out where it lived</p>
+<button type="button" onclick="getElementById('box2').innerHTML">Show answer</button>
+	
+
+<script>
+	function validate() {
+		var x = document.forms["question"]["answer"].value;
+		if (x == ""){
+			document.getElementById("box").style.color="red";
+		} else if (x == "35cm"){	
+			alert("Correct!");
+		}
+	}
+</script>
+</body>
+</html>

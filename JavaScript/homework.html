@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Hardware</title>
+	<style>
+		body, input { font-family: Arial, Helvetica, "sans-serif"; font-size: 15px; }
+	</style>
+</head>
+
+<body>
+
+<h1>Computer hardware products</h1>
+<p id="display1"></p>	
+<p id="display2"></p>
+
+<script>
+var products = ["Printer","Tablet","Router","Speakers","RAM","CPU"];
+document.getElementById("display1").innerHTML = products;
+
+function sort() {
+    products.sort();
+    document.getElementById("display1").innerHTML = products;
+}
+function count() {
+	document.getElementById("display2").innerHTML = products.length;
+}	
+</script>
+
+<button onclick="sort()">Sort Alphabetically</button>	
+<button onclick="count()">Find Total</button>
+
+</body>
+</html>
+ 
+ 
