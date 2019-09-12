@@ -1,10 +1,9 @@
 user_input = input("Enter word ")
-ascii_input = ord(user_input)
 
-cypher_list = []
+#ascii_input = ord(user_input)
+#ascii_input += 2
 
-new_ascii_input = ascii_input + 2
-cypher_list.append(chr(new_ascii_input))
+#ord = to ascii
+#chr = back to alphabet
 
-print(cypher_list)
 
