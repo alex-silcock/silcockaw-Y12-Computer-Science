@@ -12,3 +12,8 @@ def print_factors(x):
 num = int(input("Enter a number: "))
 
 print_factors(num)
+
+
+## ACS - Good can you make this more efficient for larger numbers i.e. not have to check every number betwene 1 and n?
+## - Use more descriptive variable names
+## - Use comments to show where the end of fubnctions and structure are, and where you for exmaple your main code begins.
