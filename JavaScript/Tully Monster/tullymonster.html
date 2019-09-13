@@ -23,7 +23,8 @@
 </form>
 
 <p id="box2">Click below to find out where it lived</p>
-<button type="button" onclick="getElementById('box2').innerHTML">Show answer</button>
+<button type="button" onclick="getElementById('box2').innerHTML = 'It lived in the tropical estuaries of Illinois, USA.'">Show Answer</button>
+
 	
 
 <script>
@@ -31,7 +32,7 @@
 		var x = document.forms["question"]["answer"].value;
 		if (x == ""){
 			document.getElementById("box").style.color="red";
-		} else if (x == "35cm"){	
+		} else if (x == "35cm"){
 			alert("Correct!");
 		}
 	}
