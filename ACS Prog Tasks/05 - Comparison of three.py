@@ -21,4 +21,5 @@ for count in range (1,3):
 
 print("The highest of the three numbers was", max)
 
-
+###ACS - Comments needed at end of for and if statments. They will help you debug.
+###ACS - Logic is good

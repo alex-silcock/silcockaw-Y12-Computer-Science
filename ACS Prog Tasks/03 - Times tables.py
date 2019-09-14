@@ -25,4 +25,7 @@ if num1 <= 10:
         a += 1
         
 #endwhile
-            
+
+
+###ACS - No need to set a at the beginning of the prgram in the case .. the for loop does that.
+###ACS - I think your end while is in the wrong place and there is no #Next at the end of the for loop
