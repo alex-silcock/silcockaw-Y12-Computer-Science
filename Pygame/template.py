@@ -38,6 +38,8 @@ while not done:
 
     # -- Game logic goes after this comment
     sun_x = sun_x + 5
+    
+    #resetting the value of the sun if it gets out of frame
     if sun_x > 640:
         sun_x = 40
     #endif
