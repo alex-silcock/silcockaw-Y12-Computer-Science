@@ -6,9 +6,12 @@ x_val = 150
 y_val = 200
 x_direction = 1
 y_direction = 1
+padd_length = 15
+padd_width = 60
+x_padd = 0
+y_padd = 200
 
 # -- Colours
-
 BLACK = (0,0,0)
 WHITE = (255,255,255)
 BLUE = (50,50,255)
@@ -36,6 +39,15 @@ while not done:
         if event.type == pygame.QUIT:
             done = True
         #End If
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
+                # -- write logic that happens on key press here
+                y_padd = y_padd - 5
+            elif event.key == pygame.K_DOWN:
+                y_padd = y_padd + 5
+                # -- write logic that happens on key press here
+            #End If
+        #End If
     #Next event
 
     # -- Game logic goes after this comment
@@ -50,16 +62,13 @@ while not done:
         y_direction = y_direction * -1
     #endif
 
-
-    #resetting the value of the sun if it gets out of frame
-    
-
     # -- Screen background is BLACK
     screen.fill (BLACK)
 
     # -- Draw here
-    pygame.draw.rect(screen, BLUE, (x_val,y_val,ball_width,ball_width))
-    
+    pygame.draw.rect(screen, BLUE, (x_val, y_val, ball_width, ball_width))
+    pygame.draw.rect(screen, WHITE, (x_padd, y_padd, padd_length, padd_width))
+
     # -- flip display to reveal new position of objects
     pygame.display.flip()
 
