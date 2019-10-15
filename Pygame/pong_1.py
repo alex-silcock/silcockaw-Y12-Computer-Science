@@ -1,6 +1,11 @@
 import pygame
 
 # -- Global Constants
+ball_width = 20
+x_val = 150
+y_val = 200
+x_direction = 1
+y_direction = 1
 
 # -- Colours
 
@@ -17,13 +22,10 @@ size = (640,480)
 screen = pygame.display.set_mode(size)
 
 # -- Title of new window/screen
-pygame.display.set_caption("House")
+pygame.display.set_caption("Pong")
 
 # -- Exit game flag set to false
 done = False
-
-sun_x = 40
-sun_y = 100
 
 # -- Manages how fast screen refreshes
 clock = pygame.time.Clock()
@@ -37,23 +39,26 @@ while not done:
     #Next event
 
     # -- Game logic goes after this comment
-    sun_x = sun_x + 5
+    x_val = x_val + x_direction
+    y_val = y_val + y_direction
     
-    #resetting the value of the sun if it gets out of frame
-    if sun_x > 640:
-        sun_x = 40
+    #making the ball "bounce"
+    if x_val > (size[0] - ball_width) or x_val < 0:
+        x_direction = x_direction * -1
     #endif
+    if y_val > (size[1] - ball_width) or y_val < 0:
+        y_direction = y_direction * -1
+    #endif
+
+
+    #resetting the value of the sun if it gets out of frame
+    
 
     # -- Screen background is BLACK
     screen.fill (BLACK)
 
     # -- Draw here
-    pygame.draw.rect(screen, BLUE, (220,165,200,150))
-    pygame.draw.rect(screen, (155,100,0), (235, 180, 35, 35)) #top left window
-    pygame.draw.rect(screen, (155,100,0), (350, 180, 35, 35)) #top right window
-    pygame.draw.rect(screen, (155,100,0), (235, 250, 35, 35)) #bottom left window
-    pygame.draw.rect(screen, (155,100,0), (350, 250, 35, 35)) #bottom right window
-    pygame.draw.circle(screen, YELLOW, (sun_x, sun_y), 40,0)
+    pygame.draw.rect(screen, BLUE, (x_val,y_val,ball_width,ball_width))
     
     # -- flip display to reveal new position of objects
     pygame.display.flip()
