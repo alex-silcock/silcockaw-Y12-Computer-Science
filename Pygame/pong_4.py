@@ -29,7 +29,7 @@ def draw_score_b(screen, x, y, score):
 
 def endmessage(screen, x, y):
     font=pygame.font.SysFont("arial", 20)
-    text = font.render("MMM", 1, WHITE)
+    text = font.render("Pong Game (C) Alex Silcock", 1, WHITE)
     screen.blit(text, (x, y))
 
 # -- Colours
