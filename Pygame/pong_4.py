@@ -26,6 +26,12 @@ def draw_score_b(screen, x, y, score):
     text_b = font.render(str(score_b), 1, WHITE)
     screen.blit(text_b, (x, y))
 #enddef
+
+def endmessage(screen, x, y):
+    font=pygame.font.SysFont("arial", 20)
+    text = font.render("MMM", 1, WHITE)
+    screen.blit(text, (x, y))
+
 # -- Colours
 BLACK = (0,0,0)
 WHITE = (255,255,255)
@@ -47,9 +53,6 @@ done = False
 
 # -- Manages how fast screen refreshes
 clock = pygame.time.Clock()
-
-pressed_up = False
-pressed_down = False
 
 while not done:
     # -- User input and controls
@@ -102,6 +105,10 @@ while not done:
         x_direction = 4
         y_direction = 4
         score_b = score_b + 1
+        x_padd = 0
+        y_padd = 200
+        x_padd_2 = 625
+        y_padd_2 = 200
     #endif
 
     #doing the above but for the opposite player
@@ -111,10 +118,15 @@ while not done:
         x_direction = 4
         y_direction = 4
         score_a = score_a + 1
+        x_padd = 0
+        y_padd = 200
+        x_padd_2 = 625
+        y_padd_2 = 200
 
     #max score, if the score is 5 then the game will end
     if score_a == 5 or score_b == 5:
         done = True
+        
     #endif
 
     if y_val > (size[1] - ball_width) or y_val < 0:
@@ -139,6 +151,8 @@ while not done:
     draw_score_a(screen, 300, 30, score_a)
     draw_score_b(screen, 330, 30, score_b)
     pygame.draw.rect(screen, WHITE, (x_padd_2, y_padd_2, padd_length, padd_width))
+    endmessage(screen, (size[0] / 2), (size[1] / 2))
+    
 
     # -- flip display to reveal new position of objects
     pygame.display.flip()
