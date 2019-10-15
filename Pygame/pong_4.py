@@ -10,7 +10,20 @@ padd_length = 15
 padd_width = 60
 x_padd = 0
 y_padd = 200
+score_a = 0
+score_b = 0
 
+def draw_score_a(screen, x, y, score):
+    font = pygame.font.SysFont("arial", 20)
+    text_a = font.render(str(score_a), 1, WHITE)
+    
+    screen.blit(text_a, (x, y))
+#enddef
+def draw_score_b(screen, x, y, score):
+    font = pygame.font.SysFont("arial", 20)
+    text_b = font.render(str(score_b), 1, WHITE)
+    screen.blit(text_b, (x, y))
+#enddef
 # -- Colours
 BLACK = (0,0,0)
 WHITE = (255,255,255)
@@ -61,20 +74,30 @@ while not done:
     if x_val > (size[0] - ball_width):
        x_direction = x_direction * -1
     #endif
+
+    #if the ball goes past and the paddle hasnt hit it, then it will be reset, and the score of player b will change
+    #as the opposite player has won a point
     if x_val < 0:
         x_val = 150
         y_val = 200
         x_direction = 4
         y_direction = 4
+        score_b = score_b + 1
     #endif
+
+    #max score, if the score is 5 then the game will end
+    if score_a == 5 or score_b == 5:
+        done = True
+    #endif
+
     if y_val > (size[1] - ball_width) or y_val < 0:
        y_direction = y_direction * -1
     #endif
 
-    #collisions
+    #collisions, changes direction + speeds up
     if (y_val < y_padd + padd_width and y_val > y_padd) and x_val <= ball_width:
         x_direction = x_direction * -1
-    
+        x_direction = x_direction + 1
     #endif
 
     # -- Screen background is BLACK
@@ -83,7 +106,8 @@ while not done:
     # -- Draw here
     pygame.draw.rect(screen, BLUE, (x_val, y_val, ball_width, ball_width))
     pygame.draw.rect(screen, WHITE, (x_padd, y_padd, padd_length, padd_width))
-
+    draw_score_a(screen, 300, 30, score_a)
+    draw_score_b(screen, 330, 30, score_b)
     # -- flip display to reveal new position of objects
     pygame.display.flip()
 
