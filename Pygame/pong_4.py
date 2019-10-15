@@ -10,6 +10,8 @@ padd_length = 15
 padd_width = 60
 x_padd = 0
 y_padd = 200
+x_padd_2 = 625
+y_padd_2 = 200
 score_a = 0
 score_b = 0
 
@@ -46,21 +48,38 @@ done = False
 # -- Manages how fast screen refreshes
 clock = pygame.time.Clock()
 
+pressed_up = False
+pressed_down = False
+
 while not done:
     # -- User input and controls
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
         #End If
-        if event.type == pygame.KEYDOWN:
-            keys = pygame.key.get_pressed()
-            # -- the up key or down key has been pressed
-            if keys[pygame.K_UP]:
+        
+    keys = pygame.key.get_pressed()
+    # -- the up key or down key has been pressed
+    if keys[pygame.K_UP]:
+        # -- write logic that happens on key press here
+        y_padd = y_padd - 5
+        if y_padd < 0:
+            y_padd = 0
+    elif keys[pygame.K_DOWN]:
+        y_padd = y_padd + 5
+        if y_padd > (size[1] - padd_length):
+            y_padd = (size[1] - padd_length)
                 # -- write logic that happens on key press here
-                y_padd = y_padd - 5
-            if keys[pygame.K_DOWN]:
-                y_padd = y_padd + 5
-                # -- write logic that happens on key press here
+            #End If
+        #End If
+    keys = pygame.key.get_pressed()
+    # -- the w(up) key or s(down) key has been pressed
+    if keys[pygame.K_w]:
+        # -- write logic that happens on key press here
+        y_padd_2 = y_padd_2 - 5
+    elif keys[pygame.K_s]:
+        y_padd_2 = y_padd_2 + 5
+            # -- write logic that happens on key press here
             #End If
         #End If
     #Next event
@@ -85,6 +104,14 @@ while not done:
         score_b = score_b + 1
     #endif
 
+    #doing the above but for the opposite player
+    if x_val > 640 - ball_width:
+        x_val = 150
+        y_val = 200
+        x_direction = 4
+        y_direction = 4
+        score_a = score_a + 1
+
     #max score, if the score is 5 then the game will end
     if score_a == 5 or score_b == 5:
         done = True
@@ -99,6 +126,9 @@ while not done:
         x_direction = x_direction * -1
         x_direction = x_direction + 1
     #endif
+    if (y_val < y_padd_2 + padd_width and y_val > y_padd_2) and x_val >= (size[0] - 40):
+        x_direction = x_direction * -1
+        x_direction = x_direction + 1
 
     # -- Screen background is BLACK
     screen.fill (BLACK)
@@ -108,6 +138,8 @@ while not done:
     pygame.draw.rect(screen, WHITE, (x_padd, y_padd, padd_length, padd_width))
     draw_score_a(screen, 300, 30, score_a)
     draw_score_b(screen, 330, 30, score_b)
+    pygame.draw.rect(screen, WHITE, (x_padd_2, y_padd_2, padd_length, padd_width))
+
     # -- flip display to reveal new position of objects
     pygame.display.flip()
 
