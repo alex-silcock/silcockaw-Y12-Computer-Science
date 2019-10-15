@@ -4,8 +4,8 @@ import pygame
 ball_width = 20
 x_val = 150
 y_val = 200
-x_direction = 1
-y_direction = 1
+x_direction = 4
+y_direction = 4
 padd_length = 15
 padd_width = 60
 x_padd = 0
@@ -53,15 +53,28 @@ while not done:
     #Next event
 
     # -- Game logic goes after this comment
+    #ball movement
     x_val = x_val + x_direction
     y_val = y_val + y_direction
     
     #making the ball "bounce"
-    if x_val > (size[0] - ball_width) or x_val < 0:
-        x_direction = x_direction * -1
+    if x_val > (size[0] - ball_width):
+       x_direction = x_direction * -1
+    #endif
+    if x_val < 0:
+        x_val = 150
+        y_val = 200
+        x_direction = 4
+        y_direction = 4
     #endif
     if y_val > (size[1] - ball_width) or y_val < 0:
-        y_direction = y_direction * -1
+       y_direction = y_direction * -1
+    #endif
+
+    #collisions
+    if (y_val < y_padd + padd_width and y_val > y_padd) and x_val <= ball_width:
+        x_direction = x_direction * -1
+    
     #endif
 
     # -- Screen background is BLACK
