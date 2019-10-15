@@ -40,10 +40,12 @@ while not done:
             done = True
         #End If
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
+            keys = pygame.key.get_pressed()
+            # -- the up key or down key has been pressed
+            if keys[pygame.K_UP]:
                 # -- write logic that happens on key press here
                 y_padd = y_padd - 5
-            elif event.key == pygame.K_DOWN:
+            if keys[pygame.K_DOWN]:
                 y_padd = y_padd + 5
                 # -- write logic that happens on key press here
             #End If
