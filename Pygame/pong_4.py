@@ -26,7 +26,6 @@ score_b = 0
 def draw_score_a(screen, x, y, score):
     font = pygame.font.SysFont("arial", 20)
     text_a = font.render(str(score_a), 1, WHITE)
-    
     screen.blit(text_a, (x, y))
 #enddef
 def draw_score_b(screen, x, y, score):
@@ -108,9 +107,9 @@ while not done:
     y_val = y_val + y_direction
     #Making the right paddle move
     if y_padd_2 > y_val:
-        y_padd_2 -= 6
+        y_padd_2 = y_padd_2 - 6
     elif y_padd_2 < y_val:
-        y_padd_2 += 6
+        y_padd_2 = y_padd_2 + 6
     #End if
     
     #making the ball "bounce"
@@ -147,7 +146,7 @@ while not done:
 
     #max score, if the score is 5 then the game will end
     if score_a == 5 or score_b == 5:
-        done = True   
+        done = True
     #endif
 
     if y_val > (size[1] - ball_width) or y_val < 0:
@@ -155,14 +154,19 @@ while not done:
     #endif
 
     #collisions for left paddle, changes direction + speeds up
-    if (y_val < y_padd + padd_width and y_val > y_padd) and x_val <= ball_width:
-        x_direction = x_direction * -1
-        #x_direction = x_direction + 1
+    if (y_val <= y_padd + padd_length and y_val >= y_padd) and x_val <= padd_width:
+        x_direction = x_direction * -1.1
+        #x_direction = x_direction + 20
     #endif
     #collisions for right paddle
-    if (y_val < y_padd_2 + padd_width and y_val > y_padd_2) and x_val >= (size[0] - 40):
-        x_direction = x_direction * -1
-        #x_direction = x_direction + 1
+    if (y_val <= y_padd_2 + padd_length and y_val >= y_padd_2) and x_val >= (size[0] - padd_width):
+        x_direction = x_direction * -1.1
+        #x_direction = x_direction + 20
+    #endif
+
+
+    if x_val > size[0] - padd_width:
+        x_val = size[0] - padd_width
     #endif
 
     # -- Screen background is BLACK
