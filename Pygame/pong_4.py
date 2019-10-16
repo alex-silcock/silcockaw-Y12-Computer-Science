@@ -1,11 +1,18 @@
 import pygame
+import pygameMenu
+import pygameMenu.config as _cfg
+import pygameMenu.controls as _ctrl
+import pygameMenu.events as _events
+import pygameMenu.font as _fonts
+import pygameMenu.locals as _locals
+import pygameMenu.widgets as _widgets
 
 # -- Global Constants
 ball_width = 20
 x_val = 150
 y_val = 200
-x_direction = 4
-y_direction = 4
+x_direction = 5
+y_direction = 5
 padd_length = 15
 padd_width = 60
 x_padd = 0
@@ -27,10 +34,16 @@ def draw_score_b(screen, x, y, score):
     screen.blit(text_b, (x, y))
 #enddef
 
-def endmessage(screen, x, y):
+def message(screen, x, y):
     font=pygame.font.SysFont("arial", 20)
     text = font.render("Pong Game (C) Alex Silcock", 1, WHITE)
     screen.blit(text, (x, y))
+#enddef
+
+def text_format(message, textFont, textSize, textColor):
+    newFont = pygame.font.SysFont(textFont, textSize)
+    newText = newFont.render(message, 0, textColor)
+#enddef
 
 # -- Colours
 BLACK = (0,0,0)
@@ -55,6 +68,7 @@ done = False
 clock = pygame.time.Clock()
 
 while not done:
+
     # -- User input and controls
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -91,6 +105,12 @@ while not done:
     #ball movement
     x_val = x_val + x_direction
     y_val = y_val + y_direction
+    #Making the right paddle move
+    if y_padd_2 > y_val:
+        y_padd_2 -= 6
+    elif y_padd_2 < y_val:
+        y_padd_2 += 6
+    #End if
     
     #making the ball "bounce"
     if x_val > (size[0] - ball_width):
@@ -102,8 +122,8 @@ while not done:
     if x_val < 0:
         x_val = 150
         y_val = 200
-        x_direction = 4
-        y_direction = 4
+        x_direction = 5
+        y_direction = 5
         score_b = score_b + 1
         x_padd = 0
         y_padd = 200
@@ -115,32 +135,34 @@ while not done:
     if x_val > 640 - ball_width:
         x_val = 150
         y_val = 200
-        x_direction = 4
-        y_direction = 4
+        x_direction = 5
+        y_direction = 5
         score_a = score_a + 1
         x_padd = 0
         y_padd = 200
         x_padd_2 = 625
         y_padd_2 = 200
+    #endif
 
     #max score, if the score is 5 then the game will end
     if score_a == 5 or score_b == 5:
-        done = True
-        
+        done = True   
     #endif
 
     if y_val > (size[1] - ball_width) or y_val < 0:
        y_direction = y_direction * -1
     #endif
 
-    #collisions, changes direction + speeds up
+    #collisions for left paddle, changes direction + speeds up
     if (y_val < y_padd + padd_width and y_val > y_padd) and x_val <= ball_width:
         x_direction = x_direction * -1
-        x_direction = x_direction + 1
+        #x_direction = x_direction + 1
     #endif
+    #collisions for right paddle
     if (y_val < y_padd_2 + padd_width and y_val > y_padd_2) and x_val >= (size[0] - 40):
         x_direction = x_direction * -1
-        x_direction = x_direction + 1
+        #x_direction = x_direction + 1
+    #endif
 
     # -- Screen background is BLACK
     screen.fill (BLACK)
@@ -151,7 +173,7 @@ while not done:
     draw_score_a(screen, 300, 30, score_a)
     draw_score_b(screen, 330, 30, score_b)
     pygame.draw.rect(screen, WHITE, (x_padd_2, y_padd_2, padd_length, padd_width))
-    endmessage(screen, (size[0] / 2), (size[1] / 2))
+    message(screen, (size[0] / 2), (size[1] / 2))
     
 
     # -- flip display to reveal new position of objects
