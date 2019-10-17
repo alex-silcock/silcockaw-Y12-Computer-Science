@@ -19,16 +19,15 @@ def text_format(message, textFont, textSize, textColor):
 # end function
 
 
-def main_menu(g):
+def main_menu(in_game):
 
     intro = True
-    print(g)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
-                g = True
+            if event.key == pygame.K_p:
+                in_game = True
             #end if
         #end if
     #next event
@@ -45,7 +44,7 @@ def main_menu(g):
 
     screen.blit(text, textRect)
     pygame.display.flip()
-    return g
+    return in_game
 
 # end function
 
@@ -74,6 +73,7 @@ done = False
 in_game = False
 
 def pong_game():
+    
     ball_width = 20
     x_val = 150
     y_val = 200
@@ -106,26 +106,27 @@ def pong_game():
     # end function
 
 
-    # -- User input and controls
+    # ============ end of defining functions ============ #
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            done = True
-        # End If
-
-        keys = pygame.key.get_pressed()
-        # -- the up key or down key has been pressed
-        if keys[pygame.K_UP]:
-            y_padd = y_padd - 5
-            if y_padd < 0:
-                y_padd = 0
-        elif keys[pygame.K_DOWN]:
-            y_padd = y_padd + 5
-            if y_padd > (size[1] - padd_length):
-                y_padd = (size[1] - padd_length)
-            # End If
-        # End If
-
-    # Next event
+            pygame.quit()
+    #End If
+    
+    keys = pygame.key.get_pressed()
+    # -- the up key or down key has been pressed
+    if keys[pygame.K_UP]:
+     # -- write logic that happens on key press here
+        y_padd = y_padd - 5
+        if y_padd < 0:
+            y_padd = 0
+    elif keys[pygame.K_DOWN]:
+        y_padd = y_padd + 5
+    if y_padd > (size[1] - padd_length):
+        y_padd = (size[1] - padd_length)
+            # -- write logic that happens on key press here
+        #End If
+    #End If
 
     # -- Game logic goes after this comment
     # ball movement
@@ -148,7 +149,6 @@ def pong_game():
         x_direction = -5
         y_direction = 5
         score_b = score_b + 1
-
     # endif
 
     # doing the above but for the opposite player
@@ -159,7 +159,6 @@ def pong_game():
         x_direction = 5
         y_direction = 5
         score_a = score_a + 1
-
     # endif
 
     # max score, if the score is 5 then the game will end
@@ -195,24 +194,16 @@ def pong_game():
 
     # -- flip display to reveal new position of objects
     pygame.display.flip()
-
-
-
-
+#end function
 
 while not done:
     if in_game == False:
         in_game = main_menu(in_game)
-        print(in_game)
     else:
         pong_game()
-
-    # - The clock ticks over
-    
-
-clock.tick(60)
-
+    #end if
 # End While - End of game loop
 
-pong_game()
+# - The clock ticks over
+clock.tick(60)
 pygame.quit()
