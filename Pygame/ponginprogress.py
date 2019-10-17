@@ -34,7 +34,7 @@ def main_menu():
     screen.blit(text, (size[0]//2 , size[1]//2))
 
     font = pygame.font.SysFont("arial", 80)
-    text = font.render("1. Press p to play", 5, BLACK)
+    text = font.render("Press p to play", 5, BLACK)
     textRect = text.get_rect()
     textRect.center = (size[0]//2,size[1]//2)
     screen.blit(text, textRect)
@@ -45,18 +45,19 @@ def main_menu():
     while running:
         event = pygame.event.wait()
         pygame.event.get()
+        keys = pygame.key.get_pressed()
         if event.type == pygame.K_p:
-            print (pygame.mouse.get_pos())
             in_game = True
+        #end if
         while intro:
             for event in pygame.event.get():
                 #print(event)
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     quit()
-            #end if
-        #next event
-    #end while
+                #end if
+            #next event
+        #end while
 #end function
 
 # -- Colours
@@ -106,12 +107,18 @@ def pong_game():
         text_b = font.render(str(score_b), 1, WHITE)
         screen.blit(text_b, (x, y))
     #end function
-    
+
+    def text_objects(text, font):
+        textSurface = font.render(text, True, BLACK)
+        return textSurface, textSurface.get_rect()
+    #end function
+
     in_game = False
+
     while not done:
         if in_game == False:
             main_menu()
-        else:
+        elif in_game == True:
             # -- User input and controls
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -210,17 +217,6 @@ def pong_game():
 
         #End While - End of game loop
     #endfunction
-
-    def text_objects(text, font):
-        textSurface = font.render(text, True, BLACK)
-        return textSurface, textSurface.get_rect()
-    #end function
-
-
-
-    
-
-
 
 pong_game()
 pygame.quit()
