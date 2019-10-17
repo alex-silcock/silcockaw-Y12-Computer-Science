@@ -1,5 +1,6 @@
 # -- library imports
 import pygame
+import pygame.font
 
 # -- Global Constants
 # -- Colours
@@ -52,10 +53,10 @@ def main_menu():
         # Background Image
         screen.fill(WHITE)
 
-        font = pygame.font.SysFont("arial", 80)
+        font = pygame.font.SysFont("helveltica", 80)
         text = font.render("PLAY", 5, textcolour)
         mouse = pygame.mouse.get_pos()
-         
+        
         # BUTTONS
 
         textRect = text.get_rect()
@@ -75,8 +76,7 @@ def main_menu():
                 #end if
             #end if
         #next event
-    
-
+    #end while
 # end function
 
 
@@ -115,8 +115,10 @@ def pong_game():
         return textSurface, textSurface.get_rect()
     # end function
 
-    game_over = False
+    
+
     # ============ end of defining functions ============ #
+    game_over = False
     while not game_over:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -201,8 +203,8 @@ def pong_game():
         # -- Draw here
         pygame.draw.rect(screen, BLUE, (x_val, y_val, ball_width, ball_width))
         pygame.draw.rect(screen, WHITE, (left_x, left_y, padd_width, padd_height))
-        draw_score_a(screen, 300, 30, score_a)
-        draw_score_b(screen, 330, 30, score_b)
+        draw_score_a(screen, size[0]//2 - 20, 30, score_a)
+        draw_score_b(screen, size[0]//2 + 20, 30, score_b)
         pygame.draw.rect(screen, WHITE, (right_x, right_y, padd_width, padd_height))
         message(screen)
 
