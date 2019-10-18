@@ -33,6 +33,21 @@ def message(screen):
     screen.blit(text, textRect)
 # enddef
 
+def help_message(screen):
+    font_1 = pygame.font.SysFont("arial", 20)
+    text_1 = font_1.render("Use up and down to move the left paddle", 1, BLACK)
+    textRect_leftpaddle = text_1.get_rect()
+    textRect_leftpaddle.center = (size[0]//2, size[1]//2)
+    screen.blit(text_1, textRect_leftpaddle)
+
+    font_2 = pygame.font.SysFont("arial", 20)
+    text_2 = font_2.render("Use w and s to move the right paddle", 1, BLACK)
+    textRect_rightpaddle = text_2.get_rect()
+    textRect_rightpaddle.center = (size[0]//2, size[1]//2)
+    screen.blit(text_1, textRect_rightpaddle)
+#end def
+
+
 
 def text_format(message, textFont, textSize, textColor):
     newFont = pygame.font.SysFont(textFont, textSize)
@@ -44,6 +59,7 @@ def main_menu():
     finished = False
     textcolour = BLACK
     textcolour_2 = BLACK
+    textcolour_3 = BLACK
 
     while not finished:
         for event in pygame.event.get():
@@ -71,7 +87,13 @@ def main_menu():
         textRect_2 = text_2.get_rect()
         textRect_2.center = (size[0]//2, 320)
         screen.blit(text_2, textRect_2)
-        
+
+        font_3 = pygame.font.SysFont("helveltica", 80)
+        text_3 = font.render("HOW TO PLAY", 5, textcolour_3)
+        textRect_3 = text_3.get_rect()
+        textRect_3.center = (size[0]//2, 380)
+        screen.blit(text_3, textRect_3)
+
         # BUTTONS
         if textRect.collidepoint(mouse):
             textcolour = RED
@@ -148,12 +170,14 @@ def pong_game(mode,computerspeed):
         #End If
     
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_w]:
+        if keys[pygame.K_UP]:
             left_y = left_y - 8
             if left_y < 0:
                 left_y = 0
-        elif keys[pygame.K_s]:
+        elif keys[pygame.K_DOWN]:
             left_y = left_y + 8
+        if keys[pygame.K_ESCAPE]:
+            mode = main_menu()
         
         if left_y > (size[1] - padd_height):
             left_y = size[1] - padd_height
@@ -176,11 +200,11 @@ def pong_game(mode,computerspeed):
                 right_y = right_y + computerspeed
             # End if
         elif mode == 'multiplayer':
-            if keys[pygame.K_UP]:
+            if keys[pygame.K_w]:
                 right_y = right_y - 8
                 if right_y < 0:
                     right_y = 0
-            elif keys[pygame.K_DOWN]:
+            elif keys[pygame.K_s]:
                 right_y = right_y + 8
             
 
