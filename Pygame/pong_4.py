@@ -25,6 +25,24 @@ pygame.display.set_caption("Pong")
 # -- Manages how fast screen refreshes
 clock = pygame.time.Clock()
 
+def new_screen(screen):
+    finished = False
+    while finished == False:
+        screen.fill(WHITE)
+        how_to_play(screen)
+        pygame.display.flip()
+        keys = pygame.key.get_pressed()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if keys[pygame.K_ESCAPE]:
+                main_menu()
+            #end if
+        #next event
+    #end while
+#end def
+
+
 def message(screen):
     font = pygame.font.SysFont("arial", 20)
     text = font.render("Pong Game (C) Alex Silcock", 1, WHITE)
@@ -33,18 +51,18 @@ def message(screen):
     screen.blit(text, textRect)
 # enddef
 
-def help_message(screen):
-    font_1 = pygame.font.SysFont("arial", 20)
-    text_1 = font_1.render("Use up and down to move the left paddle", 1, BLACK)
+def how_to_play(screen):
+    font_1 = pygame.font.SysFont("Moon 2.0", 40)
+    text_1 = font_1.render("Use up and down to move the left paddle", 5, BLACK)
     textRect_leftpaddle = text_1.get_rect()
     textRect_leftpaddle.center = (size[0]//2, size[1]//2)
     screen.blit(text_1, textRect_leftpaddle)
 
-    font_2 = pygame.font.SysFont("arial", 20)
-    text_2 = font_2.render("Use w and s to move the right paddle", 1, BLACK)
+    font_2 = pygame.font.SysFont("Moon 2.0", 40)
+    text_2 = font_2.render("Use w and s to move the right paddle", 5, BLACK)
     textRect_rightpaddle = text_2.get_rect()
-    textRect_rightpaddle.center = (size[0]//2, size[1]//2)
-    screen.blit(text_1, textRect_rightpaddle)
+    textRect_rightpaddle.center = (size[0]//2, 300)
+    screen.blit(text_2, textRect_rightpaddle)
 #end def
 
 
@@ -55,13 +73,14 @@ def text_format(message, textFont, textSize, textColor):
 # end function
 
 
-def main_menu():
+def main_menu(screen):
     finished = False
     textcolour = BLACK
     textcolour_2 = BLACK
     textcolour_3 = BLACK
-
-    while not finished:
+    speed_computer = 6
+    
+    while finished == False:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -85,13 +104,13 @@ def main_menu():
         font_2 = pygame.font.SysFont("helveltica", 80)
         text_2 = font.render("MULTIPLAYER", 5, textcolour_2)
         textRect_2 = text_2.get_rect()
-        textRect_2.center = (size[0]//2, 320)
+        textRect_2.center = (size[0]//2, 260)
         screen.blit(text_2, textRect_2)
 
         font_3 = pygame.font.SysFont("helveltica", 80)
         text_3 = font.render("HOW TO PLAY", 5, textcolour_3)
         textRect_3 = text_3.get_rect()
-        textRect_3.center = (size[0]//2, 380)
+        textRect_3.center = (size[0]//2, 320)
         screen.blit(text_3, textRect_3)
 
         # BUTTONS
@@ -103,6 +122,12 @@ def main_menu():
             textcolour_2 = RED
         else:
             textcolour_2 = BLACK
+        if textRect_3.collidepoint(mouse):
+            textcolour_3 = RED
+        else:
+            textcolour_3 = BLACK
+        #end if
+
         pygame.display.flip()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -110,16 +135,21 @@ def main_menu():
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if textRect.collidepoint(mouse):
                     finished = True
-                    return 'singleplayer'
+                    msg = 'singleplayer'
                 elif textRect_2.collidepoint(mouse):
                     finished = True
-                    return 'multiplayer'
+                    msg = 'multiplayer'
+                elif textRect_3.collidepoint(mouse):
+                    finished = True
+                    msg = 'how to play'
                 #end if
             #end if
         #next event
-        pygame.display.flip()
-        
-    #end while
+    
+    if msg == 'how to play':
+        new_screen(screen)
+    else:
+        pong_game(msg, speed_computer)
 # end function
 
 #========================================= pong singleplayer =============================================#
@@ -160,15 +190,16 @@ def pong_game(mode,computerspeed):
     
 
     # ============ end of defining functions ============ #
+
     game_over = False
-    ball_color = BLUE
     while not game_over:
+        ball_color = BLUE
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 game_over = True
                 return game_over
         #End If
-    
+
         keys = pygame.key.get_pressed()
         if keys[pygame.K_UP]:
             left_y = left_y - 8
@@ -176,9 +207,11 @@ def pong_game(mode,computerspeed):
                 left_y = 0
         elif keys[pygame.K_DOWN]:
             left_y = left_y + 8
+        #end if
         if keys[pygame.K_ESCAPE]:
             mode = main_menu()
-        
+        #end if
+
         if left_y > (size[1] - padd_height):
             left_y = size[1] - padd_height
         elif right_y > (size[1] - padd_height):
@@ -204,9 +237,13 @@ def pong_game(mode,computerspeed):
                 right_y = right_y - 8
                 if right_y < 0:
                     right_y = 0
+                #end if
             elif keys[pygame.K_s]:
                 right_y = right_y + 8
-            
+            #end if
+        #end if
+
+
 
         # if the ball goes past and the paddle hasn't hit it, then it will be reset, and the score of player b will change
         # as the opposite player has won a point
@@ -268,20 +305,15 @@ def pong_game(mode,computerspeed):
         # -- flip display to reveal new position of objects
         pygame.display.flip()
         clock.tick(60)
+    main_menu()
 #end function
 
 
 # ====== Main Program ====== #
 in_game = False
 game_over = False
-speed_computer = 6
 
-while not game_over:
-    mode = main_menu()
-    game_over = pong_game(mode,speed_computer)
-    #end if
-# End While - End of game loop
-
+main_menu()
 # - The clock ticks over
 clock.tick(60)
 pygame.quit()
