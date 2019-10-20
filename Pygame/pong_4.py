@@ -25,18 +25,20 @@ pygame.display.set_caption("Pong")
 # -- Manages how fast screen refreshes
 clock = pygame.time.Clock()
 
-def new_screen(screen):
+def how_to_play_screen(screen):
     finished = False
+
     while finished == False:
         screen.fill(WHITE)
         how_to_play(screen)
+
         pygame.display.flip()
         keys = pygame.key.get_pressed()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
             if keys[pygame.K_ESCAPE]:
-                main_menu()
+                mode = main_menu(screen)
             #end if
         #next event
     #end while
@@ -135,21 +137,21 @@ def main_menu(screen):
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if textRect.collidepoint(mouse):
                     finished = True
-                    msg = 'singleplayer'
+                    mode = 'singleplayer'
                 elif textRect_2.collidepoint(mouse):
                     finished = True
-                    msg = 'multiplayer'
+                    mode = 'multiplayer'
                 elif textRect_3.collidepoint(mouse):
                     finished = True
-                    msg = 'how to play'
+                    mode = 'how to play'
                 #end if
             #end if
         #next event
     
-    if msg == 'how to play':
-        new_screen(screen)
+    if mode == 'how to play':
+        how_to_play_screen(screen)
     else:
-        pong_game(msg, speed_computer)
+        pong_game(mode, speed_computer)
 # end function
 
 #========================================= pong singleplayer =============================================#
@@ -209,7 +211,7 @@ def pong_game(mode,computerspeed):
             left_y = left_y + 8
         #end if
         if keys[pygame.K_ESCAPE]:
-            mode = main_menu()
+            mode = main_menu(screen)
         #end if
 
         if left_y > (size[1] - padd_height):
@@ -305,7 +307,7 @@ def pong_game(mode,computerspeed):
         # -- flip display to reveal new position of objects
         pygame.display.flip()
         clock.tick(60)
-    main_menu()
+    main_menu(screen)
 #end function
 
 
@@ -313,7 +315,7 @@ def pong_game(mode,computerspeed):
 in_game = False
 game_over = False
 
-main_menu()
+main_menu(screen)
 # - The clock ticks over
 clock.tick(60)
 pygame.quit()
