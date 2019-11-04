@@ -39,7 +39,7 @@ def new_screen(screen):
                 main_menu(screen)
             #end if
         #next event
-    #end while
+    #end whiles
 #end def
 
 
