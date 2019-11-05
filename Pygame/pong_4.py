@@ -67,14 +67,6 @@ def how_to_play(screen):
     screen.blit(text_2, textRect_rightpaddle)
 #end def
 
-
-
-def text_format(message, textFont, textSize, textColor):
-    newFont = pygame.font.SysFont(textFont, textSize)
-    newText = newFont.render(message, 0, textColor)
-# end function
-
-
 def main_menu(screen):
     finished = False
     textcolour = BLACK
