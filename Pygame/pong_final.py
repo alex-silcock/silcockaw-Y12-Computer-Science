@@ -25,23 +25,21 @@ pygame.display.set_caption("Pong")
 # -- Manages how fast screen refreshes
 clock = pygame.time.Clock()
 
-def how_to_play_screen(screen):
+def new_screen(screen):
     finished = False
-
     while finished == False:
         screen.fill(WHITE)
         how_to_play(screen)
-
         pygame.display.flip()
         keys = pygame.key.get_pressed()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
             if keys[pygame.K_ESCAPE]:
-                mode = main_menu(screen)
+                main_menu(screen)
             #end if
         #next event
-    #end while
+    #end whiles
 #end def
 
 
@@ -129,24 +127,24 @@ def main_menu(screen):
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if textRect.collidepoint(mouse):
                     finished = True
-                    mode = 'singleplayer'
+                    msg = 'singleplayer'
                 elif textRect_2.collidepoint(mouse):
                     finished = True
-                    mode = 'multiplayer'
+                    msg = 'multiplayer'
                 elif textRect_3.collidepoint(mouse):
                     finished = True
-                    mode = 'how to play'
+                    msg = 'how to play'
                 #end if
             #end if
         #next event
     
-    if mode == 'how to play':
-        how_to_play_screen(screen)
+    if msg == 'how to play':
+        new_screen(screen)
     else:
-        pong_game(mode, speed_computer)
+        pong_game(msg, speed_computer)
 # end function
 
-#========================================= pong singleplayer =============================================#
+#========================================= pong game =============================================#
 def pong_game(mode,computerspeed):
     
     ball_width = 20
@@ -184,7 +182,7 @@ def pong_game(mode,computerspeed):
     
 
     # ============ end of defining functions ============ #
-
+    # ============ game loop ============ #
     game_over = False
     while not game_over:
         ball_color = BLUE
@@ -203,7 +201,7 @@ def pong_game(mode,computerspeed):
             left_y = left_y + 8
         #end if
         if keys[pygame.K_ESCAPE]:
-            mode = main_menu(screen)
+            main_menu(screen)
         #end if
 
         if left_y > (size[1] - padd_height):
