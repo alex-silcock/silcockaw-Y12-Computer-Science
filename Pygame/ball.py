@@ -56,9 +56,25 @@ done = False
 
 # Create an object using the ball class
 theBall = Ball(100, 100, RED, 2, 1)
+theBall_2 = Ball(200,200, BLUE, 2, 1)
+
 
 # Game loop
 while not(done):
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            done = True
+        #End If
+    #Next event
+
+    # Game logic
+
+    if x >= screen_width:
+            self.change_x *= -1
+
+    if y >= screen_height:
+        self.change_y *= -1
+    
 
     # Clear the screen
     screen.fill(WHITE)
@@ -66,6 +82,8 @@ while not(done):
     # Draw the ball on the screen and then move it on
     theBall.draw(screen)
     theBall.move()
+    theBall_2.draw(screen)
+    theBall_2.move()
 
     # Limit to 60 FPS
     clock.tick(60)
@@ -73,4 +91,5 @@ while not(done):
     # Go ahead and update the screen with what we've drawn
     pygame.display.flip()
     
+#End While
 pygame.quit()
