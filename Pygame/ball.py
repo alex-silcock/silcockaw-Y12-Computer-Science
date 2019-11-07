@@ -67,15 +67,6 @@ while not(done):
         #End If
     #Next event
 
-    # Game logic
-
-    if x >= screen_width:
-            self.change_x *= -1
-
-    if y >= screen_height:
-        self.change_y *= -1
-    
-
     # Clear the screen
     screen.fill(WHITE)
 
