@@ -3,9 +3,11 @@
 # Check list :
 # Actual Game
 # Controlled by key presses
-# Collisions : if the ball goes over the square you get points
+# Collisions : if something touches something = points / player dies
 # Main menu
-# Some sort of AI to enhance the game
+# Some sort of AI to enhance the game e.g. an AI bot playing against the person
+# Networking the game across computers
+# Include a high scores list - stored as a text file
 
 
 
@@ -13,6 +15,38 @@
 
 # -- Library imports
 import pygame
+
+# -- Global constants, functions, procedures, classes
+
+class Paddle():
+    # Constructor function to define initial state of a ball object
+    def __init__(self, x, y, col):
+        # --- Class Attributes ---
+        # Ball position
+        self.x = x
+        self.y = y
+
+        # Ball's vector
+        self.change_x = x_speed
+        self.change_y = y_speed
+
+        # Ball Size
+        self.size = 10
+
+        # Ball colour
+        self.color = col
+
+    # -- Class Methods ---
+    # Defines the ball's movement
+    def move(self):
+        self.x += self.change_x
+        self.y += self.change_y
+    #end def
+
+    # Draws the ball on the screen
+    def draw(self, screen):
+        pygame.draw.circle(screen, self.color, [self.x, self.y], self.size)
+    #end def
 
 # -- Colours
 BLACK = (0, 0, 0)
@@ -25,8 +59,10 @@ RED = (204,0,0)
 pygame.init()
 
 # -- Blank Screen
-size = (640, 480)
+size = (1080, 800)
 screen = pygame.display.set_mode(size)
+# To make game fullscreen use this:
+#screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
 
 # -- Title of window
 pygame.display.set_caption("Game Name")
@@ -34,7 +70,33 @@ pygame.display.set_caption("Game Name")
 # -- Manages how fast the screen refreshes
 clock = pygame.time.Clock()
 
-# -- Global constants
+# Set game loop to false so it runs
+done = False
+
+# Create an object using the class
+
+
+# Game loop
+while not(done):
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            done = True
+        #End If
+    #Next event
+
+    # Clear the screen
+    screen.fill(WHITE)
+    
+
+    # Limit to 60 FPS
+    clock.tick(60)
+
+    # Go ahead and update the screen with what we've drawn
+    pygame.display.flip()
+    
+#End While
+pygame.quit()
+
 
 
 
