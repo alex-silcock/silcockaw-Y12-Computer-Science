@@ -4,10 +4,10 @@ import math
 
 # -- Global Constants
 
-## -- Define the class snow which is a sprite
+## -- Define the class Invader which is a sprite
 class Invader(pygame.sprite.Sprite):
-    # Define the constructor for snow
-    def __init__(self, color, width, height,speed):
+    # Define the constructor for Invader
+    def __init__(self, color, width, height, speed):
         # Call the sprite constructor
         super().__init__()
         # Create a sprite and fill it with colour
@@ -25,9 +25,11 @@ class Invader(pygame.sprite.Sprite):
         self.rect.y = self.rect.y + self.speed
     #end func
 #End Class
+
+## -- Define the class Player which is a sprite
 class Player(pygame.sprite.Sprite):
-    # Define the constructor for snow
-    def __init__(self, color, width, height,speed):
+    # Define the constructor for Player
+    def __init__(self, color, width, height, speed):
         # Call the sprite constructor
         super().__init__()
         # Create a sprite and fill it with colour
@@ -35,9 +37,9 @@ class Player(pygame.sprite.Sprite):
         self.image.fill(color)
         # Set the position of the sprite
         self.rect = self.image.get_rect()
-        self.rect.x = random.randrange(0, 600)
-        self.rect.y = random.randrange(-50, 0)
-        self.speed = 0
+        self.rect.x = size[0] // 2
+        self.rect.y = size[1] - height
+        self.speed = speed
     #end func
 
     # Class update function - runs for each pass through the game loop
@@ -66,8 +68,9 @@ pygame.display.set_caption("Invader")
 # -- Exit game flag set to false
 done = False
 
-# Create a list of the snow blocks
+# Create a list of the invaders
 invader_group = pygame.sprite.Group()
+player_group = pygame.sprite.Group()
 
 # Create a list of all sprites
 all_sprites_group = pygame.sprite.Group()
@@ -83,6 +86,10 @@ for x in range (number_of_invaders):
     all_sprites_group.add (my_invader) # adds it to the group of all Sprites
 #Next x
 
+# Creating the player
+my_player = Player(YELLOW, 10, 10, val)
+player_group.add (my_player)
+all_sprites_group.add (my_player)
 
 while not done:
     # -- User input and controls
@@ -92,14 +99,33 @@ while not done:
         #End If
     #Next event
 
+    # -- User inputs here
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            done = True
+        elif event.type == pygame.KEYDOWN: # - any key is down
+            if event.key == pygame.K_LEFT: # - if the left key pressed
+                player.player_set_speed(-3) # speed set to -3
+            elif event.key == pygame.K_RIGHT: # - if the right key pressed
+                player.player_set_speed(3) # speed set to 3
+            elif event.type == pygame.KEYUP: # - any key released
+                if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                    player.player_set_speed(0) # speed set to 0
+                #end if
+            #end if
+        #end if
+    #next event
+
     # -- Game logic goes after this comment
     all_sprites_group.update()
+    # when invader hits the player add 5 to the score
+    player_hit_group = pygame.sprite.spritecollide(my_player, invader_group, True)
 
     # -- Screen background is BLACK
     screen.fill (BLACK)
-    all_sprites_group.draw(screen)
-
+    
     # -- Draw here
+    all_sprites_group.draw(screen)
 
     # -- flip display to reveal new position of objects
     pygame.display.flip()

@@ -18,36 +18,6 @@ import pygame
 
 # -- Global constants, functions, procedures, classes
 
-class Paddle():
-    # Constructor function to define initial state of a ball object
-    def __init__(self, x, y, col):
-        # --- Class Attributes ---
-        # Ball position
-        self.x = x
-        self.y = y
-
-        # Ball's vector
-        self.change_x = x_speed
-        self.change_y = y_speed
-
-        # Ball Size
-        self.size = 10
-
-        # Ball colour
-        self.color = col
-
-    # -- Class Methods ---
-    # Defines the ball's movement
-    def move(self):
-        self.x += self.change_x
-        self.y += self.change_y
-    #end def
-
-    # Draws the ball on the screen
-    def draw(self, screen):
-        pygame.draw.circle(screen, self.color, [self.x, self.y], self.size)
-    #end def
-
 # -- Colours
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
