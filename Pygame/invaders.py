@@ -23,7 +23,7 @@ class Invader(pygame.sprite.Sprite):
     # Class update function - runs for each pass through the game loop
     def update(self):
         self.rect.y = self.rect.y + self.speed
-    #end func
+    #end proc
 #End Class
 
 ## -- Define the class Player which is a sprite
@@ -87,7 +87,7 @@ for x in range (number_of_invaders):
 #Next x
 
 # Creating the player
-my_player = Player(YELLOW, 10, 10, val)
+my_player = Player(YELLOW, 10, 10, -1)
 player_group.add (my_player)
 all_sprites_group.add (my_player)
 
