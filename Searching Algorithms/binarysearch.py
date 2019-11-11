@@ -18,7 +18,7 @@ def binarySearch(namelist, itemSought):
             #end if
         #end if
     #end while
-    return index
+    return index #index is -1 if not found
 #end function
 
 # main prog

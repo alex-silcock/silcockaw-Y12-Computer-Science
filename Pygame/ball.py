@@ -57,7 +57,6 @@ class Ball():
         #end if
     #end proc
         
-
     # Draws the ball on the screen
     def draw(self, screen):
         pygame.draw.circle(screen, self.color, [self.x, self.y], self.size)
@@ -71,7 +70,6 @@ theBall = Ball(100, 100, RED, 3, 3)
 theBall_2 = Ball(200,200, BLUE, 3, 3)
 theBall_3 = Ball(300,300, YELLOW, 3, 3)
 
-
 # Game loop
 while not(done):
     for event in pygame.event.get():
@@ -80,7 +78,6 @@ while not(done):
         #End If
     #Next event
 
-    
     # Clear the screen
     screen.fill(WHITE)
 
