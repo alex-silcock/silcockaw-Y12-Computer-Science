@@ -45,7 +45,11 @@ class Player(pygame.sprite.Sprite):
     # Class update function - runs for each pass through the game loop
     def update(self):
         self.rect.y = self.rect.y + self.speed
-    #end func
+    #end proc
+
+    def player_set_speed(self, val):
+        self.speed = val
+    #end proc
 #end class
 
 # -- Colours
@@ -116,7 +120,7 @@ while not done:
     # -- Game logic goes after this comment
     all_sprites_group.update()
     # when invader hits the player add 5 to the score
-    player_hit_group = pygame.sprite.spritecollide(my_player, invader_group, True)
+    player_hit_group = pygame.sprite.spritecollide(my_player, invader_group, True) 
 
     # -- Screen background is BLACK
     screen.fill(BLACK)
