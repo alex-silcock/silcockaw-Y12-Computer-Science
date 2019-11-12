@@ -79,42 +79,39 @@ all_sprites_group = pygame.sprite.Group()
 clock = pygame.time.Clock()
 
 # Create the invaders
-number_of_invaders = 10
-for x in range (number_of_invaders):
-    my_invader = Invader(BLUE, 10, 10, 1)
-    invader_group.add (my_invader)
-    all_sprites_group.add (my_invader) # adds it to the group of all Sprites
+number_of_invaders = 50
+for x in range(number_of_invaders):
+    invader_speed = random.randrange(1,2)
+    my_invader = Invader(BLUE, 10, 10, invader_speed)
+    invader_group.add(my_invader)
+    all_sprites_group.add(my_invader) # adds it to the group of all Sprites
 #Next x
 
 # Creating the player
-my_player = Player(YELLOW, 10, 10, -1)
-player_group.add (my_player)
-all_sprites_group.add (my_player)
+my_player = Player(YELLOW, 10, 10, 0)
+player_group.add(my_player)
+all_sprites_group.add(my_player)
 
 while not done:
     # -- User input and controls
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
-        #End If
-    #Next event
-
-    # -- User inputs here
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            done = True
         elif event.type == pygame.KEYDOWN: # - any key is down
             if event.key == pygame.K_LEFT: # - if the left key pressed
-                player.player_set_speed(-3) # speed set to -3
+                my_player.player_set_speed(-3) # speed set to -3
             elif event.key == pygame.K_RIGHT: # - if the right key pressed
-                player.player_set_speed(3) # speed set to 3
+                my_player.player_set_speed(3) # speed set to 3
             elif event.type == pygame.KEYUP: # - any key released
                 if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                    player.player_set_speed(0) # speed set to 0
+                    my_player.player_set_speed(0) # speed set to 0
                 #end if
             #end if
         #end if
     #next event
+
+    # -- User inputs here
+
 
     # -- Game logic goes after this comment
     all_sprites_group.update()
@@ -122,7 +119,7 @@ while not done:
     player_hit_group = pygame.sprite.spritecollide(my_player, invader_group, True)
 
     # -- Screen background is BLACK
-    screen.fill (BLACK)
+    screen.fill(BLACK)
     
     # -- Draw here
     all_sprites_group.draw(screen)

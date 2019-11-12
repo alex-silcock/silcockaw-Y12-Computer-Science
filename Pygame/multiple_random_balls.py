@@ -7,8 +7,9 @@ import random
 RED = (255,0,0)
 GREEN = (0,255,0)
 BLUE = (0,0,255)
-WHITE = (0,0,0)
-YELLOW = (255, 255, 0)
+WHITE = (255,255,255)
+YELLOW = (255,255,0)
+BLACK = (0,0,0)
 
 # Initialize Pygame
 pygame.init()
@@ -46,6 +47,8 @@ class Ball():
     def move(self):
         self.x += self.change_x
         self.y += self.change_y
+        
+        # collisions
         if self.x >= screen_width - self.size:
             self.change_x *= -1
         elif self.x <= 0 + self.size:
@@ -67,9 +70,17 @@ class Ball():
 done = False
 
 # Create an object using the ball class
-theBall = Ball(100, 100, RED, 3, 3) 
-theBall_2 = Ball(200,200, BLUE, 3, 3)
-theBall_3 = Ball(300,300, YELLOW, 3, 3)
+ball_list = []
+colour_list = [RED, GREEN, BLUE, WHITE, YELLOW]
+for count in range(20):
+    x_rand = random.randrange(10, screen_width - 10)
+    y_rand = random.randrange(10, screen_height - 10)
+    x_speed_rand = random.randrange(1, 10)
+    y_speed_rand = random.randrange(1, 10)
+    colour_rand = random.choice(colour_list)
+    my_ball = Ball(x_rand, y_rand, colour_rand, x_speed_rand, y_speed_rand)
+    ball_list.append(my_ball)
+#next count
 
 # Game loop
 while not(done):
@@ -80,16 +91,14 @@ while not(done):
     #Next event
 
     # Clear the screen
-    screen.fill(WHITE)
+    screen.fill(BLACK)
 
     # Draw the ball on the screen and then move it on
-    theBall.draw(screen)
-    theBall.move()
-    theBall_2.draw(screen)
-    theBall_2.move()
-    theBall_3.draw(screen)
-    theBall_3.move()
-
+    for my_ball in ball_list:
+        my_ball.draw(screen)
+        my_ball.move()
+    #next 
+    
     # Limit to 60 FPS
     clock.tick(60)
 
