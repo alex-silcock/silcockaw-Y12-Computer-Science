@@ -71,8 +71,8 @@ class Bullet(pygame.sprite.Sprite):
         self.image.fill(RED)
         # Set the position of the sprite
         self.rect = self.image.get_rect()
-        self.rect.x = 0
-        self.rect.y = 0
+        self.rect.x = 100
+        self.rect.y = 100
         self.speed = 2
         self.bullet_count = 50
     #end procedure
@@ -111,7 +111,7 @@ pygame.display.set_caption("Invader")
 # -- Exit game flag set to false
 done = False
 
-# Create a list of the invaders
+# Create a list of all different sprite groups
 invader_group = pygame.sprite.Group()
 player_group = pygame.sprite.Group()
 bullet_group = pygame.sprite.Group()
@@ -141,11 +141,11 @@ player_group.add(my_player)
 all_sprites_group.add(my_player)
 
 # Creating the bullets
-
 bullet_count = 50
 for x in range(bullet_count):
     bullets = Bullet(RED, 2)
     bullet_group.add(bullets)
+#next x
 
 
 while not done:
@@ -156,7 +156,7 @@ while not done:
         #end if
     #next event
 
-    # if left is pressed, then player moves left, if right is pressed, then player moves left
+    # If left is pressed, then player moves left, if right is pressed, then player moves left
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT]:
         my_player.player_set_speed(-3)
@@ -166,6 +166,7 @@ while not done:
 
     if keys[pygame.K_UP]:
         bullet_group.draw(screen)
+
     # -- User inputs here
     
     
