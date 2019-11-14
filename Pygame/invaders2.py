@@ -41,14 +41,12 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = size[1] - height
         self.speed = speed
         self.lives = lives
-    #end func
-
-
+    #end procedure
 
     # Class update function - runs for each pass through the game loop
     def update(self):
         self.rect.y = self.rect.y + self.speed
-    #end proc
+    #end procedure
 
     def player_set_speed(self, val):
         self.rect.x = self.rect.x + val
@@ -56,18 +54,41 @@ class Player(pygame.sprite.Sprite):
             self.rect.x = 0
         if self.rect.x > size[0] - player_width:
             self.rect.x = size[0] - player_width
-    #end proc
+    #end procedure
 
+    def bullet_been_shot(self):
+        self.player.bullet_count -= 1
+    #end procedure
 #end class
 
+class Bullet(pygame.sprite.Sprite):
+    # Define the constructor for Bullet
+    def __init__(self, color, speed):
+        # Call the sprite constructor
+        super().__init__()
+        # Create a sprite and fill it with colour
+        self.image = pygame.Surface([2,2])
+        self.image.fill(RED)
+        # Set the position of the sprite
+        self.rect = self.image.get_rect()
+        self.rect.x = 0
+        self.rect.y = 0
+        self.speed = 2
+        self.bullet_count = 50
+    #end procedure
+
+    # Class update function - runs for each pass through the game loop
+    def update(self):
+        self.rect.y = self.rect.y + self.speed
+    #end procedure
+
 def number_of_lives(screen):
-    font = pygame.font.SysFont("arial", 20)
+    font = pygame.font.SysFont("arial", 30)
     text = font.render("Lives : %a" %my_player.lives, 1, WHITE)
     textRect = text.get_rect()
     textRect.center = (100, 100)
     screen.blit(text, textRect)
-# enddef
-
+#end procedure
 
 # -- Colours
 
@@ -75,6 +96,7 @@ BLACK = (0,0,0)
 WHITE = (255,255,255)
 BLUE = (50,50,255)
 YELLOW = (255,255,0)
+RED = (255,0,0)
 
 # -- Initialise PyGame
 pygame.init()
@@ -92,6 +114,7 @@ done = False
 # Create a list of the invaders
 invader_group = pygame.sprite.Group()
 player_group = pygame.sprite.Group()
+bullet_group = pygame.sprite.Group()
 
 # Create a list of all sprites
 all_sprites_group = pygame.sprite.Group()
@@ -117,6 +140,14 @@ my_player = Player(YELLOW, player_width, player_height, 0, 5)
 player_group.add(my_player)
 all_sprites_group.add(my_player)
 
+# Creating the bullets
+
+bullet_count = 50
+for x in range(bullet_count):
+    bullets = Bullet(RED, 2)
+    bullet_group.add(bullets)
+
+
 while not done:
     # -- User input and controls
     for event in pygame.event.get():
@@ -132,18 +163,21 @@ while not done:
     elif keys[pygame.K_RIGHT]:
         my_player.player_set_speed(3)
     #end if
-    
+
+    if keys[pygame.K_UP]:
+        bullet_group.draw(screen)
     # -- User inputs here
-
-
+    
+    
     # -- Game logic goes after this comment
     all_sprites_group.update()
+
     # when invader hits the player add 5 to the score
     player_hit_group = pygame.sprite.spritecollide(my_player, invader_group, True) 
     for foo in player_hit_group:
         my_player.lives -= 1
-        #if my_player.lives == 0:
-        #    clock.tick(1)
+        if my_player.lives == 0:
+            done = True
         #end if
     #next foo
     
@@ -154,7 +188,6 @@ while not done:
     all_sprites_group.draw(screen)
     number_of_lives(screen)
     
-
     # -- flip display to reveal new position of objects
     pygame.display.flip()
 
