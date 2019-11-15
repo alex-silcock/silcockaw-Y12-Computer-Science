@@ -71,9 +71,9 @@ class Bullet(pygame.sprite.Sprite):
         self.image.fill(RED)
         # Set the position of the sprite
         self.rect = self.image.get_rect()
-        self.rect.x = 100
-        self.rect.y = 100
-        self.speed = 2
+        self.rect.x = 200
+        self.rect.y = 400
+        self.speed = -1
         self.bullet_count = 50
     #end procedure
 
@@ -157,15 +157,21 @@ while not done:
     #next event
 
     # If left is pressed, then player moves left, if right is pressed, then player moves left
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT]:
-        my_player.player_set_speed(-3)
-    elif keys[pygame.K_RIGHT]:
-        my_player.player_set_speed(3)
-    #end if
+        elif event.type==pygame.KEYDOWN:
+            if event.key==pygame.K_LEFT:
+                my_player.player_set_speed(-3)
+            elif event.key==pygame.K_RIGHT:
+                my_player.player_set_speed(3)
+            elif event.key==pygame.K_UP:
+                bullet=Bullet(RED, 2)
+                bullet_group.add(bullet)
+            #end if
+        #end if
+    #next event
+        
 
-    if keys[pygame.K_UP]:
-        bullet_group.draw(screen)
+
+    
 
     # -- User inputs here
     
@@ -187,6 +193,8 @@ while not done:
     
     # -- Draw here
     all_sprites_group.draw(screen)
+    bullet_group.update()
+    bullet_group.draw(screen)
     number_of_lives(screen)
     
     # -- flip display to reveal new position of objects
