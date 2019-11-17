@@ -35,14 +35,6 @@ def print_text(x_pos, y_pos, screen, text_string, colour):
     screen.blit(text_map, [x_pos, y_pos])
 #end procedure
 
-def end_of_game_screen(screen):
-    screen.fill(BLUE)
-    font_1 = pygame.font.SysFont("Moon 2.0", 40)
-    text_1 = font_1.render("Use up and down to move the left paddle", 5, BLACK)
-    textRect_leftpaddle = text_1.get_rect()
-    textRect_leftpaddle.center = (size[0]//2, size[1]//2)
-    screen.blit(text_1, textRect_leftpaddle)
-
 ## -- Define the class Invader which is a sprite
 class Invader(pygame.sprite.Sprite):
     # Define the constructor for Invader
@@ -149,7 +141,7 @@ number_of_invaders = 50
 invader_width = 20
 invader_height = 20
 for x in range(number_of_invaders):
-    invader_speed = random.randrange(1,3)
+    invader_speed = random.randrange(1,2)
     my_invader = Invader(BLUE, invader_width, invader_height, invader_speed)
     invader_group.add(my_invader)
     all_sprites_group.add(my_invader) # adds it to the group of all Sprites
