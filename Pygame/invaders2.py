@@ -140,6 +140,7 @@ all_sprites_group = pygame.sprite.Group()
 number_of_invaders = 50
 invader_width = 20
 invader_height = 20
+
 for x in range(number_of_invaders):
     invader_speed = random.randrange(1,2)
     my_invader = Invader(BLUE, invader_width, invader_height, invader_speed)
