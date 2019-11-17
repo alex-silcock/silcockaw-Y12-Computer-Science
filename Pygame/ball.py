@@ -7,7 +7,7 @@ import random
 RED = (255,0,0)
 GREEN = (0,255,0)
 BLUE = (0,0,255)
-WHITE = (0,0,0)
+BLACK = (0,0,0)
 YELLOW = (255, 255, 0)
 
 # Initialize Pygame
@@ -24,11 +24,12 @@ clock = pygame.time.Clock()
 # Define the class Ball
 class Ball():
     # Constructor function to define initial state of a ball object
-    def __init__(self, x, y, col, x_speed, y_speed):
+    def __init__(self, x, y, col, x_speed, y_speed, ballarea):
         # --- Class Attributes ---
         # Ball position
         self.x = x
         self.y = y
+        self.court = ballarea
 
         # Ball's vector
         self.change_x = x_speed
@@ -44,16 +45,16 @@ class Ball():
     # -- Class Methods ---
     # Defines the ball's movement
     def move(self):
+        if self.x <= (self.court[0] + self.size) or self.x >= (self.court[2] - self.size):
+            self.change_x *= -1
+        #end if
+
+        if self.y <= (self.court[1] + self.size) or self.y >= (self.court[3] - self.size):
+            self.change_y *= -1
+        #end if
+
         self.x += self.change_x
         self.y += self.change_y
-        if self.x >= screen_width - self.size:
-            self.change_x *= -1
-        elif self.x <= 0 + self.size:
-            self.change_x *= -1
-        elif self.y >= screen_height - self.size:
-            self.change_y *= -1
-        elif self.y <= 0 + self.size:
-            self.change_y *= -1
         #end if
     #end proc
         
@@ -67,9 +68,13 @@ class Ball():
 done = False
 
 # Create an object using the ball class
-theBall = Ball(100, 100, RED, 3, 3) 
-theBall_2 = Ball(200,200, BLUE, 3, 3)
-theBall_3 = Ball(300,300, YELLOW, 3, 3)
+theBallarea = (0,0,300,200)
+theBallarea2 = (200,200,500,300)
+theBallarea3 = (350,350,700,400)
+
+theBall = Ball(20,20, RED, 3, 3, theBallarea) 
+theBall_2 = Ball(240,250, BLUE, 3, 3, theBallarea2)
+theBall_3 = Ball(370,370, YELLOW, 3, 3, theBallarea3)
 
 # Game loop
 while not(done):
@@ -80,7 +85,7 @@ while not(done):
     #Next event
 
     # Clear the screen
-    screen.fill(WHITE)
+    screen.fill(BLACK)
 
     # Draw the ball on the screen and then move it on
     theBall.draw(screen)
