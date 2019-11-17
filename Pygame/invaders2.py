@@ -43,8 +43,6 @@ class Player(pygame.sprite.Sprite):
         self.lives = lives
     #end func
 
-
-
     # Class update function - runs for each pass through the game loop
     def update(self):
         self.rect.y = self.rect.y + self.speed
