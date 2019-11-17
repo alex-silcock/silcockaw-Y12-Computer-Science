@@ -35,6 +35,14 @@ def print_text(x_pos, y_pos, screen, text_string, colour):
     screen.blit(text_map, [x_pos, y_pos])
 #end procedure
 
+def end_of_game_screen(screen):
+    screen.fill(BLUE)
+    font_1 = pygame.font.SysFont("Moon 2.0", 40)
+    text_1 = font_1.render("Use up and down to move the left paddle", 5, BLACK)
+    textRect_leftpaddle = text_1.get_rect()
+    textRect_leftpaddle.center = (size[0]//2, size[1]//2)
+    screen.blit(text_1, textRect_leftpaddle)
+
 ## -- Define the class Invader which is a sprite
 class Invader(pygame.sprite.Sprite):
     # Define the constructor for Invader
@@ -54,6 +62,8 @@ class Invader(pygame.sprite.Sprite):
     # Class update function - runs for each pass through the game loop
     def update(self):
         self.rect.y = self.rect.y + self.speed
+        if self.rect.y >= size[1]:
+            self.rect.y = 0
     #end proc
 #End Class
 
@@ -98,6 +108,10 @@ class Player(pygame.sprite.Sprite):
             self.bullet_count -= 1
         #end if
     #end procedure
+
+    def decrease_lives(self, val):
+        self.lives -= val
+    #end procedure
 #end class
 
 class Bullet(pygame.sprite.Sprite):
@@ -106,13 +120,13 @@ class Bullet(pygame.sprite.Sprite):
         # Call the sprite constructor
         super().__init__()
         # Create a sprite and fill it with colour
-        self.image = pygame.Surface([2,2])
+        self.image = pygame.Surface([5,5])
         self.image.fill(RED)
         # Set the position of the sprite
         self.rect = self.image.get_rect()
         self.rect.x = my_player.rect.x
         self.rect.y = my_player.rect.y
-        self.speed = -1
+        self.speed = speed
     #end procedure
 
     # Class update function - runs for each pass through the game loop
@@ -132,8 +146,8 @@ all_sprites_group = pygame.sprite.Group()
 
 # Create the invaders
 number_of_invaders = 50
-invader_width = 10
-invader_height = 10
+invader_width = 20
+invader_height = 20
 for x in range(number_of_invaders):
     invader_speed = random.randrange(1,2)
     my_invader = Invader(BLUE, invader_width, invader_height, invader_speed)
@@ -156,22 +170,32 @@ while not done:
             done = True      
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP and my_player.bullet_count > 0:
-                bullet = Bullet(RED, 2)
+                bullet = Bullet(RED, -2)
                 bullet_group.add(bullet)
                 my_player.decrease_bullets()
                 all_sprites_group.add(bullet)
-
-                bullet_hit_group = pygame.sprite.spritecollide(bullet, invader_group, True)
-                for foo in bullet_hit_group:
-                    my_player.score += 1
-
-                
-                    
-            #end if        
+            #end if
         #end if
     #next event
-    
 
+    # mechanics for each bullet
+    for bullet_shot in bullet_group:
+        invader_hit_group = pygame.sprite.spritecollide(bullet_shot, invader_group, True)
+
+        # for each block hit, remove the bullet and add to the score
+        for bullet_shot in invader_hit_group:
+            my_player.increase_score(5)
+            bullet_group.remove(bullet)
+            all_sprites_group.remove(bullet)
+        #next bullet_shot
+        # remove the bullet if it flies up off the screen
+        if bullet.rect.y < 0:
+            bullet_group.remove(bullet)
+            all_sprites_group.remove(bullet)
+        #end if
+    #next bullet_shot
+
+    
     # moving the player on key press
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT]:
@@ -180,8 +204,7 @@ while not done:
         my_player.player_set_speed(3)
     #end if
     
-        
-
+    
     # -- User inputs here
     
     
@@ -190,13 +213,12 @@ while not done:
 
     # when invader hits the player add 5 to the score
     player_hit_group = pygame.sprite.spritecollide(my_player, invader_group, True) 
-    for foo in player_hit_group:
-        my_player.lives -= 1
-        if my_player.lives == 0:
-            done = True
-            
-        #end if
-    #next foo
+    for p in player_hit_group:
+        my_player.decrease_lives(1)
+    #next p
+    if my_player.lives == 0 or my_player.bullet_count == 0:
+        done = True
+    #end if
     
     # -- Screen background is BLACK
     screen.fill(BLACK)
