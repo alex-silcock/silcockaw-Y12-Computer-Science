@@ -44,6 +44,7 @@ def main_menu(screen):
     screen.fill(BLACK)
 
     pygame.display.flip()
+#end procedure
 
 ## -- Define the class Invader which is a sprite
 class Invader(pygame.sprite.Sprite):
@@ -65,6 +66,7 @@ class Invader(pygame.sprite.Sprite):
         self.rect.y = self.rect.y + self.speed
         if self.rect.y >= size[1]:
             self.rect.y = 0
+            self.image = pygame.image.load("invader.jpg")
     #end proc
 #End Class
 
@@ -147,7 +149,7 @@ all_sprites_group = pygame.sprite.Group()
 
 
 # Create the invaders
-number_of_invaders = 50
+number_of_invaders = 30
 invader_width = 20
 invader_height = 20
 
@@ -172,7 +174,7 @@ while not done:
         if event.type == pygame.QUIT:
             done = True      
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP and my_player.bullet_count > 0:
+            if event.key == pygame.K_SPACE  and my_player.bullet_count > 0:
                 bullet = Bullet(RED, -2)
                 bullet_group.add(bullet)
                 my_player.decrease_bullets()
@@ -223,6 +225,7 @@ while not done:
     if my_player.lives == 0 or my_player.bullet_count == 0:
         done = True
     #end if
+
     
     # -- Screen background is BLACK
     screen.fill(BLACK)
