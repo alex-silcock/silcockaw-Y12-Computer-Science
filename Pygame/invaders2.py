@@ -1,6 +1,9 @@
 import pygame
 import random
 import math
+#import os
+
+#print (os.getcwd())
 
 # -- Global Constants
 
@@ -38,12 +41,11 @@ def print_text(x_pos, y_pos, screen, text_string, colour):
 ## -- Define the class Invader which is a sprite
 class Invader(pygame.sprite.Sprite):
     # Define the constructor for Invader
-    def __init__(self, color, width, height, speed):
+    def __init__(self, color, width, height, speed, enemy_image):
         # Call the sprite constructor
         super().__init__()
         # Create a sprite and fill it with colour
-        self.image = pygame.Surface([width,height])
-        self.image.fill(color)
+        self.image = pygame.image.load(enemy_image)
         # Set the position of the sprite
         self.rect = self.image.get_rect()
         self.rect.x = random.randrange(0, 600)
@@ -143,7 +145,7 @@ invader_height = 20
 
 for x in range(number_of_invaders):
     invader_speed = random.randrange(1,2)
-    my_invader = Invader(BLUE, invader_width, invader_height, invader_speed)
+    my_invader = Invader(BLUE, invader_width, invader_height, invader_speed, "silcock.jpg")
     invader_group.add(my_invader)
     all_sprites_group.add(my_invader) # adds it to the group of all Sprites
 #Next x
@@ -167,6 +169,8 @@ while not done:
                 bullet_group.add(bullet)
                 my_player.decrease_bullets()
                 all_sprites_group.add(bullet)
+                pygame.mixer.music.load('shooting.mp3')
+                pygame.mixer.music.play(0)
             #end if
         #end if
     #next event
@@ -188,7 +192,6 @@ while not done:
         #end if
     #next bullet_shot
 
-    
     # moving the player on key press
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT]:
