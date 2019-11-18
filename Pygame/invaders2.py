@@ -2,7 +2,6 @@ import pygame
 import random
 import math
 #import os
-
 #print (os.getcwd())
 
 # -- Global Constants
@@ -37,6 +36,14 @@ def print_text(x_pos, y_pos, screen, text_string, colour):
     text_map = font.render(str(text_string), True, colour)
     screen.blit(text_map, [x_pos, y_pos])
 #end procedure
+
+## -- Creating a main menu
+def main_menu(screen):
+
+    #Background image
+    screen.fill(BLACK)
+
+    pygame.display.flip()
 
 ## -- Define the class Invader which is a sprite
 class Invader(pygame.sprite.Sprite):
@@ -127,6 +134,7 @@ class Bullet(pygame.sprite.Sprite):
     def update(self):
         self.rect.y = self.rect.y + self.speed
     #end procedure
+#end class
 
 
 # Create a list of all different sprite groups

@@ -142,6 +142,7 @@ def main_menu(screen):
         new_screen(screen)
     else:
         pong_game(msg, speed_computer)
+    #end if
 # end function
 
 #========================================= pong game =============================================#
