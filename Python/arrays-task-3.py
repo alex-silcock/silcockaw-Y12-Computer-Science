@@ -11,8 +11,10 @@ mylist.append(outlet3)
 for i in range(0,3):
   for j in range(0,4):
     total = total + mylist[i][j]
+  #next j
   print("Value for quarter", (i + 1), ":", total)
   total = 0
+#next i
 
 
 

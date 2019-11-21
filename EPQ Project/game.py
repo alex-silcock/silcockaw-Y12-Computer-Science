@@ -55,7 +55,7 @@ while not(done):
     #Next event
 
     # Clear the screen
-    screen.fill(WHITE)
+    screen.fill(BLACK)
     
 
     # Limit to 60 FPS

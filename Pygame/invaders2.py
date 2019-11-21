@@ -37,15 +37,6 @@ def print_text(x_pos, y_pos, screen, text_string, colour):
     screen.blit(text_map, [x_pos, y_pos])
 #end procedure
 
-## -- Creating a main menu
-def main_menu(screen):
-
-    #Background image
-    screen.fill(BLACK)
-
-    pygame.display.flip()
-#end procedure
-
 ## -- Define the class Invader which is a sprite
 class Invader(pygame.sprite.Sprite):
     # Define the constructor for Invader
@@ -160,6 +151,8 @@ for x in range(number_of_invaders):
     all_sprites_group.add(my_invader) # adds it to the group of all Sprites
 #Next x
 
+
+
 # Creating the player
 player_width = 10
 player_height = 10
@@ -174,7 +167,7 @@ while not done:
         if event.type == pygame.QUIT:
             done = True      
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE  and my_player.bullet_count > 0:
+            if event.key == pygame.K_UP  and my_player.bullet_count > 0:
                 bullet = Bullet(RED, -2)
                 bullet_group.add(bullet)
                 my_player.decrease_bullets()

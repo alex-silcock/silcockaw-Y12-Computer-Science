@@ -1,5 +1,4 @@
 namelist = ["Amelia", "Ava", "Brave", "Krystal", "Precious", "Wonderful"]
-
 def binarySearch(namelist, itemSought):
     found = False
     index = -1
