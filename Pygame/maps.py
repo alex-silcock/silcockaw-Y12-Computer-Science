@@ -1,15 +1,15 @@
 import pygame
 
-my_map = [[1,1,1,1,1,1,1,1,1,1],
-[1,0,0,0,0,0,0,0,0,1],
-[1,0,0,0,0,0,0,0,0,1],
-[1,1,0,1,1,1,1,1,0,1],
-[1,0,0,0,0,0,1,0,0,1],
-[1,0,1,1,1,0,1,0,0,1],
-[1,0,1,1,1,0,1,0,0,1],
-[1,0,1,1,1,0,1,0,0,1],
-[1,0,0,0,0,0,0,0,0,1],
-[1,1,1,1,1,1,1,1,1,1]]
+my_map =[[1,1,1,1,1,1,1,1,1,1],
+        [1,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,1],
+        [1,1,0,1,1,1,1,1,0,1],
+        [1,0,0,0,0,0,1,0,0,1],
+        [1,0,1,1,1,0,1,0,0,1],
+        [1,0,1,1,1,0,1,0,0,1],
+        [1,0,1,1,1,0,1,0,0,1],
+        [1,0,0,0,0,0,0,0,0,1],
+        [1,1,1,1,1,1,1,1,1,1]]
 
 # -- Initialise PyGame
 pygame.init()
@@ -102,6 +102,7 @@ while not(done):
             done = True
         #End If
     #Next event
+
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT]:
         pacman.player_update_speed(-1, 0)
@@ -112,15 +113,20 @@ while not(done):
     elif keys[pygame.K_DOWN]:
         pacman.player_update_speed(0, 1)
     #end if 
+
     # -- Check for collisions between pacman and wall tiles
     player_hit_list = pygame.sprite.spritecollide(pacman, wall_group, False)
-    print(pacman.rect.x)
+
     for foo in player_hit_list:
         pacman.player_update_speed(0, 0)
+        pacman.rect.x = pacman_old_x
+        pacman.rect.y = pacman_old_y
         # Run the update function for all sprites
     #next foo
-    all_sprites_group.update()
+    pacman_old_x = pacman.rect.x
+    pacman_old_y = pacman.rect.y
 
+    all_sprites_group.update()
     # Clear the screen
     screen.fill(BLACK)
     all_sprites_group.draw(screen)
