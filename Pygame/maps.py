@@ -76,6 +76,25 @@ class Player(pygame.sprite.Sprite):
     #end procedure
 #end class
 
+## -- Define the class for the the things to be eaten
+class Munched(pygame.sprite.Sprite):
+    # Define the constructor
+    def __init__(self, x_ref, y_ref):
+        # Call the sprite constructor
+        super().__init__
+        # Create the sprite
+        width = 5
+        height = 5
+        color = YELLOW
+        self.image = pygame.Surface([width, height])
+        self.image.fill(color)
+        self.rect = self.image.get_rect()
+        # Set the position of the player attributes
+        self.rect.x = x_ref
+        self.rect.y = y_ref
+    #end procedure
+#end class
+
 
 # Create a list of all sprites
 all_sprites_group = pygame.sprite.Group()
@@ -105,13 +124,13 @@ while not(done):
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT]:
-        pacman.player_update_speed(-1, 0)
+        pacman.player_update_speed(-2, 0)
     elif keys[pygame.K_RIGHT]:
-        pacman.player_update_speed(1, 0)
+        pacman.player_update_speed(2, 0)
     elif keys[pygame.K_UP]:
-        pacman.player_update_speed(0, -1)
+        pacman.player_update_speed(0, -2)
     elif keys[pygame.K_DOWN]:
-        pacman.player_update_speed(0, 1)
+        pacman.player_update_speed(0, 2)
     #end if 
 
     # -- Check for collisions between pacman and wall tiles
