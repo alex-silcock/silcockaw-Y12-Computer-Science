@@ -1,5 +1,3 @@
-# Ideas : Something like pipex, but a simpler version
-
 # Check list :
 # Actual Game
 # Controlled by key presses
