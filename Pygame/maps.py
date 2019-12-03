@@ -77,11 +77,11 @@ class Player(pygame.sprite.Sprite):
 #end class
 
 ## -- Define the class for the the things to be eaten
-class Munched(pygame.sprite.Sprite):
+class OtherPlayer(pygame.sprite.Sprite):
     # Define the constructor
     def __init__(self, x_ref, y_ref):
         # Call the sprite constructor
-        super().__init__
+        super().__init__()
         # Create the sprite
         width = 5
         height = 5
@@ -92,6 +92,9 @@ class Munched(pygame.sprite.Sprite):
         # Set the position of the player attributes
         self.rect.x = x_ref
         self.rect.y = y_ref
+
+    def move(self):
+        self.rect.x += 1
     #end procedure
 #end class
 
@@ -101,6 +104,9 @@ all_sprites_group = pygame.sprite.Group()
 
 # Create a list of tiles for the walls
 wall_group = pygame.sprite.Group()
+
+# Create a list of other players
+otherplayer_group = pygame.sprite.Group()
 
 # Create walls on the screen (each tile is 20 x 20 so alter cords)
 for y in range(10):
@@ -112,8 +118,14 @@ for y in range(10):
         #end if
     #next x
 #next y
+
 pacman = Player(20, 20)
 all_sprites_group.add(pacman)
+
+computerPlayer = OtherPlayer(100, 100)
+all_sprites_group.add(computerPlayer)
+otherplayer_group.add(computerPlayer)
+
 # Game loop
 while not(done):
     for event in pygame.event.get():
@@ -133,8 +145,11 @@ while not(done):
         pacman.player_update_speed(0, 2)
     #end if 
 
+    
+
     # -- Check for collisions between pacman and wall tiles
     player_hit_list = pygame.sprite.spritecollide(pacman, wall_group, False)
+    player_hit_otherplayer_list = pygame.sprite.spritecollide(pacman, otherplayer_group, True)
 
     for foo in player_hit_list:
         pacman.player_update_speed(0, 0)
@@ -144,6 +159,9 @@ while not(done):
     #next foo
     pacman_old_x = pacman.rect.x
     pacman_old_y = pacman.rect.y
+
+    # move the computer player
+    computerPlayer.move()
 
     all_sprites_group.update()
     # Clear the screen
