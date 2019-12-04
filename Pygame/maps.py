@@ -94,7 +94,10 @@ class OtherPlayer(pygame.sprite.Sprite):
         self.rect.y = y_ref
 
     def move(self):
-        self.rect.x += 1
+        if pygame.sprite.spritecollide(computerPlayer, wall_group, False):
+            self.rect.x += 1
+            self.rect.y += 1
+        #end if
     #end procedure
 #end class
 
