@@ -1,15 +1,18 @@
 import pygame
 
-my_map =[[1,1,1,1,1,1,1,1,1,1],
-        [1,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,1],
-        [1,1,0,1,1,1,1,1,0,1],
-        [1,0,0,0,0,0,1,0,0,1],
-        [1,0,1,1,1,0,1,0,0,1],
-        [1,0,1,1,1,0,1,0,0,1],
-        [1,0,1,1,1,0,1,0,0,1],
-        [1,0,0,0,0,0,0,0,0,1],
-        [1,1,1,1,1,1,1,1,1,1]]
+my_map =[['h','h','h','h','h','h','h','h','h','h'],
+        ['v',  0,  0,  0,  0,  0,  0,  0,  0, 'v'],
+        ['v',  0,  0,  0,  0,  0,  0,  0,  0, 'v'],
+        ['v', 'h', 0, 'h','h','h','h','h', 0, 'v'],
+        ['v',  0,  0,  0,  0,  0, 'v', 0,  0, 'v'],
+        ['v',  0, 'v','h','v', 0, 'v', 0,  0, 'v'],
+        ['v',  0, 'v','v','v', 0, 'v', 0,  0, 'v'],
+        ['v',  0, 'v','h','v', 0, 'v', 0,  0, 'v'],
+        ['v',  0,  0,  0,  0,  0,  0,  0,  0, 'v'],
+        ['h', 'h','h','h','h','h','h','h','h','h']]
+        
+#h = horizontal wall
+#v = vertical wall
 
 # -- Initialise PyGame
 pygame.init()
@@ -79,7 +82,7 @@ class Player(pygame.sprite.Sprite):
 ## -- Define the class for the the things to be eaten
 class OtherPlayer(pygame.sprite.Sprite):
     # Define the constructor
-    def __init__(self, x_ref, y_ref):
+    def __init__(self, x_ref, y_ref, x_speed, y_speed):
         # Call the sprite constructor
         super().__init__()
         # Create the sprite
@@ -92,11 +95,14 @@ class OtherPlayer(pygame.sprite.Sprite):
         # Set the position of the player attributes
         self.rect.x = x_ref
         self.rect.y = y_ref
+        
+        self.speed_x = x_speed
+        self.speed_y = y_speed
+    #end procedure
 
     def move(self):
-        if pygame.sprite.spritecollide(computerPlayer, wall_group, False):
-            self.rect.x += 1
-            self.rect.y += 1
+        self.rect.x += self.speed_x
+        self.rect.y += self.speed_y
         #end if
     #end procedure
 #end class
@@ -107,6 +113,8 @@ all_sprites_group = pygame.sprite.Group()
 
 # Create a list of tiles for the walls
 wall_group = pygame.sprite.Group()
+vertical_wall_group = pygame.sprite.Group()
+horizontal_wall_group = pygame.sprite.Group()
 
 # Create a list of other players
 otherplayer_group = pygame.sprite.Group()
@@ -114,10 +122,16 @@ otherplayer_group = pygame.sprite.Group()
 # Create walls on the screen (each tile is 20 x 20 so alter cords)
 for y in range(10):
     for x in range(10):
-        if my_map[x][y] == 1:
+        if my_map[x][y] == 'v':
             my_wall = Tile(BLUE, 20, 20, x*20, y*20)
             wall_group.add(my_wall)
             all_sprites_group.add(my_wall)
+            vertical_wall_group.add(my_wall)
+        elif my_map[x][y] == 'h':
+            my_wall = Tile(BLUE, 20, 20, x*20, y*20)
+            wall_group.add(my_wall)
+            all_sprites_group.add(my_wall)
+            horizontal_wall_group.add(my_wall)
         #end if
     #next x
 #next y
@@ -125,7 +139,7 @@ for y in range(10):
 pacman = Player(20, 20)
 all_sprites_group.add(pacman)
 
-computerPlayer = OtherPlayer(100, 100)
+computerPlayer = OtherPlayer(80, 100, 1, 1)
 all_sprites_group.add(computerPlayer)
 otherplayer_group.add(computerPlayer)
 
@@ -136,7 +150,6 @@ while not(done):
             done = True
         #End If
     #Next event
-
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT]:
         pacman.player_update_speed(-2, 0)
@@ -163,10 +176,19 @@ while not(done):
     pacman_old_x = pacman.rect.x
     pacman_old_y = pacman.rect.y
 
+    computerPlayer_vertical_wall_list = pygame.sprite.spritecollide(computerPlayer, vertical_wall_group, False)
+    computerPlayer_horizontal_wall_list = pygame.sprite.spritecollide(computerPlayer, horizontal_wall_group, False)
+    if len(computerPlayer_vertical_wall_list) > 0:
+        computerPlayer.speed_y *= -1
+    elif len(computerPlayer_horizontal_wall_list) > 0:
+        computerPlayer.speed_x *= -1
+    #end if
+
     # move the computer player
     computerPlayer.move()
 
     all_sprites_group.update()
+
     # Clear the screen
     screen.fill(BLACK)
     all_sprites_group.draw(screen)
@@ -178,5 +200,3 @@ while not(done):
     pygame.display.flip()
 #End While
 pygame.quit()
-
-
