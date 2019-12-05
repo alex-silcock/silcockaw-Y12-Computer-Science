@@ -1,4 +1,5 @@
 import pygame
+import random
 
 my_map =[['h','h','h','h','h','h','h','h','h','h'],
         ['v',  0,  0,  0,  0,  0,  0,  0,  0, 'v'],
@@ -31,7 +32,6 @@ clock = pygame.time.Clock()
 done = False
 
 ## -- Colours
-
 BLACK = (0,0,0)
 WHITE = (255,255,255)
 BLUE = (50,50,255)
@@ -150,6 +150,7 @@ while not(done):
             done = True
         #End If
     #Next event
+
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT]:
         pacman.player_update_speed(-2, 0)
@@ -161,11 +162,16 @@ while not(done):
         pacman.player_update_speed(0, 2)
     #end if 
 
-    
-
     # -- Check for collisions between pacman and wall tiles
     player_hit_list = pygame.sprite.spritecollide(pacman, wall_group, False)
     player_hit_otherplayer_list = pygame.sprite.spritecollide(pacman, otherplayer_group, True)
+    if len(player_hit_otherplayer_list) > 0:
+        x_co_cp = random.randrange(60)
+        y_co_cp = random.randrange(100)
+        computerPlayer = OtherPlayer(x_co_cp, y_co_cp, 1, 1)
+        all_sprites_group.add(computerPlayer)
+        otherplayer_group.add(computerPlayer)
+    #end if
 
     for foo in player_hit_list:
         pacman.player_update_speed(0, 0)
@@ -178,6 +184,8 @@ while not(done):
 
     computerPlayer_vertical_wall_list = pygame.sprite.spritecollide(computerPlayer, vertical_wall_group, False)
     computerPlayer_horizontal_wall_list = pygame.sprite.spritecollide(computerPlayer, horizontal_wall_group, False)
+
+    #if the wall is vertical or horizontal, the collisions would be different for each wall
     if len(computerPlayer_vertical_wall_list) > 0:
         computerPlayer.speed_y *= -1
     elif len(computerPlayer_horizontal_wall_list) > 0:
