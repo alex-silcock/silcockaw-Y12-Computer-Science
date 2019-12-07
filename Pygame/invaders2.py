@@ -172,8 +172,8 @@ while not done:
                 bullet_group.add(bullet)
                 my_player.decrease_bullets()
                 all_sprites_group.add(bullet)
-                pygame.mixer.music.load('shooting.mp3')
-                pygame.mixer.music.play(0)
+                #pygame.mixer.music.load('shooting.mp3')
+                #pygame.mixer.music.play(0)
             #end if
         #end if
     #next event

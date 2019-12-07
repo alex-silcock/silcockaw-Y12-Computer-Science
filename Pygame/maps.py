@@ -139,7 +139,7 @@ for y in range(10):
 pacman = Player(20, 20)
 all_sprites_group.add(pacman)
 
-computerPlayer = OtherPlayer(80, 100, 1, 1)
+computerPlayer = OtherPlayer(40, 60, 1, 1)
 all_sprites_group.add(computerPlayer)
 otherplayer_group.add(computerPlayer)
 
@@ -166,9 +166,7 @@ while not(done):
     player_hit_list = pygame.sprite.spritecollide(pacman, wall_group, False)
     player_hit_otherplayer_list = pygame.sprite.spritecollide(pacman, otherplayer_group, True)
     if len(player_hit_otherplayer_list) > 0:
-        x_co_cp = random.randrange(60)
-        y_co_cp = random.randrange(100)
-        computerPlayer = OtherPlayer(x_co_cp, y_co_cp, 1, 1)
+        computerPlayer = OtherPlayer(40, 40, 1, 1)
         all_sprites_group.add(computerPlayer)
         otherplayer_group.add(computerPlayer)
     #end if

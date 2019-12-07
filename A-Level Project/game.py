@@ -1,10 +1,8 @@
-# Check list :
 # Actual Game
 # Controlled by key presses
 # Collisions : if something touches something = points / player dies
 # Main menu
 # Some sort of AI to enhance the game e.g. an AI bot playing against the person
-# Networking the game across computers
 # Include a high scores list - stored as a text file
 
 
@@ -42,7 +40,10 @@ clock = pygame.time.Clock()
 done = False
 
 # Create an object using the class
-
+class Player(pygame.sprite.Sprite):
+    # Define the constructor for the player
+    def __init__(self):
+        self.x = 100
 
 # Game loop
 while not(done):
@@ -61,8 +62,8 @@ while not(done):
 
     # Go ahead and update the screen with what we've drawn
     pygame.display.flip()
-    
 #End While
+
 pygame.quit()
 
 
