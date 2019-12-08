@@ -9,6 +9,8 @@ class Node:
         self.key = key  
         self.left = None
         self.right = None
+    #end procedure
+#end class
   
   
 # A utility function to do inorder traversal of BST 
@@ -17,6 +19,8 @@ def inorder(root):
         inorder(root.left) 
         print(root.key), 
         inorder(root.right) 
+    #end if
+#end procedure
   
   
 # A utility function to insert a new node with given key in BST 
@@ -25,15 +29,18 @@ def insert( node, key):
     # If the tree is empty, return a new node 
     if node is None: 
         return Node(key) 
+    #end if
   
     # Otherwise recur down the tree 
     if key < node.key: 
         node.left = insert(node.left, key) 
     else: 
-        node.right = insert(node.right, key) 
+        node.right = insert(node.right, key)
+    #end if
   
     # return the (unchanged) node pointer 
     return node 
+#end function
   
 # Given a non-empty binary search tree, return the node 
 # with minum key value found in that tree. Note that the 
@@ -44,8 +51,10 @@ def minValueNode( node):
     # loop down to find the leftmost leaf 
     while(current.left is not None): 
         current = current.left  
+    #end while
   
     return current  
+#end function
   
 # Given a binary search tree and a key, this function 
 # delete the key and returns the new root 
@@ -53,12 +62,14 @@ def deleteNode(root, key):
   
     # Base Case 
     if root is None: 
-        return root  
+        return root 
+    #end if
   
     # If the key to be deleted is smaller than the root's 
     # key then it lies in  left subtree 
     if key < root.key: 
-        root.left = deleteNode(root.left, key) 
+        root.left = deleteNode(root.left, key)
+     
   
     # If the kye to be delete is greater than the root's key 
     # then it lies in right subtree 
@@ -74,11 +85,13 @@ def deleteNode(root, key):
             temp = root.right  
             root = None 
             return temp  
+        #end if
               
         elif root.right is None : 
             temp = root.left  
             root = None
             return temp 
+        #end if
   
         # Node with two children: Get the inorder successor 
         # (smallest in the right subtree) 
@@ -89,9 +102,11 @@ def deleteNode(root, key):
   
         # Delete the inorder successor 
         root.right = deleteNode(root.right , temp.key) 
+    #end if
   
   
     return root  
+#end function
   
 # Driver program to test above functions 
 """ Let us create following BST 
