@@ -69,13 +69,13 @@ class Platform(pygame.sprite.Sprite):
     def __init__(self):
         # Call the sprite constructor
         super().__init__()
-        width = random.randrange(100)
+        width = 100
         height = 20
         self.image = pygame.Surface([width,height])
         self.image.fill(RED)
         # Set the position of the sprite
         self.rect = self.image.get_rect()
-        self.rect.x = 10
+        self.rect.x = (size[0] // 2) - (width / 2)
         self.rect.y = 780
     #end procedure
 #end class
@@ -85,10 +85,10 @@ player = Player()
 player_group.add(player)
 all_sprites_group.add(player)
 
-for x in range(10):
-    platform = Platform()
-    platform_group.add(platform)
-    all_sprites_group.add(platform)
+#for x in range(10):
+platform = Platform()
+platform_group.add(platform)
+all_sprites_group.add(platform)
 
 
 # Game loop
