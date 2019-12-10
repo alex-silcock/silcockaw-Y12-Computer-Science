@@ -54,7 +54,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load("invader.jpg")
         self.rect = self.image.get_rect()
-        self.rect.x = platform.rect.x
+        self.rect.x = 10
         self.rect.y = 100
         self.lives = 100
     #end procedure
@@ -71,12 +71,11 @@ class Platform(pygame.sprite.Sprite):
         super().__init__()
         width = 100
         height = 20
-        self.image = pygame.Surface([width,height])
-        self.image.fill(RED)
+        self.image = pygame.image.load("platform.png")
         # Set the position of the sprite
         self.rect = self.image.get_rect()
         self.rect.x = (size[0] // 2) - (width / 2)
-        self.rect.y = 780
+        self.rect.y = 770
     #end procedure
 #end class
 
@@ -85,7 +84,6 @@ player = Player()
 player_group.add(player)
 all_sprites_group.add(player)
 
-#for x in range(10):
 platform = Platform()
 platform_group.add(platform)
 all_sprites_group.add(platform)

@@ -3,7 +3,6 @@
   
 # A Binary Tree Node 
 class Node: 
-  
     # Constructor to create a new node 
     def __init__(self, key): 
         self.key = key  
@@ -24,7 +23,7 @@ def inorder(root):
   
   
 # A utility function to insert a new node with given key in BST 
-def insert( node, key): 
+def insert(node, key): 
   
     # If the tree is empty, return a new node 
     if node is None: 

@@ -11,6 +11,7 @@ my_map =[['h','h','h','h','h','h','h','h','h','h'],
         ['v',  0, 'v','h','v', 0, 'v', 0,  0, 'v'],
         ['v',  0,  0,  0,  0,  0,  0,  0,  0, 'v'],
         ['h', 'h','h','h','h','h','h','h','h','h']]
+
         
 #h = horizontal wall
 #v = vertical wall
