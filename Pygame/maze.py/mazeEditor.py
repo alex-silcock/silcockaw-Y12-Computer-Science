@@ -9,10 +9,10 @@ YELLOW = (255,255,0)
 BROWN = (100,100,0)
 
 class Wall(pygame.sprite.Sprite):
-    """ Wall the player can run into. """
+    # Define the constructor 
     def __init__(self, x, y):
         """ Constructor for the wall that the player can run into. """
-        # Call the parent's constructor
+        # Call the constructor
         super().__init__()
         width = 10
         height = 10
@@ -25,6 +25,8 @@ class Wall(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.y = y
         self.rect.x = x
+    #end procedure
+#end class
 
 # -- Initialise PyGame
 pygame.init()
@@ -84,6 +86,13 @@ while not done:
                             theMazeArray[i][j] = 0
                             for wall in wall_list:
                                 wall.kill()
+                            #next wall
+                        #end if
+                    #next j
+                #next i
+            #end if
+        #end if
+    #next event
 
     if pygame.mouse.get_pressed()[0]:
         pos = pygame.mouse.get_pos()
@@ -140,6 +149,7 @@ while not done:
 #End While - End of game loop
 pygame.quit()
 
+# Opening the json file which stores the map, and writing ("w+") to it
 mazeFile = open("Pygame/maze.py/newMaze.JSON", "w+")
 json.dump(theMazeArray, mazeFile)
 mazeFile.close()
