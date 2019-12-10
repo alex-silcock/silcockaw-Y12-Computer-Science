@@ -55,6 +55,7 @@ class Ball(pygame.sprite.Sprite):
         self.size = 20
         self.color = BLUE
         self.change_x = x_speed
+
         self.x = x_coord
         self.y = y_coord
     #end procedure
@@ -62,6 +63,7 @@ class Ball(pygame.sprite.Sprite):
     def draw(self, screen):
         pygame.draw.circle(screen, self.color, [self.x, self.y], self.size)
     #end procedure 
+
     def update(self):
         self.x += self.change_x
 #end class
@@ -96,7 +98,7 @@ while not done:
 
     # -- Game logic goes after this comment
     all_sprites_group.update()
-    #ball_hit_wall_list = pygame.sprite.spritecollide(ball, wall_list, False)
+    ball_hit_wall_list = pygame.sprite.spritecollide(ball, wall_list, False)
 
     
     # -- Screen background is BLACK

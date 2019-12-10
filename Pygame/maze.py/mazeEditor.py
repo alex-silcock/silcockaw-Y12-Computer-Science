@@ -74,12 +74,16 @@ while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
-        #End If
-    #Next event
-
-    
-
-
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                done = True
+            if event.key == pygame.K_SPACE:
+                for i in range (len(theMazeArray)):
+                    for j in range (len(theMazeArray[i])):
+                        if theMazeArray[i][j] == 1:
+                            theMazeArray[i][j] = 0
+                            for wall in wall_list:
+                                wall.kill()
 
     if pygame.mouse.get_pressed()[0]:
         pos = pygame.mouse.get_pos()
