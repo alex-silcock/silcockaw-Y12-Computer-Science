@@ -44,7 +44,7 @@ def insert(node, key):
 # Given a non-empty binary search tree, return the node 
 # with minum key value found in that tree. Note that the 
 # entire tree does not need to be searched  
-def minValueNode( node): 
+def minValueNode(node): 
     current = node 
   
     # loop down to find the leftmost leaf 
@@ -70,7 +70,7 @@ def deleteNode(root, key):
         root.left = deleteNode(root.left, key)
      
   
-    # If the kye to be delete is greater than the root's key 
+    # If the key to be delete is greater than the root's key 
     # then it lies in right subtree 
     elif(key > root.key): 
         root.right = deleteNode(root.right, key) 
