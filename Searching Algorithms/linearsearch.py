@@ -1,4 +1,7 @@
-namelist = ["Amelia", "Ava", "Brave", "Krystal", "Precious", "Wonderful"]
+import json
+
+file = open("Searching Algorithms/names.txt", "r")
+namelist = json.load(file)
 
 def linearSearch(namelist, nameSought):
     index = -1

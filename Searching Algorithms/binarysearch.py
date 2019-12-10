@@ -1,4 +1,8 @@
-namelist = ["Amelia", "Ava", "Brave", "Krystal", "Precious", "Wonderful"]
+import json
+
+file = open("Searching Algorithms/names.txt", "r")
+namelist = json.load(file)
+
 def binarySearch(namelist, itemSought):
     found = False
     index = -1
