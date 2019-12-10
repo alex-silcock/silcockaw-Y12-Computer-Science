@@ -90,7 +90,7 @@ while not done:
 
         if [x,y] != last_pressed:
             if theMazeArray[y][x] == 1:
-                the[y][x] = 0
+                theMazeArray[y][x] = 0
                 for wall in wall_list:
                     if wall.rect.collidepoint(pos):
                         wall.kill()

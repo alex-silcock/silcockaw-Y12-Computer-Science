@@ -7,4 +7,4 @@ def jprint(obj):
     print(text)
 #end function
 
-response = requests.get("www.google.com?")
+response = requests.get(" ")
