@@ -52,7 +52,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         # Call the sprite constructor
         super().__init__()
-        self.image = pygame.image.load("invader.jpg")
+        self.image = pygame.image.load("Pygame/Files/invader.jpg")
         self.rect = self.image.get_rect()
         self.rect.x = 10
         self.rect.y = 100
@@ -71,7 +71,7 @@ class Platform(pygame.sprite.Sprite):
         super().__init__()
         width = 100
         height = 20
-        self.image = pygame.image.load("platform.png")
+        self.image = pygame.image.load("Pygame/Files/platform.png")
         # Set the position of the sprite
         self.rect = self.image.get_rect()
         self.rect.x = (size[0] // 2) - (width / 2)

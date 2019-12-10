@@ -57,7 +57,7 @@ class Invader(pygame.sprite.Sprite):
         self.rect.y = self.rect.y + self.speed
         if self.rect.y >= size[1]:
             self.rect.y = 0
-            self.image = pygame.image.load("invader.jpg")
+            self.image = pygame.image.load("Pygame/Files/invader.jpg")
     #end proc
 #End Class
 
@@ -146,7 +146,7 @@ invader_height = 20
 
 for x in range(number_of_invaders):
     invader_speed = random.randrange(1,2)
-    my_invader = Invader(BLUE, invader_width, invader_height, invader_speed, "silcock.jpg")
+    my_invader = Invader(BLUE, invader_width, invader_height, invader_speed, "Pygame/Files/silcock.jpg")
     invader_group.add(my_invader)
     all_sprites_group.add(my_invader) # adds it to the group of all Sprites
 #Next x
