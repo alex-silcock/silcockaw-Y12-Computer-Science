@@ -62,6 +62,7 @@ class Ball(pygame.sprite.Sprite):
 
     def update(self):
         self.rect.x += self.change_x
+    #end proc
 #end class
 
 class Player(pygame.sprite.Sprite):
@@ -132,7 +133,7 @@ while not done:
     # -- User input and controls
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            done = True      
+            done = True
         #end if
     #next event
 
@@ -149,6 +150,11 @@ while not done:
 
     # -- Game logic goes after this comment
     all_sprites_group.update()
+
+    # finishing the game if the player gets in the end zone
+    if player.rect.x > 790 and player.rect.y > 200:
+        done = True
+    #end if
 
     ball_hit_wall_list = pygame.sprite.spritecollide(ball1, wall_list, False)
     ball_hit_wall_list2 = pygame.sprite.spritecollide(ball2, wall_list, False)
