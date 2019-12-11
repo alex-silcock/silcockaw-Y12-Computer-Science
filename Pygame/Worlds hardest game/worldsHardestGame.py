@@ -125,6 +125,8 @@ player = Player(80,250)
 player_group.add(player)
 all_sprites_group.add(player)
 
+area1 = pygame.surface.Surface([400,400])
+
 # ======= game loop ======= #
 while not done:
     # -- User input and controls
