@@ -1,12 +1,15 @@
 import pygame
 import json
+import random
 
 BLACK = (0,0,0)
 WHITE = (255,255,255)
 BLUE = (50,50,255)
 YELLOW = (255,255,0)
 RED = (255,0,0)
-
+LIGHTGREEN = (100,255,100)
+LIGHTBLUE = (100,100,255)
+coloursList = [BLACK, WHITE, BLUE, YELLOW, RED, LIGHTGREEN, LIGHTBLUE]
 # -- Initialise PyGame
 pygame.init()
 
@@ -17,7 +20,7 @@ screen = pygame.display.set_mode(size)
 pygame.display.set_caption("World's Hardest Game")
 
 # -- Exit game flag set to false
-done = False
+game_over = False
 
 # -- Manages how fast screen refreshes
 clock = pygame.time.Clock()
@@ -28,7 +31,46 @@ theMazeArray = json.load(file)
 last_pressed = []
 file.close()
 
-
+def menu(screen):
+    done = False
+    font = pygame.font.Font('freesansbold.ttf', 70)
+    CentreX = size[0] // 2
+    CentreY = size[1] // 2
+    textcolour = BLUE
+    while not done:
+        screen.fill(BLACK)
+        mouse = pygame.mouse.get_pos()
+        text = font.render("PLAY", 5, textcolour)
+        textRect = text.get_rect()
+        textRect.center = (CentreX, CentreY)
+        screen.blit(text, textRect)
+        pygame.display.flip()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                done = True
+                return 'done'
+            elif event.type == pygame.KEYDOWN:
+                if event.type == pygame.K_ESCAPE:
+                    done = True
+                    return 'done'
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if textRect.collidepoint(mouse):
+                    textcolour = WHITE
+                    return 'play'
+                #end if
+            #end if
+        #next event
+        menu_ball_list = []
+        for x in range(10):
+            x_rand = random.randrange(size[0])
+            y_rand = random.randrange(size[1])   
+            colour_rand = random.choice(coloursList)
+            rand_speed = random.randrange(15)
+            ball = Ball(x_rand, y_rand, rand_speed)   
+            menu_ball_list.append(ball)
+        clock.tick(60)
+    #end while    
+#end function
 
 class Wall(pygame.sprite.Sprite):
     # Define the constructor for the Walls
@@ -126,14 +168,20 @@ player = Player(80,250)
 player_group.add(player)
 all_sprites_group.add(player)
 
-area1 = pygame.surface.Surface([400,400])
+
+start_menu = menu(screen)
+if start_menu == 'done':
+    game_over = True
+elif start_menu == 'play':
+    game_over = False
+#end if
 
 # ======= game loop ======= #
-while not done:
+while not game_over:
     # -- User input and controls
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            done = True
+            game_over = True      
         #end if
     #next event
 
@@ -149,12 +197,12 @@ while not done:
     #end if
 
     # -- Game logic goes after this comment
-    all_sprites_group.update()
-
-    # finishing the game if the player gets in the end zone
     if player.rect.x > 790 and player.rect.y > 200:
-        done = True
+        game_over = True
     #end if
+
+
+    all_sprites_group.update()
 
     ball_hit_wall_list = pygame.sprite.spritecollide(ball1, wall_list, False)
     ball_hit_wall_list2 = pygame.sprite.spritecollide(ball2, wall_list, False)
@@ -212,8 +260,9 @@ while not done:
     screen.fill(WHITE)
     
     # -- Draw here
+    pygame.draw.rect(screen, LIGHTGREEN, (840, 200, 140, 170))
+    pygame.draw.rect(screen, LIGHTBLUE, (15, 210, 145, 200))
     all_sprites_group.draw(screen)
-
     
     # -- flip display to reveal new position of objects
     pygame.display.flip()
