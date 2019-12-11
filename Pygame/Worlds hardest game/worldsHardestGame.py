@@ -52,25 +52,51 @@ class Ball(pygame.sprite.Sprite):
     def __init__(self, x_coord, y_coord, x_speed):
         # Call the sprite constructor
         super().__init__()
-        self.size = 20
-        self.color = BLUE
         self.change_x = x_speed
-
-        self.x = x_coord
-        self.y = y_coord
+        self.image = pygame.Surface([50,50])
+        self.image.fill(BLUE)
+        self.rect = self.image.get_rect()
+        self.rect.x = x_coord
+        self.rect.y = y_coord
     #end procedure
 
-    def draw(self, screen):
-        pygame.draw.circle(screen, self.color, [self.x, self.y], self.size)
-    #end procedure 
-
     def update(self):
-        self.x += self.change_x
+        self.rect.x += self.change_x
+#end class
+
+class Player(pygame.sprite.Sprite):
+    def __init__(self, x_coord, y_coord):
+        super().__init__()
+        self.image = pygame.Surface([40,40])
+        self.image.fill(RED)
+        self.rect = self.image.get_rect()
+        self.rect.x = x_coord
+        self.rect.y = y_coord
+        self.speed = 5
+    #end procedure
+
+    def move_up(self):
+        self.rect.y -= self.speed
+    #end proc
+    def move_down(self):
+        self.rect.y += self.speed
+    #end proc
+    def move_right(self):
+        self.rect.x += self.speed
+    #end proc
+    def move_left(self):
+        self.rect.x -= self.speed
+    #end proc
+    def set_speed(self, x_val, y_val):
+        self.rect.x += x_val
+        self.rect.x += y_val
+    #end proc
 #end class
 
 ball_group = pygame.sprite.Group()
 all_sprites_group = pygame.sprite.Group()
 wall_list = pygame.sprite.Group()
+player_group = pygame.sprite.Group()
 
 for i in range (len(theMazeArray)):
     for j in range (len(theMazeArray[i])):
@@ -82,10 +108,22 @@ for i in range (len(theMazeArray)):
     #next j
 #next i 
 
-ball = Ball(450, 370, 3)
-ball_group.add(ball)
+ball1 = Ball(450, 150, 8)
+ball_group.add(ball1)
+all_sprites_group.add(ball1)
+ball2 = Ball(450, 250, -8)
+ball_group.add(ball2)
+all_sprites_group.add(ball2)
+ball3 = Ball(450, 350, 8)
+ball_group.add(ball3)
+all_sprites_group.add(ball3)
+ball4 = Ball(450, 430, -8)
+ball_group.add(ball4)
+all_sprites_group.add(ball4)
 
-
+player = Player(80,250)
+player_group.add(player)
+all_sprites_group.add(player)
 
 # ======= game loop ======= #
 while not done:
@@ -96,9 +134,70 @@ while not done:
         #end if
     #next event
 
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_UP]:
+        player.move_up()
+    elif keys[pygame.K_DOWN]:
+        player.move_down()
+    elif keys[pygame.K_RIGHT]:
+        player.move_right()
+    elif keys[pygame.K_LEFT]:
+        player.move_left()
+    #end if
+
     # -- Game logic goes after this comment
     all_sprites_group.update()
-    ball_hit_wall_list = pygame.sprite.spritecollide(ball, wall_list, False)
+
+    ball_hit_wall_list = pygame.sprite.spritecollide(ball1, wall_list, False)
+    ball_hit_wall_list2 = pygame.sprite.spritecollide(ball2, wall_list, False)
+    ball_hit_wall_list3 = pygame.sprite.spritecollide(ball3, wall_list, False)
+    ball_hit_wall_list4 = pygame.sprite.spritecollide(ball4, wall_list, False)
+    if len(ball_hit_wall_list) > 0:
+        ball1.change_x *= -1
+    #end if
+    if len(ball_hit_wall_list2) > 0:
+        ball2.change_x *= -1
+    #end if
+    if len(ball_hit_wall_list3) > 0:
+        ball3.change_x *= -1
+    #end if
+    if len(ball_hit_wall_list4) > 0:
+        ball4.change_x *= -1
+    #end if
+    player_hit_ball_list = pygame.sprite.spritecollide(ball1, player_group, True)
+    player_hit_ball_list2 = pygame.sprite.spritecollide(ball2, player_group, True)
+    player_hit_ball_list3 = pygame.sprite.spritecollide(ball3, player_group, True)
+    player_hit_ball_list4 = pygame.sprite.spritecollide(ball4, player_group, True)
+    if len(player_hit_ball_list) > 0:
+        player = Player(80, 250)
+        player_group.add(player)
+        all_sprites_group.add(player)
+    #end if
+    if len(player_hit_ball_list2) > 0:
+        player = Player(80, 250)
+        player_group.add(player)
+        all_sprites_group.add(player)
+    #end if
+    if len(player_hit_ball_list3) > 0:
+        player = Player(80, 250)
+        player_group.add(player)
+        all_sprites_group.add(player)
+    #end if
+    if len(player_hit_ball_list4) > 0:
+        player = Player(80, 250)
+        player_group.add(player)
+        all_sprites_group.add(player)
+    #end if
+
+    player_hit_wall_list = pygame.sprite.spritecollide(player, wall_list, False)
+    if len(player_hit_wall_list) > 0:
+        player.set_speed(0, 0)
+        player.rect.x = player_old_x
+        player.rect.y = player_old_y
+    #end if
+
+    player_old_x = player.rect.x
+    player_old_y = player.rect.y
 
     
     # -- Screen background is BLACK
@@ -106,8 +205,7 @@ while not done:
     
     # -- Draw here
     all_sprites_group.draw(screen)
-    ball.draw(screen)
-    ball.update()
+
     
     # -- flip display to reveal new position of objects
     pygame.display.flip()
