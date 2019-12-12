@@ -10,6 +10,7 @@ RED = (255,0,0)
 LIGHTGREEN = (100,255,100)
 LIGHTBLUE = (100,100,255)
 coloursList = [BLACK, WHITE, BLUE, YELLOW, RED, LIGHTGREEN, LIGHTBLUE]
+
 # -- Initialise PyGame
 pygame.init()
 
@@ -38,7 +39,7 @@ def menu(screen):
     CentreY = size[1] // 2
     textcolour = BLUE
     while not done:
-        screen.fill(BLACK)
+        screen.fill(WHITE)
         mouse = pygame.mouse.get_pos()
         text = font.render("PLAY", 5, textcolour)
         textRect = text.get_rect()
@@ -151,15 +152,19 @@ for i in range (len(theMazeArray)):
     #next j
 #next i 
 
+# Instantiating each sprite
 ball1 = Ball(450, 150, 8)
 ball_group.add(ball1)
 all_sprites_group.add(ball1)
+
 ball2 = Ball(450, 250, -8)
 ball_group.add(ball2)
 all_sprites_group.add(ball2)
+
 ball3 = Ball(450, 350, 8)
 ball_group.add(ball3)
 all_sprites_group.add(ball3)
+
 ball4 = Ball(450, 430, -8)
 ball_group.add(ball4)
 all_sprites_group.add(ball4)
@@ -175,6 +180,7 @@ if start_menu == 'done':
 elif start_menu == 'play':
     game_over = False
 #end if
+
 
 # ======= game loop ======= #
 while not game_over:
@@ -198,7 +204,7 @@ while not game_over:
 
     # -- Game logic goes after this comment
     if player.rect.x > 790 and player.rect.y > 200:
-        game_over = True
+        game_over = False
     #end if
 
 
