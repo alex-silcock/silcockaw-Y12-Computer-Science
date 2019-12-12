@@ -49,9 +49,7 @@ class Game(pygame.sprite.Sprite):
     def update(self):
         self.all_sprites_group.update()
         self.all_sprites_group.draw(screen)
-        
-        
-
+    
 class Ball(pygame.sprite.Sprite):
     def __init__(self, x_co, y_co, colour):
         super().__init__()
