@@ -46,6 +46,7 @@ class Game(pygame.sprite.Sprite):
         self.all_sprites_group.draw(screen)
         
         self.player_hit_ball_list = pygame.sprite.spritecollide(self.player, self.ball_group, True)
+        self.self.
         
 
 class Ball(pygame.sprite.Sprite):
