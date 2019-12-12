@@ -156,6 +156,7 @@ for i in range (len(theMazeArray)):
     #next j
 #next i 
 
+
 # Instantiating each sprite
 ball1 = Ball(450, 150, 8)
 ball_group.add(ball1)
@@ -177,7 +178,13 @@ player = Player(80,250)
 player_group.add(player)
 all_sprites_group.add(player)
 
-
+attempts = 0
+font = pygame.font.SysFont("freesansbold.ttf", 30)
+def print_text(x_pos, y_pos, screen, text_string, colour):
+    #Draw text onto the screen
+    text_map = font.render(str(text_string), True, colour)
+    screen.blit(text_map, [x_pos, y_pos])
+#end procedure
 
 start_menu = menu(screen)
 if start_menu == 'done':
@@ -216,12 +223,14 @@ while not game_over:
     for b in ball_hit_wall_list:
         b.change_direction()
     #end if
+    
 
     player_hit_ball_list = pygame.sprite.groupcollide(ball_group, player_group, False, True)
     if len(player_hit_ball_list) > 0:
         player = Player(80, 250)
         player_group.add(player)
         all_sprites_group.add(player)
+        attempts += 1
     #end if
 
     player_hit_wall_list = pygame.sprite.spritecollide(player, wall_list, False)
@@ -238,13 +247,16 @@ while not game_over:
     # -- Screen background is WHITE
     screen.fill(WHITE)
     
+    
     # -- Draw here
     pygame.draw.rect(screen, LIGHTGREEN, (840, 200, 140, 170))
     pygame.draw.rect(screen, LIGHTBLUE, (15, 210, 145, 200))
     all_sprites_group.draw(screen)
+    print_text(30, 30, screen, "Attempts: %d" % attempts, RED)
     
     # -- flip display to reveal new position of objects
     pygame.display.flip()
+    
 
     # - The clock ticks over
     clock.tick(60)

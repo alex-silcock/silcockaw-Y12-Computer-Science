@@ -26,30 +26,22 @@ class Game(pygame.sprite.Sprite):
         self.ball_group = pygame.sprite.Group()
         self.all_sprites_group = pygame.sprite.Group()
         self.player_group = pygame.sprite.Group()
-
-        ball = Ball(100,100,BLUE)
-        self.all_sprites_group.add(ball)
-        self.ball_group.add(ball)
-
-        player = Player(150,150, 3)
-        self.all_sprites_group.add(player)
-        self.player_group.add(player)
         
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_UP]:
-            player.move_up()
-        elif keys[pygame.K_DOWN]:
-            player.move_down()
-        elif keys[pygame.K_RIGHT]:
-            player.move_right()
-        elif keys[pygame.K_LEFT]:
-            player.move_left()
+        self.ball = Ball(100,100,BLUE)
+        self.all_sprites_group.add(self.ball)
+        self.ball_group.add(self.ball)
 
+        self.player = Player(150,150, 3)
+        self.all_sprites_group.add(self.player)
+        self.player_group.add(self.player)     
     
     def update(self):
         self.all_sprites_group.update()
         self.all_sprites_group.draw(screen)
+
+        self.player_hit_ball_list = pygame.sprite.spritecollide(self.player, self.ball_group, True)
         
+
         
 
 class Ball(pygame.sprite.Sprite):
@@ -75,6 +67,8 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = y_co
         
 
+        
+
     def move_up(self):
         self.rect.y -= self.speed
     #end proc
@@ -88,7 +82,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.x -= self.speed
     #end proc
 
-G = Game()
+game = Game()
 
 while not game_over:
     for event in pygame.event.get():
@@ -96,11 +90,21 @@ while not game_over:
             game_over = True      
         #end if
     #next event
+    
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_UP]:
+        game.player.move_up()
+    elif keys[pygame.K_DOWN]:
+        game.player.move_down()
+    elif keys[pygame.K_RIGHT]:
+        game.player.move_right()
+    elif keys[pygame.K_LEFT]:
+        game.player.move_left()
 
     
     screen.fill(WHITE)
     
-    G.update()
+    game.update()
 
     pygame.display.flip()
     clock.tick(60)
