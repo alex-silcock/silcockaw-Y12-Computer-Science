@@ -20,36 +20,43 @@ game_over = False
 
 # -- Manages how fast screen refreshes
 clock = pygame.time.Clock()
+
 class Game(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.ball_group = pygame.sprite.Group()
         self.all_sprites_group = pygame.sprite.Group()
         self.player_group = pygame.sprite.Group()
-        x_co = 100
-        y_co = 100
-        for x in range(3):
-            colour = BLUE
-            self.ball = Ball(x_co,y_co,colour)
-            self.ball_group.add(self.ball)
-            self.all_sprites_group.add(self.ball)
 
-            x_co += 50
-            y_co += 50 
+        # Creating 3 balls
+        self.ball = [Ball(100 + 50 * i, 100 + 50 * i, BLUE) for i in range(3)]
+        self.ball_group.add(self.ball)
+        self.all_sprites_group.add(self.ball)
 
+        # Creating the player
         self.player = Player(300,300,3)
         self.all_sprites_group.add(self.player)
-        self.player_group.add(self.player)     
-    
+        self.player_group.add(self.player)   
+
+        
+        
     def update(self):
         self.all_sprites_group.update()
         self.all_sprites_group.draw(screen)
-        
         self.player_hit_ball_list = pygame.sprite.spritecollide(self.player, self.ball_group, True)
         
-        
-
-    
+        # Keyboard movement for the player
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_UP]:
+            self.player.move_up()
+        elif keys[pygame.K_DOWN]:
+            self.player.move_down()
+        elif keys[pygame.K_RIGHT]:
+            self.player.move_right()
+        elif keys[pygame.K_LEFT]:
+            self.player.move_left()
+            
+  
 class Ball(pygame.sprite.Sprite):
     def __init__(self, x_co, y_co, colour):
         super().__init__()
@@ -93,17 +100,6 @@ while not game_over:
             game_over = True      
         #end if
     #next event
-
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_UP]:
-        game.player.move_up()
-    elif keys[pygame.K_DOWN]:
-        game.player.move_down()
-    elif keys[pygame.K_RIGHT]:
-        game.player.move_right()
-    elif keys[pygame.K_LEFT]:
-        game.player.move_left()
-
     
     screen.fill(WHITE)
     
@@ -111,6 +107,5 @@ while not game_over:
 
     pygame.display.flip()
     clock.tick(60)
-
 pygame.quit()
     
