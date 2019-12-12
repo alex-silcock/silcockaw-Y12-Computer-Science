@@ -106,6 +106,10 @@ class Ball(pygame.sprite.Sprite):
     def update(self):
         self.rect.x += self.change_x
     #end proc
+
+    def change_direction(self):
+        self.change_x *= -1
+    #end proc
 #end class
 
 class Player(pygame.sprite.Sprite):
@@ -174,6 +178,7 @@ player_group.add(player)
 all_sprites_group.add(player)
 
 
+
 start_menu = menu(screen)
 if start_menu == 'done':
     game_over = True
@@ -204,48 +209,16 @@ while not game_over:
 
     # -- Game logic goes after this comment
     if player.rect.x > 790 and player.rect.y > 200:
-        game_over = False
+        game_over = True
+    #end if
+  
+    ball_hit_wall_list = pygame.sprite.groupcollide(ball_group, wall_list, False, False)
+    for b in ball_hit_wall_list:
+        b.change_direction()
     #end if
 
-
-    all_sprites_group.update()
-
-    ball_hit_wall_list = pygame.sprite.spritecollide(ball1, wall_list, False)
-    ball_hit_wall_list2 = pygame.sprite.spritecollide(ball2, wall_list, False)
-    ball_hit_wall_list3 = pygame.sprite.spritecollide(ball3, wall_list, False)
-    ball_hit_wall_list4 = pygame.sprite.spritecollide(ball4, wall_list, False)
-    if len(ball_hit_wall_list) > 0:
-        ball1.change_x *= -1
-    #end if
-    if len(ball_hit_wall_list2) > 0:
-        ball2.change_x *= -1
-    #end if
-    if len(ball_hit_wall_list3) > 0:
-        ball3.change_x *= -1
-    #end if
-    if len(ball_hit_wall_list4) > 0:
-        ball4.change_x *= -1
-    #end if
-    player_hit_ball_list = pygame.sprite.spritecollide(ball1, player_group, True)
-    player_hit_ball_list2 = pygame.sprite.spritecollide(ball2, player_group, True)
-    player_hit_ball_list3 = pygame.sprite.spritecollide(ball3, player_group, True)
-    player_hit_ball_list4 = pygame.sprite.spritecollide(ball4, player_group, True)
+    player_hit_ball_list = pygame.sprite.groupcollide(ball_group, player_group, False, True)
     if len(player_hit_ball_list) > 0:
-        player = Player(80, 250)
-        player_group.add(player)
-        all_sprites_group.add(player)
-    #end if
-    if len(player_hit_ball_list2) > 0:
-        player = Player(80, 250)
-        player_group.add(player)
-        all_sprites_group.add(player)
-    #end if
-    if len(player_hit_ball_list3) > 0:
-        player = Player(80, 250)
-        player_group.add(player)
-        all_sprites_group.add(player)
-    #end if
-    if len(player_hit_ball_list4) > 0:
         player = Player(80, 250)
         player_group.add(player)
         all_sprites_group.add(player)
@@ -261,8 +234,8 @@ while not game_over:
     player_old_x = player.rect.x
     player_old_y = player.rect.y
 
-    
-    # -- Screen background is BLACK
+    all_sprites_group.update()
+    # -- Screen background is WHITE
     screen.fill(WHITE)
     
     # -- Draw here
