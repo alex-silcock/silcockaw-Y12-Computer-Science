@@ -26,18 +26,18 @@ class Game(pygame.sprite.Sprite):
         self.ball_group = pygame.sprite.Group()
         self.all_sprites_group = pygame.sprite.Group()
         self.player_group = pygame.sprite.Group()
+        x_co = 100
+        y_co = 100
         for x in range(3):
-            x_co = 100
-            y_co = 100
             colour = BLUE
             self.ball = Ball(x_co,y_co,colour)
-            self.all_sprites_group.add(self.ball)
             self.ball_group.add(self.ball)
-            x_co += 10
-            y_co += 10
+            self.all_sprites_group.add(self.ball)
 
+            x_co += 50
+            y_co += 50 
 
-        self.player = Player(150,150,3)
+        self.player = Player(300,300,3)
         self.all_sprites_group.add(self.player)
         self.player_group.add(self.player)     
     
@@ -51,7 +51,7 @@ class Game(pygame.sprite.Sprite):
 class Ball(pygame.sprite.Sprite):
     def __init__(self, x_co, y_co, colour):
         super().__init__()
-        self.image = pygame.Surface([50,50])
+        self.image = pygame.Surface((50,50))
         self.image.fill(colour)
         self.rect = self.image.get_rect()
         self.rect.x = x_co
@@ -64,15 +64,12 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, x_co, y_co, speed):
         super().__init__()
         self.speed = speed
-        self.image = pygame.Surface([50,50])
+        self.image = pygame.Surface((50,50))
         self.image.fill(RED)
         self.rect = self.image.get_rect()
         self.rect.x = x_co
         self.rect.y = y_co
         
-
-        
-
     def move_up(self):
         self.rect.y -= self.speed
     #end proc
