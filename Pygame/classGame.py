@@ -26,22 +26,26 @@ class Game(pygame.sprite.Sprite):
         self.ball_group = pygame.sprite.Group()
         self.all_sprites_group = pygame.sprite.Group()
         self.player_group = pygame.sprite.Group()
-        
-        self.ball = Ball(100,100,BLUE)
-        self.all_sprites_group.add(self.ball)
-        self.ball_group.add(self.ball)
+        for x in range(3):
+            x_co = 100
+            y_co = 100
+            colour = BLUE
+            self.ball = Ball(x_co,y_co,colour)
+            self.all_sprites_group.add(self.ball)
+            self.ball_group.add(self.ball)
+            x_co += 10
+            y_co += 10
 
-        self.player = Player(150,150, 3)
+
+        self.player = Player(150,150,3)
         self.all_sprites_group.add(self.player)
         self.player_group.add(self.player)     
     
     def update(self):
         self.all_sprites_group.update()
         self.all_sprites_group.draw(screen)
-
-        self.player_hit_ball_list = pygame.sprite.spritecollide(self.player, self.ball_group, True)
         
-
+        self.player_hit_ball_list = pygame.sprite.spritecollide(self.player, self.ball_group, True)
         
 
 class Ball(pygame.sprite.Sprite):
@@ -90,7 +94,7 @@ while not game_over:
             game_over = True      
         #end if
     #next event
-    
+
     keys = pygame.key.get_pressed()
     if keys[pygame.K_UP]:
         game.player.move_up()

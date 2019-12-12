@@ -61,14 +61,6 @@ def menu(screen):
                 #end if
             #end if
         #next event
-        menu_ball_list = []
-        for x in range(10):
-            x_rand = random.randrange(size[0])
-            y_rand = random.randrange(size[1])   
-            colour_rand = random.choice(coloursList)
-            rand_speed = random.randrange(15)
-            ball = Ball(x_rand, y_rand, rand_speed)   
-            menu_ball_list.append(ball)
         clock.tick(60)
     #end while    
 #end function
