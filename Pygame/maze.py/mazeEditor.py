@@ -47,7 +47,7 @@ pygame.display.set_caption("My Window")
 done = False
 
 
-file = open("Pygame/maze.py/newMaze.JSON","r")
+file = open("wallgrid.JSON","r")
 
 
 
@@ -150,6 +150,6 @@ while not done:
 pygame.quit()
 
 # Opening the json file which stores the map, and writing ("w+") to it
-mazeFile = open("Pygame/maze.py/newMaze.JSON", "w+")
+mazeFile = open("wallgrid.JSON", "w+")
 json.dump(theMazeArray, mazeFile)
 mazeFile.close()

@@ -27,10 +27,6 @@ game_over = False
 clock = pygame.time.Clock()
 
 
-file = open("Pygame/Worlds hardest game/whg_map.JSON", "r")
-theMazeArray = json.load(file)
-last_pressed = []
-file.close()
 
 def menu(screen):
     done = False
@@ -72,48 +68,93 @@ def print_text(x_pos, y_pos, screen, text_string, colour):
     screen.blit(text_map, [x_pos, y_pos])
 
 
-def clean_up():
-    screen.clear()
+level_list = ["Pygame/Worlds hardest game/whg_map.JSON", "Pygame/Worlds hardest game/level2.JSON"]
 
-    
 class Game(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, level):
         super().__init__()
-        self.ball_group = pygame.sprite.Group()
-        self.all_sprites_group = pygame.sprite.Group()
-        self.wall_list = pygame.sprite.Group()
-        self.player_group = pygame.sprite.Group()
+        self.level = level
+
+        if self.level == 1:
+            file = open(level_list[level - 1], "r")
+            theMazeArray = json.load(file)
+            file.close() 
         
-        self.ball1 = Ball(450, 150, 8)
-        self.ball_group.add(self.ball1)
-        self.all_sprites_group.add(self.ball1)
+            self.ball_group = pygame.sprite.Group()
+            self.all_sprites_group = pygame.sprite.Group()
+            self.wall_list = pygame.sprite.Group()
+            self.player_group = pygame.sprite.Group()
+            
+            self.ball1 = Ball(450, 150, 8)
+            self.ball_group.add(self.ball1)
+            self.all_sprites_group.add(self.ball1)
 
-        self.ball2 = Ball(450, 250, -8)
-        self.ball_group.add(self.ball2)
-        self.all_sprites_group.add(self.ball2)
+            self.ball2 = Ball(450, 250, -8)
+            self.ball_group.add(self.ball2)
+            self.all_sprites_group.add(self.ball2)
 
-        self.ball3 = Ball(450, 350, 8)
-        self.ball_group.add(self.ball3)
-        self.all_sprites_group.add(self.ball3)
+            self.ball3 = Ball(450, 350, 8)
+            self.ball_group.add(self.ball3)
+            self.all_sprites_group.add(self.ball3)
 
-        self.ball4 = Ball(450, 430, -8)
-        self.ball_group.add(self.ball4)
-        self.all_sprites_group.add(self.ball4)
+            self.ball4 = Ball(450, 430, -8)
+            self.ball_group.add(self.ball4)
+            self.all_sprites_group.add(self.ball4)
 
-        self.player = Player(80,250)
-        self.player_group.add(self.player)
-        self.all_sprites_group.add(self.player)
-        self.attempts = 0
-
-        for i in range (len(theMazeArray)):
-            for j in range (len(theMazeArray[i])):
-                if theMazeArray[i][j] == 1:
-                    self.newwall = Wall(j*10,i*10)
-                    self.wall_list.add(self.newwall)
-                    self.all_sprites_group.add(self.newwall)
+            self.player = Player(80,250)
+            self.player_group.add(self.player)
+            self.all_sprites_group.add(self.player)
+            self.attempts = 0
 
 
-    
+            for i in range (len(theMazeArray)):
+                for j in range (len(theMazeArray[i])):
+                    if theMazeArray[i][j] == 1:
+                        self.newwall = Wall(j*10,i*10)
+                        self.wall_list.add(self.newwall)
+                        self.all_sprites_group.add(self.newwall)
+
+        elif self.level == 2:
+            file = open(level_list[level - 1], "r")
+            theMazeArray = json.load(file)
+            file.close() 
+        
+            self.ball_group = pygame.sprite.Group()
+            self.all_sprites_group = pygame.sprite.Group()
+            self.wall_list = pygame.sprite.Group()
+            self.player_group = pygame.sprite.Group()
+            
+            self.ball1 = Ball(450, 150, 8)
+            self.ball_group.add(self.ball1)
+            self.all_sprites_group.add(self.ball1)
+
+            self.ball2 = Ball(450, 250, -8)
+            self.ball_group.add(self.ball2)
+            self.all_sprites_group.add(self.ball2)
+
+            self.ball3 = Ball(450, 350, 8)
+            self.ball_group.add(self.ball3)
+            self.all_sprites_group.add(self.ball3)
+
+            self.ball4 = Ball(450, 430, -8)
+            self.ball_group.add(self.ball4)
+            self.all_sprites_group.add(self.ball4)
+
+            self.player = Player(80,250)
+            self.player_group.add(self.player)
+            self.all_sprites_group.add(self.player)
+            self.attempts = 0
+
+
+            for i in range (len(theMazeArray)):
+                for j in range (len(theMazeArray[i])):
+                    if theMazeArray[i][j] == 1:
+                        self.newwall = Wall(j*10,i*10)
+                        self.wall_list.add(self.newwall)
+                        self.all_sprites_group.add(self.newwall)
+
+
+
     def update(self):
         pygame.draw.rect(screen, LIGHTGREEN, (840, 200, 140, 170))
         pygame.draw.rect(screen, LIGHTBLUE, (15, 210, 145, 200))
@@ -133,6 +174,7 @@ class Game(pygame.sprite.Sprite):
         self.ball_hit_wall_list = pygame.sprite.groupcollide(self.ball_group, self.wall_list, False, False)
         for b in self.ball_hit_wall_list:
             b.change_direction()
+            
 
         self.player_hit_ball_list = pygame.sprite.groupcollide(self.ball_group, self.player_group, False, True)
         if len(self.player_hit_ball_list) > 0:
@@ -140,7 +182,8 @@ class Game(pygame.sprite.Sprite):
             self.player_group.add(self.player)
             self.all_sprites_group.add(self.player)
             self.attempts += 1
-        
+            
+                    
         self.player_hit_wall_list = pygame.sprite.spritecollide(self.player, self.wall_list, False)
         if len(self.player_hit_wall_list) > 0:
             self.player.set_speed(0, 0)
@@ -152,29 +195,21 @@ class Game(pygame.sprite.Sprite):
 
         print_text(30, 30, screen, "Attempts: {}".format(self.attempts), RED)
 
-
-
 class Wall(pygame.sprite.Sprite):
-    # Define the constructor for the Walls
     def __init__(self, x_coord, y_coord):
-        # Call the sprite constructor
         super().__init__()
         width = 10
         height = 10
-        # Create a sprite and fill it with colour
         self.image = pygame.Surface([width, height])
         self.image.fill(BLACK)
         self.rect = self.image.get_rect()
-        # Set the position of the attributes
         self.rect.x = x_coord
         self.rect.y = y_coord
 
         
 
 class Ball(pygame.sprite.Sprite):
-    # Define the constructor for the Balls
     def __init__(self, x_coord, y_coord, x_speed):
-        # Call the sprite constructor
         super().__init__()
         self.change_x = x_speed
         self.image = pygame.Surface([50,50])
@@ -182,16 +217,15 @@ class Ball(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x_coord
         self.rect.y = y_coord
-    #end procedure
+
 
     def update(self):
         self.rect.x += self.change_x
-    #end proc
+
 
     def change_direction(self):
         self.change_x *= -1
-    #end proc
-#end class
+
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, x_coord, y_coord):
@@ -202,25 +236,23 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = x_coord
         self.rect.y = y_coord
         self.speed = 5
-    #end procedure
 
     def move_up(self):
         self.rect.y -= self.speed
-    #end proc
+
     def move_down(self):
         self.rect.y += self.speed
-    #end proc
+ 
     def move_right(self):
         self.rect.x += self.speed
-    #end proc
+
     def move_left(self):
         self.rect.x -= self.speed
-    #end proc
+
     def set_speed(self, x_val, y_val):
         self.rect.x += x_val
         self.rect.x += y_val
-    #end proc
-#end class
+
 
 
 start_menu = menu(screen)
@@ -230,14 +262,15 @@ elif start_menu == 'play':
     game_over = False
 #end if
 
+level = 1
+game = Game(level)
 
-game = Game()
 
 while not game_over:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game_over = True
-
+            
     screen.fill(WHITE)
     game.update()
     pygame.display.flip()
