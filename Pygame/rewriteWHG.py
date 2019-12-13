@@ -65,6 +65,90 @@ def menu(screen):
     #end while    
 #end function
 
+font = pygame.font.SysFont("freesansbold.ttf", 30)
+def print_text(x_pos, y_pos, screen, text_string, colour):
+    #Draw text onto the screen
+    text_map = font.render(str(text_string), True, colour)
+    screen.blit(text_map, [x_pos, y_pos])
+
+class Game(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.ball_group = pygame.sprite.Group()
+        self.all_sprites_group = pygame.sprite.Group()
+        self.wall_list = pygame.sprite.Group()
+        self.player_group = pygame.sprite.Group()
+
+        self.ball1 = Ball(450, 150, 8)
+        self.ball_group.add(self.ball1)
+        self.all_sprites_group.add(self.ball1)
+
+        self.ball2 = Ball(450, 250, -8)
+        self.ball_group.add(self.ball2)
+        self.all_sprites_group.add(self.ball2)
+
+        self.ball3 = Ball(450, 350, 8)
+        self.ball_group.add(self.ball3)
+        self.all_sprites_group.add(self.ball3)
+
+        self.ball4 = Ball(450, 430, -8)
+        self.ball_group.add(self.ball4)
+        self.all_sprites_group.add(self.ball4)
+
+        self.player = Player(80,250)
+        self.player_group.add(self.player)
+        self.all_sprites_group.add(self.player)
+        self.attempts = 0
+
+        for i in range (len(theMazeArray)):
+            for j in range (len(theMazeArray[i])):
+                if theMazeArray[i][j] == 1:
+                    self.newwall = Wall(j*10,i*10)
+                    self.wall_list.add(self.newwall)
+                    self.all_sprites_group.add(self.newwall)
+
+
+    
+    def update(self):
+        pygame.draw.rect(screen, LIGHTGREEN, (840, 200, 140, 170))
+        pygame.draw.rect(screen, LIGHTBLUE, (15, 210, 145, 200))
+        self.all_sprites_group.update()
+        self.all_sprites_group.draw(screen)
+
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_UP]:
+            self.player.move_up()
+        elif keys[pygame.K_DOWN]:
+            self.player.move_down()
+        elif keys[pygame.K_RIGHT]:
+            self.player.move_right()
+        elif keys[pygame.K_LEFT]:
+            self.player.move_left()
+
+        self.ball_hit_wall_list = pygame.sprite.groupcollide(self.ball_group, self.wall_list, False, False)
+        for b in self.ball_hit_wall_list:
+            b.change_direction()
+
+        self.player_hit_ball_list = pygame.sprite.groupcollide(self.ball_group, self.player_group, False, True)
+        if len(self.player_hit_ball_list) > 0:
+            self.player = Player(80, 250)
+            self.player_group.add(self.player)
+            self.all_sprites_group.add(self.player)
+            self.attempts += 1
+        
+        self.player_hit_wall_list = pygame.sprite.spritecollide(self.player, self.wall_list, False)
+        if len(self.player_hit_wall_list) > 0:
+            self.player.set_speed(0, 0)
+            self.player.rect.x = self.player_old_x
+            self.player.rect.y = self.player_old_y
+        
+        self.player_old_x = self.player.rect.x
+        self.player_old_y = self.player.rect.y
+
+        print_text(30, 30, screen, "Attempts: {}".format(self.attempts), RED)
+
+
+
 class Wall(pygame.sprite.Sprite):
     # Define the constructor for the Walls
     def __init__(self, x_coord, y_coord):
@@ -79,8 +163,8 @@ class Wall(pygame.sprite.Sprite):
         # Set the position of the attributes
         self.rect.x = x_coord
         self.rect.y = y_coord
-    #end procedure
-#end class
+
+        
 
 class Ball(pygame.sprite.Sprite):
     # Define the constructor for the Balls
@@ -133,50 +217,6 @@ class Player(pygame.sprite.Sprite):
     #end proc
 #end class
 
-ball_group = pygame.sprite.Group()
-all_sprites_group = pygame.sprite.Group()
-wall_list = pygame.sprite.Group()
-player_group = pygame.sprite.Group()
-
-for i in range (len(theMazeArray)):
-    for j in range (len(theMazeArray[i])):
-        if theMazeArray[i][j] == 1:
-            newwall = Wall(j*10,i*10)
-            wall_list.add(newwall)
-            all_sprites_group.add(newwall)
-        #end if
-    #next j
-#next i 
-
-
-# Instantiating each sprite
-ball1 = Ball(450, 150, 8)
-ball_group.add(ball1)
-all_sprites_group.add(ball1)
-
-ball2 = Ball(450, 250, -8)
-ball_group.add(ball2)
-all_sprites_group.add(ball2)
-
-ball3 = Ball(450, 350, 8)
-ball_group.add(ball3)
-all_sprites_group.add(ball3)
-
-ball4 = Ball(450, 430, -8)
-ball_group.add(ball4)
-all_sprites_group.add(ball4)
-
-player = Player(80,250)
-player_group.add(player)
-all_sprites_group.add(player)
-
-attempts = 0
-font = pygame.font.SysFont("freesansbold.ttf", 30)
-def print_text(x_pos, y_pos, screen, text_string, colour):
-    #Draw text onto the screen
-    text_map = font.render(str(text_string), True, colour)
-    screen.blit(text_map, [x_pos, y_pos])
-#end procedure
 
 start_menu = menu(screen)
 if start_menu == 'done':
@@ -186,71 +226,15 @@ elif start_menu == 'play':
 #end if
 
 
-# ======= game loop ======= #
+game = Game()
+
 while not game_over:
-    # -- User input and controls
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            game_over = True      
-        #end if
-    #next event
+            game_over = True
 
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_UP]:
-        player.move_up()
-    elif keys[pygame.K_DOWN]:
-        player.move_down()
-    elif keys[pygame.K_RIGHT]:
-        player.move_right()
-    elif keys[pygame.K_LEFT]:
-        player.move_left()
-    #end if
-
-    # -- Game logic goes after this comment
-    if player.rect.x > 790 and player.rect.y > 200:
-        game_over = True
-    #end if
-  
-    ball_hit_wall_list = pygame.sprite.groupcollide(ball_group, wall_list, False, False)
-    for b in ball_hit_wall_list:
-        b.change_direction()
-    #end if
-    
-
-    player_hit_ball_list = pygame.sprite.groupcollide(ball_group, player_group, False, True)
-    if len(player_hit_ball_list) > 0:
-        player = Player(80, 250)
-        player_group.add(player)
-        all_sprites_group.add(player)
-        attempts += 1
-    #end if
-
-    player_hit_wall_list = pygame.sprite.spritecollide(player, wall_list, False)
-    if len(player_hit_wall_list) > 0:
-        player.set_speed(0, 0)
-        player.rect.x = player_old_x
-        player.rect.y = player_old_y
-    #end if
-
-    player_old_x = player.rect.x
-    player_old_y = player.rect.y
-
-    all_sprites_group.update()
-    # -- Screen background is WHITE
     screen.fill(WHITE)
-    
-    
-    # -- Draw here
-    pygame.draw.rect(screen, LIGHTGREEN, (840, 200, 140, 170))
-    pygame.draw.rect(screen, LIGHTBLUE, (15, 210, 145, 200))
-    all_sprites_group.draw(screen)
-    print_text(30, 30, screen, "Attempts: {}".format(attempts), RED)
-    
-    # -- flip display to reveal new position of objects
+    game.update()
     pygame.display.flip()
-    
-
-    # - The clock ticks over
     clock.tick(60)
-#End While - End of game loop
 pygame.quit()
