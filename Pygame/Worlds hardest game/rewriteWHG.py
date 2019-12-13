@@ -78,7 +78,7 @@ class Game(pygame.sprite.Sprite):
         self.all_sprites_group = pygame.sprite.Group()
         self.wall_list = pygame.sprite.Group()
         self.player_group = pygame.sprite.Group()
-
+        
         self.ball1 = Ball(450, 150, 8)
         self.ball_group.add(self.ball1)
         self.all_sprites_group.add(self.ball1)
