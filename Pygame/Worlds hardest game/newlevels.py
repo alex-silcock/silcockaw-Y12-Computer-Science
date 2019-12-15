@@ -182,6 +182,7 @@ class Game(pygame.sprite.Sprite):
             self.player_group.add(self.player)
             self.all_sprites_group.add(self.player)
             self.attempts += 1
+            ### implement updating to new level here
             
                     
         self.player_hit_wall_list = pygame.sprite.spritecollide(self.player, self.wall_list, False)
