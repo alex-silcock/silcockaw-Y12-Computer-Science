@@ -45,14 +45,10 @@ def menu(screen):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 done = True
-                return 'done'
             elif event.type == pygame.KEYDOWN:
                 if event.type == pygame.K_ESCAPE:
                     done = True
-                    return 'done'
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                if textRect.collidepoint(mouse):
-                    textcolour = RED
                     return 'play'
         clock.tick(60)
 
@@ -338,10 +334,9 @@ class EndZone(pygame.sprite.Sprite):
         self.rect.x = x_coord
         self.rect.y = y_coord
 
-# else statement skips straight to level 2
 start_menu = menu(screen)
 if start_menu == 'play': game_over_level_1 = False
-else: game_over_level_1 = True
+else: pygame.quit()
 
 
 game = Game(1)
@@ -350,16 +345,18 @@ while not game_over_level_1:
         if event.type == pygame.QUIT:
             game_over_level_1 = True
             pygame.quit()
-    
+            
     screen.fill(WHITE)
     game_over_level_1 = game.update()
     pygame.display.flip()
     clock.tick(60)
+
 game = Game(2)
 while not game_over_level_2:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game_over_level_2 = True
+            pygame.quit()
     
     screen.fill(WHITE)
     game_over_level_2 = game.update()
