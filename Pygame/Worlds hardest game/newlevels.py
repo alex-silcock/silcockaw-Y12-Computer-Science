@@ -187,7 +187,8 @@ class Game(pygame.sprite.Sprite):
 
         
 
-        #player collisions with wall        
+        #player collisions with wall                   
+                    
         self.player_hit_wall_list = pygame.sprite.spritecollide(self.player, self.wall_list, False)
         if len(self.player_hit_wall_list) > 0:
             self.player.set_speed(0, 0)
