@@ -70,11 +70,6 @@ def print_text(x_pos, y_pos, screen, text_string, colour):
     #Draw text onto the screen
     text_map = font.render(str(text_string), True, colour)
     screen.blit(text_map, [x_pos, y_pos])
-
-
-def clean_up():
-    screen.clear()
-
     
 class Game(pygame.sprite.Sprite):
     def __init__(self):
