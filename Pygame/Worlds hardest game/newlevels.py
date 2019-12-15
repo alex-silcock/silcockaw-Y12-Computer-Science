@@ -67,7 +67,7 @@ def print_text(x_pos, y_pos, screen, text_string, colour):
     screen.blit(text_map, [x_pos, y_pos])
 
 
-level_list = ["Pygame/Worlds hardest game/whg_map.JSON", "Pygame/Worlds hardest game/level2.JSON"]
+level_list = ["Pygame/Worlds hardest game/level1.JSON", "Pygame/Worlds hardest game/level2.JSON"]
 
 class Game(pygame.sprite.Sprite):
     def __init__(self, level):
