@@ -75,16 +75,16 @@ class Game(pygame.sprite.Sprite):
         super().__init__()
         self.level = level
 
+        self.ball_group = pygame.sprite.Group()
+        self.all_sprites_group = pygame.sprite.Group()
+        self.wall_list = pygame.sprite.Group()
+        self.player_group = pygame.sprite.Group()
+
         if self.level == 1:
             file = open(level_list[level - 1], "r")
             theMazeArray = json.load(file)
             file.close() 
         
-            self.ball_group = pygame.sprite.Group()
-            self.all_sprites_group = pygame.sprite.Group()
-            self.wall_list = pygame.sprite.Group()
-            self.player_group = pygame.sprite.Group()
-            
             self.ball1 = Ball(450, 150, 8)
             self.ball_group.add(self.ball1)
             self.all_sprites_group.add(self.ball1)
@@ -161,6 +161,7 @@ class Game(pygame.sprite.Sprite):
         self.all_sprites_group.update()
         self.all_sprites_group.draw(screen)
 
+        #player movement
         keys = pygame.key.get_pressed()
         if keys[pygame.K_UP]:
             self.player.move_up()
@@ -170,12 +171,13 @@ class Game(pygame.sprite.Sprite):
             self.player.move_right()
         elif keys[pygame.K_LEFT]:
             self.player.move_left()
-
+            
+        #ball collisions with wall
         self.ball_hit_wall_list = pygame.sprite.groupcollide(self.ball_group, self.wall_list, False, False)
         for b in self.ball_hit_wall_list:
             b.change_direction()
             
-
+        #player collisions with ball
         self.player_hit_ball_list = pygame.sprite.groupcollide(self.ball_group, self.player_group, False, True)
         if len(self.player_hit_ball_list) > 0:
             self.player = Player(80, 250)
@@ -183,6 +185,10 @@ class Game(pygame.sprite.Sprite):
             self.all_sprites_group.add(self.player)
             self.attempts += 1
             
+
+        
+
+        #player collisions with wall                   
                     
         self.player_hit_wall_list = pygame.sprite.spritecollide(self.player, self.wall_list, False)
         if len(self.player_hit_wall_list) > 0:
@@ -192,6 +198,10 @@ class Game(pygame.sprite.Sprite):
         
         self.player_old_x = self.player.rect.x
         self.player_old_y = self.player.rect.y
+
+        #boundaries for end zone
+        if self.player.rect.x > 840 and self.player.rect.y > 200:
+            self.level += 1
 
         print_text(30, 30, screen, "Attempts: {}".format(self.attempts), RED)
 
@@ -271,7 +281,7 @@ while not game_over:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game_over = True
-            
+    
     screen.fill(WHITE)
     game.update()
     pygame.display.flip()
