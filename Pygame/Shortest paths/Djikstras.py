@@ -42,6 +42,10 @@ class Game(pygame.sprite.Sprite):
                     self.newwall = Wall(j*10,i*10)
                     self.wall_group.add(self.newwall)
                     self.all_sprites_group.add(self.newwall)
+                #end if
+            #next j
+        #next i
+    #end procedure
     
     def update(self):
         self.all_sprites_group.update()
@@ -57,17 +61,21 @@ class Game(pygame.sprite.Sprite):
             self.player.move_right()
         elif keys[pygame.K_LEFT]:
             self.player.move_left()
+        #end if
 
         self.player_hit_wall_group = pygame.sprite.spritecollide(self.player, self.wall_group, False)
         if len(self.player_hit_wall_group) > 0:
             self.player.set_speed(0, 0)
             self.player.rect.x = self.player_old_x
             self.player.rect.y = self.player_old_y
+        #end if
 
         self.player_old_x = self.player.rect.x
         self.player_old_y = self.player.rect.y
+    #end procedure
+#end class
 
-        
+
 class Player(pygame.sprite.Sprite):
     def __init__(self, x_coord, y_coord, width, height):
         super().__init__()
@@ -79,22 +87,29 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = x_coord
         self.rect.y = y_coord
         self.speed = 2
+    #end procedure
 
     def move_up(self):
         self.rect.y -= self.speed
+    #end procedure
 
     def move_down(self):
         self.rect.y += self.speed
+    #end procedure
  
     def move_right(self):
         self.rect.x += self.speed
+    #end procedure
 
     def move_left(self):
         self.rect.x -= self.speed
+    #end procedure
 
     def set_speed(self, x_val, y_val):
         self.rect.x += x_val
         self.rect.x += y_val
+    #end procedure
+#end class
 
             
 class Wall(pygame.sprite.Sprite):
@@ -107,6 +122,8 @@ class Wall(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.y = y
         self.rect.x = x
+    #end procedure
+#end class
 
 game = Game()
 while not game_over:
@@ -122,5 +139,6 @@ while not game_over:
 
     pygame.display.flip()
     clock.tick(60)
+#end while
 pygame.quit()
 
