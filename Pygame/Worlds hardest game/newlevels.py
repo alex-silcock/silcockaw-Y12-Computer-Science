@@ -182,7 +182,6 @@ class Game(pygame.sprite.Sprite):
             self.player_group.add(self.player)
             self.all_sprites_group.add(self.player)
             self.attempts += 1
-            ### implement updating to new level here
             
                     
         self.player_hit_wall_list = pygame.sprite.spritecollide(self.player, self.wall_list, False)
@@ -195,6 +194,7 @@ class Game(pygame.sprite.Sprite):
         self.player_old_y = self.player.rect.y
 
         print_text(30, 30, screen, "Attempts: {}".format(self.attempts), RED)
+
 
 class Wall(pygame.sprite.Sprite):
     def __init__(self, x_coord, y_coord):
