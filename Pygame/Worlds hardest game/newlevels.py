@@ -27,8 +27,6 @@ game_over_level_2 = False
 # -- Manages how fast screen refreshes
 clock = pygame.time.Clock()
 
-
-
 def menu(screen):
     done = False
     font = pygame.font.Font('freesansbold.ttf', 70)
@@ -342,7 +340,7 @@ class EndZone(pygame.sprite.Sprite):
         self.rect.x = x_coord
         self.rect.y = y_coord
 
-
+# else statement skips straight to level 2
 start_menu = menu(screen)
 if start_menu == 'play': game_over_level_1 = False
 else: game_over_level_1 = True
