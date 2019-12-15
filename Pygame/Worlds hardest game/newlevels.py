@@ -50,7 +50,12 @@ def menu(screen):
                     done = True
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     return 'play'
+                #end if
+            #end if
+        #next event
         clock.tick(60)
+    #end while
+#end function    
 
 def end_game(screen):
     done = False
@@ -69,13 +74,18 @@ def end_game(screen):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 done = True
+            #end if
+        #next event
         clock.tick(60)
+    #end while
+#end function
 
 font = pygame.font.SysFont("freesansbold.ttf", 30)
 def print_text(x_pos, y_pos, screen, text_string, colour):
     #Draw text onto the screen
     text_map = font.render(str(text_string), True, colour)
     screen.blit(text_map, [x_pos, y_pos])
+#end procedure
 
 
 level_list = ["Pygame/Worlds hardest game/level1.JSON", "Pygame/Worlds hardest game/level2.JSON"]
@@ -122,6 +132,9 @@ class Game(pygame.sprite.Sprite):
                         self.newwall = Wall(j*10,i*10)
                         self.wall_list.add(self.newwall)
                         self.all_sprites_group.add(self.newwall)
+                    #end if
+                #next j
+            #next i
 
         elif self.level == 2:
             self.ball_group = pygame.sprite.Group()
@@ -166,8 +179,11 @@ class Game(pygame.sprite.Sprite):
                         self.newwall = Wall(j*10,i*10)
                         self.wall_list.add(self.newwall)
                         self.all_sprites_group.add(self.newwall)
-
-
+                    #end if
+                #next j
+            #next i
+        #end if
+    #end procedure
 
     def update(self):
         self.all_sprites_group.update()
@@ -190,6 +206,7 @@ class Game(pygame.sprite.Sprite):
             self.ball_hit_wall_list = pygame.sprite.groupcollide(self.ball_group, self.wall_list, False, False)
             for b in self.ball_hit_wall_list:
                 b.change_direction()
+            #next b
                 
             #player collisions with ball
             self.player_hit_ball_list = pygame.sprite.groupcollide(self.ball_group, self.player_group, False, True)
@@ -198,6 +215,7 @@ class Game(pygame.sprite.Sprite):
                 self.player_group.add(self.player)
                 self.all_sprites_group.add(self.player)
                 self.attempts += 1  
+            #end if
 
             #player collisions with wall                   
             self.player_hit_wall_list = pygame.sprite.spritecollide(self.player, self.wall_list, False)
@@ -205,6 +223,7 @@ class Game(pygame.sprite.Sprite):
                 self.player.set_speed(0, 0)
                 self.player.rect.x = self.player_old_x
                 self.player.rect.y = self.player_old_y
+            #end if
             
             self.player_old_x = self.player.rect.x
             self.player_old_y = self.player.rect.y
@@ -213,7 +232,9 @@ class Game(pygame.sprite.Sprite):
             self.player_in_endzone = pygame.sprite.spritecollide(self.player, self.endzone_group, False)
             if len(self.player_in_endzone) > 0:
                 return True
-            else: return False
+            else:  
+                return False
+            #end if
 
         elif self.level == 2:
             print_text(30, 30, screen, "Attempts: {}".format(self.attempts), RED)
@@ -221,6 +242,7 @@ class Game(pygame.sprite.Sprite):
             self.ball_hit_wall_list = pygame.sprite.groupcollide(self.ball_group, self.wall_list, False, False)
             for b in self.ball_hit_wall_list:
                 b.change_direction()
+            #next b
                 
             #player collisions with ball
             self.player_hit_ball_list = pygame.sprite.groupcollide(self.ball_group, self.player_group, False, True)
@@ -229,6 +251,7 @@ class Game(pygame.sprite.Sprite):
                 self.player_group.add(self.player)
                 self.all_sprites_group.add(self.player)
                 self.attempts += 1  
+            #end if
 
             #player collisions with wall                   
             self.player_hit_wall_list = pygame.sprite.spritecollide(self.player, self.wall_list, False)
@@ -236,6 +259,7 @@ class Game(pygame.sprite.Sprite):
                 self.player.set_speed(0, 0)
                 self.player.rect.x = self.player_old_x
                 self.player.rect.y = self.player_old_y
+            #end if
             
             self.player_old_x = self.player.rect.x
             self.player_old_y = self.player.rect.y
@@ -244,8 +268,12 @@ class Game(pygame.sprite.Sprite):
             self.player_in_endzone = pygame.sprite.spritecollide(self.player, self.endzone_group, False)
             if len(self.player_in_endzone) > 0:
                 return True
-            else: return False
-
+            else: 
+                return False
+            #end if
+        #end if
+    #end procedure
+#end class
         
 
 
@@ -260,6 +288,8 @@ class Wall(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x_coord
         self.rect.y = y_coord
+    #end procedure
+#end class
 
         
 
@@ -275,13 +305,17 @@ class Ball(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x_coord
         self.rect.y = y_coord
+    #end procedure
 
     def update(self):
         self.rect.x += self.change_x
         self.rect.y += self.change_y
+    #end procedure
 
     def change_direction(self):
         self.change_x *= -1
+    #end procedure
+#end class
 
 
 class Player(pygame.sprite.Sprite):
@@ -295,22 +329,29 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = x_coord
         self.rect.y = y_coord
         self.speed = 5
+    #end procedure
 
     def move_up(self):
         self.rect.y -= self.speed
+    #end procedure
 
     def move_down(self):
         self.rect.y += self.speed
+    #end procedure
  
     def move_right(self):
         self.rect.x += self.speed
+    #end procedure
 
     def move_left(self):
         self.rect.x -= self.speed
+    #end procedure
 
     def set_speed(self, x_val, y_val):
         self.rect.x += x_val
         self.rect.x += y_val
+    #end procedure
+#end class
 
 class StartZone(pygame.sprite.Sprite):
     def __init__(self, x_coord, y_coord, width, height):
@@ -322,6 +363,8 @@ class StartZone(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x_coord
         self.rect.y = y_coord
+    #end procedure
+#end class
 
 class EndZone(pygame.sprite.Sprite):
     def __init__(self, x_coord, y_coord, width, height):
@@ -333,10 +376,15 @@ class EndZone(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x_coord
         self.rect.y = y_coord
+    #end procedure
+#end class
 
 start_menu = menu(screen)
-if start_menu == 'play': game_over_level_1 = False
-else: pygame.quit()
+if start_menu == 'play': 
+    game_over_level_1 = False
+else: 
+    pygame.quit()
+#end if
 
 
 game = Game(1)
@@ -345,22 +393,27 @@ while not game_over_level_1:
         if event.type == pygame.QUIT:
             game_over_level_1 = True
             pygame.quit()
+        #end if
+    #next event
             
     screen.fill(WHITE)
     game_over_level_1 = game.update()
     pygame.display.flip()
     clock.tick(60)
-
+#end while
 game = Game(2)
 while not game_over_level_2:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game_over_level_2 = True
             pygame.quit()
+        #end if
+    #next event
     
     screen.fill(WHITE)
     game_over_level_2 = game.update()
     pygame.display.flip()
     clock.tick(60)
+#end while
 end_game(screen)
 pygame.quit()
