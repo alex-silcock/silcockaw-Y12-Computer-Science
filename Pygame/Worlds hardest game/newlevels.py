@@ -1,6 +1,7 @@
 import pygame
 import json
 import random
+import time
 
 BLACK = (0,0,0)
 WHITE = (255,255,255)
@@ -53,12 +54,26 @@ def menu(screen):
                 if textRect.collidepoint(mouse):
                     textcolour = RED
                     return 'play'
-                #end if
-            #end if
-        #next event
         clock.tick(60)
-    #end while    
-#end function
+
+def end_game(screen):
+    done = False
+    font = pygame.font.Font('freesansbold.ttf', 70)
+    CentreX = size[0] // 2
+    CentreY = size[1] // 2
+    textcolour = BLUE
+    while not done:
+        screen.fill(WHITE)
+        mouse = pygame.mouse.get_pos()
+        text = font.render("GAME OVER", 5, textcolour)
+        textRect = text.get_rect()
+        textRect.center = (CentreX, CentreY)
+        screen.blit(text, textRect)
+        pygame.display.flip()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                done = True
+        clock.tick(60)
 
 font = pygame.font.SysFont("freesansbold.ttf", 30)
 def print_text(x_pos, y_pos, screen, text_string, colour):
@@ -67,7 +82,7 @@ def print_text(x_pos, y_pos, screen, text_string, colour):
     screen.blit(text_map, [x_pos, y_pos])
 
 
-level_list = ["Pygame/Worlds hardest game/whg_map.JSON", "Pygame/Worlds hardest game/level2.JSON"]
+level_list = ["Pygame/Worlds hardest game/level1.JSON", "Pygame/Worlds hardest game/level2.JSON"]
 
 class Game(pygame.sprite.Sprite):
     def __init__(self, level):
@@ -84,24 +99,12 @@ class Game(pygame.sprite.Sprite):
 
             file = open(level_list[level - 1], "r")
             theMazeArray = json.load(file)
-            file.close() 
-        
-            self.ball1 = Ball(450, 150, 8, 50, 50)
-            self.ball_group.add(self.ball1)
-            self.all_sprites_group.add(self.ball1)
+            file.close()
 
-            self.ball2 = Ball(450, 250, -8, 50, 50)
-            self.ball_group.add(self.ball2)
-            self.all_sprites_group.add(self.ball2)
-
-            self.ball3 = Ball(450, 350, 8, 50, 50)
-            self.ball_group.add(self.ball3)
-            self.all_sprites_group.add(self.ball3)
-
-            self.ball4 = Ball(450, 430, -8, 50, 50)
-            self.ball_group.add(self.ball4)
-            self.all_sprites_group.add(self.ball4)
-
+            self.ball = [Ball(450, 160 + 85 * i, 8 if i % 2 == 0 else -8, 0, 50, 50) for i in range(4)]
+            self.ball_group.add(self.ball)
+            self.all_sprites_group.add(self.ball)
+            
             self.startzone = StartZone(15, 210, 150, 180)
             self.startzone_group.add(self.startzone)
             self.all_sprites_group.add(self.startzone)
@@ -135,23 +138,15 @@ class Game(pygame.sprite.Sprite):
             file = open(level_list[level - 1], "r")
             theMazeArray = json.load(file)
             file.close() 
+
+            self.ball = [Ball(60, 150 + 40 * i, 8 if i % 2 == 0 else -8, 0, 20, 20) for i in range(4)]
+            self.ball_group.add(self.ball)
+            self.all_sprites_group.add(self.ball)
             
-            self.ball1 = Ball(60, 150, 8, 20, 20)
-            self.ball_group.add(self.ball1)
-            self.all_sprites_group.add(self.ball1)
 
-            self.ball2 = Ball(60, 190, -8, 20, 20)
-            self.ball_group.add(self.ball2)
-            self.all_sprites_group.add(self.ball2)
-
-            self.ball3 = Ball(60, 230, 8, 20, 20)
-            self.ball_group.add(self.ball3)
-            self.all_sprites_group.add(self.ball3)
-
-            self.ball4 = Ball(60, 270, -8, 20, 20)
-            self.ball_group.add(self.ball4)
-            self.all_sprites_group.add(self.ball4)
-
+            self.ball = [Ball(300, 370 + 5 * i, 8 if i % 2 == 0 else -8, 0, 20, 20) for i in range(2)]
+            self.ball_group.add(self.ball)
+            self.all_sprites_group.add(self.ball)
             
 
             self.startzone = StartZone(35, 60, 65, 80)
@@ -273,9 +268,10 @@ class Wall(pygame.sprite.Sprite):
         
 
 class Ball(pygame.sprite.Sprite):
-    def __init__(self, x_coord, y_coord, x_speed, width, height):
+    def __init__(self, x_coord, y_coord, x_speed, y_speed, width, height):
         super().__init__()
         self.change_x = x_speed
+        self.change_y = y_speed
         self.width = width
         self.height = height
         self.image = pygame.Surface([self.width, self.height])
@@ -286,6 +282,7 @@ class Ball(pygame.sprite.Sprite):
 
     def update(self):
         self.rect.x += self.change_x
+        self.rect.y += self.change_y
 
     def change_direction(self):
         self.change_x *= -1
@@ -318,6 +315,7 @@ class Player(pygame.sprite.Sprite):
     def set_speed(self, x_val, y_val):
         self.rect.x += x_val
         self.rect.x += y_val
+
 class StartZone(pygame.sprite.Sprite):
     def __init__(self, x_coord, y_coord, width, height):
         super().__init__()
@@ -364,7 +362,8 @@ while not game_over_level_2:
             game_over_level_2 = True
     
     screen.fill(WHITE)
-    game.update()
+    game_over_level_2 = game.update()
     pygame.display.flip()
     clock.tick(60)
+end_game(screen)
 pygame.quit()

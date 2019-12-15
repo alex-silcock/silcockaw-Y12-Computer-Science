@@ -29,7 +29,7 @@ class Game(pygame.sprite.Sprite):
         self.player_group = pygame.sprite.Group()
 
         # Creating 3 balls
-        self.ball = [Ball(100 + 50 * i, 100 + 50 * i, BLUE) for i in range(3)]
+        self.ball = [Ball(100, 100 + 100 * i, BLUE) for i in range(3)]
         self.ball_group.add(self.ball)
         self.all_sprites_group.add(self.ball)
 
