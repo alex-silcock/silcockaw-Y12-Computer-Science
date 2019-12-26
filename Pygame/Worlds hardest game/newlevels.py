@@ -1,7 +1,4 @@
-import pygame
-import json
-import random
-import time
+import pygame, json, random, time
 
 BLACK = (0,0,0)
 WHITE = (255,255,255)
@@ -123,8 +120,6 @@ class Game(pygame.sprite.Sprite):
             self.player_group.add(self.player)
             self.all_sprites_group.add(self.player)
             self.attempts = 0
-
-            
 
             for i in range (len(theMazeArray)):
                 for j in range (len(theMazeArray[i])):
