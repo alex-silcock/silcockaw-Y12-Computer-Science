@@ -1,35 +1,41 @@
-# Actual Game
 # Controlled by key presses
-# Collisions : if something touches something = points / player dies
+# Collisions : points / player dies, could include coins to increase score, level only complete until all coins collected
 # Main menu
 # Some sort of AI to enhance the game e.g. an AI bot playing against the person
-# Include a high scores list - stored as a text file
+# Include a high scores list - stored as a JSON file
+# Hardest level which includes gravity and platforms
+# Textured platforms, players
+# Include background music
+# Timer
+# Balls moving in a circle around a player, moving randomly around the screen 
 
 
 
 # ==================================== start of program ==================================== #
 
 # -- Library imports
-import pygame
-import random
+import pygame, random, json
 
 # -- Global constants
 
 # -- Colours
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-BLUE = (50, 50, 255)
-YELLOW = (255, 255, 0)
-RED = (204,0,0)
+BLACK = (0,0,0)
+WHITE = (255,255,255)
+BLUE = (50,50,255)
+YELLOW = (255,255,0)
+RED = (255,0,0)
+LIGHTGREEN = (100,255,100)
+LIGHTBLUE = (100,100,255)
+coloursList = [BLACK, WHITE, BLUE, YELLOW, RED, LIGHTGREEN, LIGHTBLUE]
 
 # -- Initialise PyGame
 pygame.init()
 
 # -- Blank Screen
-size = (1080, 800)
+size = (1300, 800)
 screen = pygame.display.set_mode(size)
 # To make game fullscreen use this:
-#screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
+#screen = pygame.display.set_mode((size), pygame.FULLSCREEN)
 
 # -- Title of window
 pygame.display.set_caption("Game Name")
@@ -37,82 +43,17 @@ pygame.display.set_caption("Game Name")
 # -- Manages how fast the screen refreshes
 clock = pygame.time.Clock()
 
-# Set game loop to false so it runs
 done = False
 
-# Creating the sprite groups
-player_group = pygame.sprite.Group()
-platform_group = pygame.sprite.Group()
-bullett_group = pygame.sprite.Group()
-all_sprites_group = pygame.sprite.Group()
-
-# Create an object using the class
-class Player(pygame.sprite.Sprite):
-    # Define the constructor for the player
-    def __init__(self):
-        # Call the sprite constructor
-        super().__init__()
-        self.image = pygame.image.load("Pygame/Files/invader.jpg")
-        self.rect = self.image.get_rect()
-        self.rect.x = 10
-        self.rect.y = 100
-        self.lives = 100
-    #end procedure
-
-    # Class methods
-    def update(self):
-        self.rect.x += 1
-    #end procedure
-#end class
-class Platform(pygame.sprite.Sprite):
-    # Define the constructor for the player
-    def __init__(self):
-        # Call the sprite constructor
-        super().__init__()
-        width = 100
-        height = 20
-        self.image = pygame.image.load("Pygame/Files/platform.png")
-        # Set the position of the sprite
-        self.rect = self.image.get_rect()
-        self.rect.x = (size[0] // 2) - (width / 2)
-        self.rect.y = 770
-    #end procedure
-#end class
-
-
-player = Player()
-player_group.add(player)
-all_sprites_group.add(player)
-
-platform = Platform()
-platform_group.add(platform)
-all_sprites_group.add(platform)
-
-
-# Game loop
-while not(done):
+while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            done = True
-        #End If
-    #Next event
+            done = True  
 
-
-
-    all_sprites_group.update()
-    # Clear the screen
-    screen.fill(BLACK)
-    all_sprites_group.draw(screen)
-    
-
-    # Limit to 60 FPS
-    clock.tick(60)
-
-    # Go ahead and update the screen with what we've drawn
-    pygame.display.flip()
-#End While
-
+    clock.tick(60) 
 pygame.quit()
+
+
 
 
 

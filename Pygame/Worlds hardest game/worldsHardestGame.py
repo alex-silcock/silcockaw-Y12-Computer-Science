@@ -1,6 +1,4 @@
-import pygame
-import json
-import random
+import pygame, json, random
 
 BLACK = (0,0,0)
 WHITE = (255,255,255)
