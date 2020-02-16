@@ -1,17 +1,4 @@
-# Controlled by key presses
-# Collisions : points / player dies, could include coins to increase score, level only complete until all coins collected
-# Main menu
-# Some sort of AI to enhance the game e.g. an AI bot playing against the person
-# Include a high scores list - stored as a JSON file
-# Hardest level which includes gravity and platforms
-# Textured platforms, players
-# Include background music
-# Timer
-# Balls moving in a circle around a player, moving randomly around the screen 
-# a password which will skip the user to the level as a checkpoint
-# potential map creation section where the users can create their own levels
 # zen mode = CTRL + K then press Z
-
 
 
 ## program starts
@@ -20,6 +7,10 @@
 import pygame, random, json
 
 # -- Global constants
+level1Finished = False
+level2Finished = False
+level3Finished = False
+
 
 # -- Colours
 BLACK = (0,0,0)
@@ -49,7 +40,6 @@ clock = pygame.time.Clock()
 class Game(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-
 
 
 class Player(pygame.sprite.Sprite):
@@ -110,25 +100,36 @@ class Box(pygame.sprite.Sprite):
         self.rect.y += self.change_y
     #end procedure
 
-    def change_direction(self):
+    def change_x_direction(self):
         self.change_x *= -1
+    #end procedure
+    def change_y_direction(self):
+        self.change_y *= -1
     #end procedure
 #end class
 
 class Ball(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, colour, radius, x_coord, y_coord):
         super().__init__()
+        self.colour = colour
+        self.radius = radius
+        self.x = x_coord
+        self.y = y_coord
 
+    def draw_circle(self):
+        pygame.draw.circle(screen, self.colour, [self.x, self.y], self.radius)
 
-level1Finished = False
-level2Finished = False
-level3Finished = False
 
 while not level1Finished:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            level1Finished = True  
+            level1Finished = True
+            pygame.quit()
 
+    screen.fill(BLACK)
+    # update the game here (game.update())
+
+    pygame.display.flip()
     clock.tick(60) 
 pygame.quit()
 
