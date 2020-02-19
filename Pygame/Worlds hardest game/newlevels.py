@@ -90,15 +90,17 @@ level_list = ["Pygame/Worlds hardest game/level1.JSON", "Pygame/Worlds hardest g
 class Game(pygame.sprite.Sprite):
     def __init__(self, level):
         super().__init__()
+        # anything used for all levels
         self.level = level
+        self.ball_group = pygame.sprite.Group()
+        self.all_sprites_group = pygame.sprite.Group()
+        self.wall_list = pygame.sprite.Group()
+        self.player_group = pygame.sprite.Group()
+        self.startzone_group = pygame.sprite.Group()
+        self.endzone_group = pygame.sprite.Group()
 
         if self.level == 1:
-            self.ball_group = pygame.sprite.Group()
-            self.all_sprites_group = pygame.sprite.Group()
-            self.wall_list = pygame.sprite.Group()
-            self.player_group = pygame.sprite.Group()
-            self.startzone_group = pygame.sprite.Group()
-            self.endzone_group = pygame.sprite.Group()
+            
 
             file = open(level_list[level - 1], "r")
             theMazeArray = json.load(file)
@@ -132,12 +134,7 @@ class Game(pygame.sprite.Sprite):
             #next i
 
         elif self.level == 2:
-            self.ball_group = pygame.sprite.Group()
-            self.all_sprites_group = pygame.sprite.Group()
-            self.wall_list = pygame.sprite.Group()
-            self.player_group = pygame.sprite.Group()
-            self.startzone_group = pygame.sprite.Group()
-            self.endzone_group = pygame.sprite.Group()
+            
 
             file = open(level_list[level - 1], "r")
             theMazeArray = json.load(file)

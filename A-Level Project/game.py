@@ -1,4 +1,7 @@
 # zen mode = CTRL + K then press Z
+# don't forget to put end tags for everything e.g. end if
+# use meaningful variable names
+# don't forget to add comments for what i am doing
 
 
 ## program starts
@@ -37,10 +40,42 @@ pygame.display.set_caption("Game Name")
 # -- Manages how fast the screen refreshes
 clock = pygame.time.Clock()
 
+# creating a function that draws text on the screen in the x_pos and y_pos taken as arguments
+font = pygame.font.SysFont("freesansbold.ttf", 30)
+def print_text(x_pos, y_pos, screen, text_string, colour):
+    #Draw text onto the screen
+    text_map = font.render(str(text_string), True, colour)
+    screen.blit(text_map, [x_pos, y_pos])
+#end procedure
+
 class Game(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
+        # anything that is used for all levels goes here
+        self.box_group = pygame.sprite.Group()
+        self.wall_group = pygame.sprite.Group()
+        self.player_group = pygame.sprite.Group()
+        self.ball_group = pygame.sprite.Group()
+        self.startZone_group = pygame.sprite.Group()
+        self.endZone_group = pygame.sprite.Group()
+        self.all_sprites_group = pygame.sprite.Group()
 
+    def update(self):
+        #update + draw all sprites group
+        self.all_sprites_group.update()
+        self.all_sprites_group.draw(screen)
+
+        #player movement
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_UP]:
+            self.player.move_up()
+        elif keys[pygame.K_DOWN]:
+            self.player.move_down()
+        elif keys[pygame.K_RIGHT]:
+            self.player.move_right()
+        elif keys[pygame.K_LEFT]:
+            self.player.move_left()
+        #end if
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, x_coord, y_coord, width, height):
@@ -115,11 +150,55 @@ class Ball(pygame.sprite.Sprite):
         self.radius = radius
         self.x = x_coord
         self.y = y_coord
+    #end procedure
 
-    def draw_circle(self):
+    # class methods
+    def draw(self):
         pygame.draw.circle(screen, self.colour, [self.x, self.y], self.radius)
+    #end procedure
+#end class
 
+class Wall(pygame.sprite.Sprite):
+    def __init__(self, x_coord, y_coord):
+        super().__init__()
+        width = 10
+        height = 10
+        self.image = pygame.Surface([width, height])
+        self.image.fill(BLACK)
+        self.rect = self.image.get_rect()
+        self.rect.x = x_coord
+        self.rect.y = y_coord
+    #end procedure
+#end class
 
+class StartZone(pygame.sprite.Sprite):
+    def __init__(self, x_coord, y_coord, width, height):
+        super().__init__()
+        self.width = width
+        self.height = height
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.fill(LIGHTBLUE)
+        self.rect = self.image.get_rect()
+        self.rect.x = x_coord
+        self.rect.y = y_coord
+    #end procedure
+#end class
+
+class EndZone(pygame.sprite.Sprite):
+    def __init__(self, x_coord, y_coord, width, height):
+        super().__init__()
+        self.width = width
+        self.height = height
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.fill(LIGHTGREEN)
+        self.rect = self.image.get_rect()
+        self.rect.x = x_coord
+        self.rect.y = y_coord
+    #end procedure
+#end class
+
+#instantiate the game class
+game = Game()
 while not level1Finished:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
