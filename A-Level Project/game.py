@@ -35,7 +35,7 @@ screen = pygame.display.set_mode(size)
 #screen = pygame.display.set_mode((size), pygame.FULLSCREEN)
 
 # -- Title of window
-pygame.display.set_caption("Game Name")
+pygame.display.set_caption("Maze Kingdom")
 
 # -- Manages how fast the screen refreshes
 clock = pygame.time.Clock()
@@ -70,7 +70,7 @@ class Game(pygame.sprite.Sprite):
             mazeArray = json.load(file)
             file.close()
 
-            #creating the walls
+            #instantiate the walls
             for i in range (len(mazeArray)):
                 for j in range (len(mazeArray[i])):
                     if mazeArray[i][j] == 1:
@@ -80,6 +80,18 @@ class Game(pygame.sprite.Sprite):
                     #end if
                 #next j
             #next i
+
+            #instantiate the start zone
+            self.startzone = StartZone(70, 50, 150, 180)
+            self.startZone_group.add(self.startzone)
+            self.all_sprites_group.add(self.startzone)
+
+            #instantiate tha player in the start zone
+            self.player = Player(125, 115)
+            self.player_group.add(self.player)
+            self.all_sprites_group.add(self.player)
+        #end if
+    #end procedure
 
     def update(self):
         #update + draw all_sprites_group
@@ -97,12 +109,14 @@ class Game(pygame.sprite.Sprite):
         elif keys[pygame.K_LEFT]:
             self.player.move_left()
         #end if
+    #end procedure
+#end class
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, x_coord, y_coord, width, height):
+    def __init__(self, x_coord, y_coord):
         super().__init__()
-        self.width = width
-        self.height = height
+        self.width = 25
+        self.height = 25
         self.image = pygame.Surface([self.width, self.height])
         self.image.fill(RED)
         self.rect = self.image.get_rect()
@@ -113,19 +127,19 @@ class Player(pygame.sprite.Sprite):
     
     # class methods
 
-    def player_move_up(self):
+    def move_up(self):
         self.rect.y -= self.speed
     #end procedure
 
-    def player_move_down(self):
+    def move_down(self):
         self.rect.y += self.speed
     #end procedure
  
-    def player_move_right(self):
+    def move_right(self):
         self.rect.x += self.speed
     #end procedure
 
-    def player_move_left(self):
+    def move_left(self):
         self.rect.x -= self.speed
     #end procedure
 
