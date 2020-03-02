@@ -37,7 +37,7 @@ all_sprite_list = pygame.sprite.Group()
 wall_list = pygame.sprite.Group()
 
 # -- Blank Screen
-size = (500,500)
+size = (1300,800)
 screen = pygame.display.set_mode(size)
 
 # -- Title of new window/screen
@@ -145,7 +145,7 @@ while not done:
     pygame.display.flip()
     
      # - The clock ticks over
-    clock.tick(60)
+    clock.tick(144)
 #End While - End of game loop
 pygame.quit()
 

@@ -48,10 +48,14 @@ def print_text(x_pos, y_pos, screen, text_string, colour):
     screen.blit(text_map, [x_pos, y_pos])
 #end procedure
 
+#creating a list of all the levels
+level_list = ["A-Level Project/level1.JSON"]
+
 class Game(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, level):
         super().__init__()
         # anything that is used for all levels goes here
+        self.level = level
         self.box_group = pygame.sprite.Group()
         self.wall_group = pygame.sprite.Group()
         self.player_group = pygame.sprite.Group()
@@ -60,12 +64,29 @@ class Game(pygame.sprite.Sprite):
         self.endZone_group = pygame.sprite.Group()
         self.all_sprites_group = pygame.sprite.Group()
 
+        if self.level == 1:
+            #opens the map from the level list, loads it, then closes it
+            file = open(level_list[level - 1], "r")
+            mazeArray = json.load(file)
+            file.close()
+
+            #creating the walls
+            for i in range (len(mazeArray)):
+                for j in range (len(mazeArray[i])):
+                    if mazeArray[i][j] == 1:
+                        self.newwall = Wall(j*10,i*10)
+                        self.wall_group.add(self.newwall)
+                        self.all_sprites_group.add(self.newwall)
+                    #end if
+                #next j
+            #next i
+
     def update(self):
-        #update + draw all sprites group
+        #update + draw all_sprites_group
         self.all_sprites_group.update()
         self.all_sprites_group.draw(screen)
 
-        #player movement
+        #player movement, data hiding, only allows the attributes to be changed through a function
         keys = pygame.key.get_pressed()
         if keys[pygame.K_UP]:
             self.player.move_up()
@@ -164,7 +185,7 @@ class Wall(pygame.sprite.Sprite):
         width = 10
         height = 10
         self.image = pygame.Surface([width, height])
-        self.image.fill(BLACK)
+        self.image.fill(BLUE)
         self.rect = self.image.get_rect()
         self.rect.x = x_coord
         self.rect.y = y_coord
@@ -197,8 +218,8 @@ class EndZone(pygame.sprite.Sprite):
     #end procedure
 #end class
 
-#instantiate the game class
-game = Game()
+#instantiate the game class for the first level 
+game = Game(1)
 while not level1Finished:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -206,11 +227,15 @@ while not level1Finished:
             pygame.quit()
 
     screen.fill(BLACK)
-    # update the game here (game.update())
 
+    #game updates inside the loop 
+    level1Finished = game.update()
     pygame.display.flip()
     clock.tick(60) 
 pygame.quit()
+#instantiate the game class for the second level
+
+#instantiate the game class for the third level
 
 
 
