@@ -2,6 +2,8 @@
 # don't forget to put end tags for everything e.g. end if
 # use meaningful variable names
 # don't forget to add comments for what i am doing
+# have a starting level where the user just goes straight from
+# one part to the other and gives them the rules etc. as they go over certain parts
 
 
 ## program starts
@@ -109,6 +111,22 @@ class Game(pygame.sprite.Sprite):
         elif keys[pygame.K_LEFT]:
             self.player.move_left()
         #end if
+
+        if self.level == 1:
+            self.player_hit_wall_list = pygame.sprite.spritecollide(self.player, self.wall_group, False)
+            if len (self.player_hit_wall_list) > 0:
+                self.player.set_speed(0, 0)
+                self.player.rect.x = self.player_old_x
+                self.player.rect.y = self.player_old_y
+            #end if
+        #necessary for collisions
+        self.player_old_x = self.player.rect.x
+        self.player_old_y = self.player.rect.y
+
+        #boundaries for end zone
+        if (self.player.rect.y >= 60 and self.player.rect.y <= 175) and self.player.rect.x > 1300:
+            return True
+        #end if
     #end procedure
 #end class
 
@@ -143,7 +161,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.x -= self.speed
     #end procedure
 
-    def player_set_speed(self, x_speed, y_speed):
+    def set_speed(self, x_speed, y_speed):
         self.rect.x += x_speed
         self.rect.y += y_speed
     #end procedure
