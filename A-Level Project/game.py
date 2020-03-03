@@ -51,7 +51,7 @@ def print_text(x_pos, y_pos, screen, text_string, colour):
 #end procedure
 
 #creating a list of all the levels
-level_list = ["A-Level Project/level1.JSON"]
+level_list = ["A-Level Project/start.JSON", "A-Level Project/level1.JSON"]
 
 class Game(pygame.sprite.Sprite):
     def __init__(self, level):
@@ -66,9 +66,36 @@ class Game(pygame.sprite.Sprite):
         self.endZone_group = pygame.sprite.Group()
         self.all_sprites_group = pygame.sprite.Group()
 
-        if self.level == 1:
+        if self.level == 0:
             #opens the map from the level list, loads it, then closes it
-            file = open(level_list[level - 1], "r")
+            file = open(level_list[level], "r")
+            mazeArray = json.load(file)
+            file.close()
+
+            #instantiate the walls
+            for i in range (len(mazeArray)):
+                for j in range (len(mazeArray[i])):
+                    if mazeArray[i][j] == 1:
+                        self.newwall = Wall(j*10,i*10)
+                        self.wall_group.add(self.newwall)
+                        self.all_sprites_group.add(self.newwall)
+                    #end if
+                #next j
+            #next i
+
+            #instantiate the start zone
+            self.startzone = StartZone(60, 310, 110, 170)
+            self.startZone_group.add(self.startzone)
+            self.all_sprites_group.add(self.startzone)
+
+            #instantiate the player in the start zone
+            self.player = Player(100, 380)
+            self.player_group.add(self.player)
+            self.all_sprites_group.add(self.player)
+        
+        elif self.level == 1:
+            #opens the map from the level list, loads it, then closes it
+            file = open(level_list[level], "r")
             mazeArray = json.load(file)
             file.close()
 
@@ -88,7 +115,7 @@ class Game(pygame.sprite.Sprite):
             self.startZone_group.add(self.startzone)
             self.all_sprites_group.add(self.startzone)
 
-            #instantiate tha player in the start zone
+            #instantiate the player in the start zone
             self.player = Player(125, 115)
             self.player_group.add(self.player)
             self.all_sprites_group.add(self.player)
@@ -112,21 +139,35 @@ class Game(pygame.sprite.Sprite):
             self.player.move_left()
         #end if
 
-        if self.level == 1:
+        if self.level == 0:
+            #collisions for player with walls
             self.player_hit_wall_list = pygame.sprite.spritecollide(self.player, self.wall_group, False)
             if len (self.player_hit_wall_list) > 0:
                 self.player.set_speed(0, 0)
                 self.player.rect.x = self.player_old_x
                 self.player.rect.y = self.player_old_y
-            #end if
-        #necessary for collisions
-        self.player_old_x = self.player.rect.x
-        self.player_old_y = self.player.rect.y
+                #end if
+            #necessary for collisions
+            self.player_old_x = self.player.rect.x
+            self.player_old_y = self.player.rect.y
 
-        #boundaries for end zone
-        if (self.player.rect.y >= 60 and self.player.rect.y <= 175) and self.player.rect.x > 1300:
-            return True
-        #end if
+            #boundaries for end zone
+            if (self.player.rect.y >= 60 and self.player.rect.y <= 175) and self.player.rect.x > 1300:
+                return True
+            #end if
+
+        elif self.level == 1:
+            #collisions for player with walls
+            self.player_hit_wall_list = pygame.sprite.spritecollide(self.player, self.wall_group, False)
+            if len (self.player_hit_wall_list) > 0:
+                self.player.set_speed(0, 0)
+                self.player.rect.x = self.player_old_x
+                self.player.rect.y = self.player_old_y
+                #end if
+            #necessary for collisions
+            self.player_old_x = self.player.rect.x
+            self.player_old_y = self.player.rect.y
+            
     #end procedure
 #end class
 
@@ -250,8 +291,9 @@ class EndZone(pygame.sprite.Sprite):
     #end procedure
 #end class
 
-#instantiate the game class for the first level 
-game = Game(1)
+#instantiate the game class for the starting "level" 
+game = Game(0)
+#game loop for the starting "level"
 while not level1Finished:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -264,8 +306,25 @@ while not level1Finished:
     level1Finished = game.update()
     pygame.display.flip()
     clock.tick(60) 
+#end while
+
+#instantiate the game class for the first level
+game = Game(1)
+#game loop for the first level
+while not level2Finished:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            level2Finished = True
+            pygame.quit()
+
+    screen.fill(BLACK)
+
+    #game updates inside the loop 
+    level2Finished = game.update()
+    pygame.display.flip()
+    clock.tick(60) 
+#end while
 pygame.quit()
-#instantiate the game class for the second level
 
 #instantiate the game class for the third level
 
