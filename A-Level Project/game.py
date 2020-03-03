@@ -64,7 +64,9 @@ class Game(pygame.sprite.Sprite):
         self.ball_group = pygame.sprite.Group()
         self.startZone_group = pygame.sprite.Group()
         self.endZone_group = pygame.sprite.Group()
+        self.informationBars_group = pygame.sprite.Group()
         self.all_sprites_group = pygame.sprite.Group()
+
 
         if self.level == 0:
             #opens the map from the level list, loads it, then closes it
@@ -87,6 +89,16 @@ class Game(pygame.sprite.Sprite):
             self.startzone = StartZone(60, 310, 110, 170)
             self.startZone_group.add(self.startzone)
             self.all_sprites_group.add(self.startzone)
+
+            #instantiate the end zone
+            self.endzone = EndZone(1130, 310, 110, 170)
+            self.endZone_group.add(self.endzone)
+            self.all_sprites_group.add(self.endzone)
+
+            #instantiate the information bars so when the player goes over them they get tips
+            self.informationbar = [InformationBars(300 + 180 * i, 310, 5, 170) for i in range(5)]
+            self.informationBars_group.add(self.informationbar)
+            self.all_sprites_group.add(self.informationbar)
 
             #instantiate the player in the start zone
             self.player = Player(100, 380)
@@ -142,6 +154,28 @@ class Game(pygame.sprite.Sprite):
         if self.level == 0:
             #collisions for player with walls
             self.player_hit_wall_list = pygame.sprite.spritecollide(self.player, self.wall_group, False)
+            if len(self.player_hit_wall_list) > 0:
+                self.player.set_speed(0, 0)
+                self.player.rect.x = self.player_old_x
+                self.player.rect.y = self.player_old_y
+            #end if
+            
+            
+            #necessary for collisions
+            self.player_old_x = self.player.rect.x
+            self.player_old_y = self.player.rect.y
+
+            #collisions for player with end zone
+            self.player_hit_endZone_list = pygame.sprite.spritecollide(self.player, self.endZone_group, False)
+            if len(self.player_hit_endZone_list) > 0:
+                return True
+            #end if
+
+
+
+        elif self.level == 1:
+            #collisions for player with walls
+            self.player_hit_wall_list = pygame.sprite.spritecollide(self.player, self.wall_group, False)
             if len (self.player_hit_wall_list) > 0:
                 self.player.set_speed(0, 0)
                 self.player.rect.x = self.player_old_x
@@ -155,18 +189,6 @@ class Game(pygame.sprite.Sprite):
             if (self.player.rect.y >= 60 and self.player.rect.y <= 175) and self.player.rect.x > 1300:
                 return True
             #end if
-
-        elif self.level == 1:
-            #collisions for player with walls
-            self.player_hit_wall_list = pygame.sprite.spritecollide(self.player, self.wall_group, False)
-            if len (self.player_hit_wall_list) > 0:
-                self.player.set_speed(0, 0)
-                self.player.rect.x = self.player_old_x
-                self.player.rect.y = self.player_old_y
-                #end if
-            #necessary for collisions
-            self.player_old_x = self.player.rect.x
-            self.player_old_y = self.player.rect.y
             
     #end procedure
 #end class
@@ -285,6 +307,19 @@ class EndZone(pygame.sprite.Sprite):
         self.height = height
         self.image = pygame.Surface([self.width, self.height])
         self.image.fill(LIGHTGREEN)
+        self.rect = self.image.get_rect()
+        self.rect.x = x_coord
+        self.rect.y = y_coord
+    #end procedure
+#end class
+
+class InformationBars(pygame.sprite.Sprite):
+    def __init__(self, x_coord, y_coord, width, height):
+        super().__init__()
+        self.width = width
+        self.height = height
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.fill(WHITE)
         self.rect = self.image.get_rect()
         self.rect.x = x_coord
         self.rect.y = y_coord
