@@ -2,14 +2,12 @@
 # don't forget to put end tags for everything e.g. end if
 # use meaningful variable names
 # don't forget to add comments for what i am doing
-# have a starting level where the user just goes straight from
-# one part to the other and gives them the rules etc. as they go over certain parts
 
 
 ## program starts
 
 # -- Library imports
-import pygame, random, json
+import pygame, random, json, math
 
 # -- Global constants
 level1Finished = False
@@ -96,7 +94,7 @@ class Game(pygame.sprite.Sprite):
             self.all_sprites_group.add(self.endzone)
 
             #instantiate the information bars so when the player goes over them they get tips
-            self.informationbar = [InformationBars(300 + 180 * i, 310, 5, 170) for i in range(5)]
+            self.informationbar = [InformationBars(300 + 180 * i, 310, 5, 170)for i in range(5)]
             self.informationBars_group.add(self.informationbar)
             self.all_sprites_group.add(self.informationbar)
 
@@ -110,7 +108,8 @@ class Game(pygame.sprite.Sprite):
             file = open(level_list[level], "r")
             mazeArray = json.load(file)
             file.close()
-
+            self.attempts = 0
+            
             #instantiate the walls
             for i in range (len(mazeArray)):
                 for j in range (len(mazeArray[i])):
@@ -131,6 +130,13 @@ class Game(pygame.sprite.Sprite):
             self.player = Player(125, 115)
             self.player_group.add(self.player)
             self.all_sprites_group.add(self.player)
+
+            #instantiate a ball which moves around in a circle
+            self.ball = Ball(WHITE, 30, 40, 20, 380, 610, 70)
+            self.ball_group.add(self.ball)
+            self.all_sprites_group.add(self.ball)
+
+
         #end if
     #end procedure
 
@@ -171,6 +177,10 @@ class Game(pygame.sprite.Sprite):
                 return True
             #end if
 
+            self.player_hit_informationbar1_list = pygame.sprite.spritecollide(self.player, self.informationBars_group, False)
+            if len(self.player_hit_informationbar1_list) > 0:
+                print_text(size[0]//2, 30, screen, "Use the arrow keys to move", WHITE)
+
 
 
         elif self.level == 1:
@@ -184,12 +194,14 @@ class Game(pygame.sprite.Sprite):
             #necessary for collisions
             self.player_old_x = self.player.rect.x
             self.player_old_y = self.player.rect.y
-
+            
             #boundaries for end zone
             if (self.player.rect.y >= 60 and self.player.rect.y <= 175) and self.player.rect.x > 1300:
                 return True
             #end if
-            
+
+            #drawing the number of attempts on the screen
+            print_text(10, 10, screen, "Attempts: {}".format(self.attempts), RED)
     #end procedure
 #end class
 
@@ -260,17 +272,45 @@ class Box(pygame.sprite.Sprite):
 #end class
 
 class Ball(pygame.sprite.Sprite):
-    def __init__(self, colour, radius, x_coord, y_coord):
+    def __init__(self, colour, radius, x_coord, y_coord, x_orbit, y_orbit, sizeOfOrbit):
         super().__init__()
         self.colour = colour
+        #The radius of the ball
         self.radius = radius
-        self.x = x_coord
-        self.y = y_coord
+        self.sizeOfOrbit = sizeOfOrbit
+
+        self.image = pygame.Surface([self.radius, self.radius])
+        self.image.fill(self.colour)
+        self.rect = self.image.get_rect()
+        
+        #the x and y coordinates of the ball
+        self.rect.x = x_coord
+        self.rect.y = y_coord
+
+        #The "center" the sprite will orbit
+        self.center_x = x_orbit
+        self.center_y = y_orbit
+
+        #current angle in radians
+        self.angle = 0
+
+        #how fast to orbit in radians per frame
+        self.speed = 0.08
     #end procedure
 
-    # class methods
-    def draw(self):
-        pygame.draw.circle(screen, self.colour, [self.x, self.y], self.radius)
+    #class methods
+    def update(self):
+        #Update the ball's position
+
+        # Calculate a new x, y
+        self.rect.x = self.sizeOfOrbit * math.sin(self.angle) + self.center_x
+        self.rect.y = self.sizeOfOrbit * math.cos(self.angle) + self.center_y
+ 
+        # Increase the angle in prep for the next round.
+        self.angle += self.speed
+
+    def draw(self, screen):
+        pygame.draw.circle(screen, self.colour, [self.rect.x, self.rect.y], self.radius)
     #end procedure
 #end class
 

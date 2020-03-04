@@ -25,7 +25,7 @@ game_over = False
 clock = pygame.time.Clock()
 
 
-file = open("Pygame/Worlds hardest game/whg_map.JSON", "r")
+file = open("Pygame/Worlds hardest game/level1.JSON", "r")
 theMazeArray = json.load(file)
 last_pressed = []
 file.close()

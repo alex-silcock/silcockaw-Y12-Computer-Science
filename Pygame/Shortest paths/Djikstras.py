@@ -244,7 +244,7 @@ while not game_over:
     connections = getConnections(theMazeArray, nodes)
     screen.fill(BLACK)
     
-    game.update()
+    game_over = game.update()
 
     pygame.display.flip()
     clock.tick(60)
