@@ -102,6 +102,9 @@ class Game(pygame.sprite.Sprite):
             self.player = Player(100, 380)
             self.player_group.add(self.player)
             self.all_sprites_group.add(self.player)
+
+
+
         
         elif self.level == 1:
             #opens the map from the level list, loads it, then closes it
@@ -132,7 +135,7 @@ class Game(pygame.sprite.Sprite):
             self.all_sprites_group.add(self.player)
 
             #instantiate a ball which moves around in a circle
-            self.ball = Ball(WHITE, 30, 40, 20, 380, 610, 70)
+            self.ball = Ball(RED, 30, 100, 100, 360, 610, 100)
             self.ball_group.add(self.ball)
             self.all_sprites_group.add(self.ball)
 
@@ -170,7 +173,7 @@ class Game(pygame.sprite.Sprite):
             #necessary for collisions
             self.player_old_x = self.player.rect.x
             self.player_old_y = self.player.rect.y
-
+            
             #collisions for player with end zone
             self.player_hit_endZone_list = pygame.sprite.spritecollide(self.player, self.endZone_group, False)
             if len(self.player_hit_endZone_list) > 0:
@@ -199,6 +202,14 @@ class Game(pygame.sprite.Sprite):
             if (self.player.rect.y >= 60 and self.player.rect.y <= 175) and self.player.rect.x > 1300:
                 return True
             #end if
+
+            self.player_hit_moving_circles = pygame.sprite.groupcollide(self.player_group, self.ball_group, True, False)
+            if len (self.player_hit_moving_circles) > 0:
+                #reinstantiate the player in the start zone
+                self.player = Player(125, 115)
+                self.player_group.add(self.player)
+                self.all_sprites_group.add(self.player)
+                self.attempts += 1
 
             #drawing the number of attempts on the screen
             print_text(10, 10, screen, "Attempts: {}".format(self.attempts), RED)
@@ -272,30 +283,36 @@ class Box(pygame.sprite.Sprite):
 #end class
 
 class Ball(pygame.sprite.Sprite):
-    def __init__(self, colour, radius, x_coord, y_coord, x_orbit, y_orbit, sizeOfOrbit):
+    def __init__(self, colour, radius, x_coord, y_coord, center_x_orbit, center_y_orbit, sizeOfOrbit):
         super().__init__()
         self.colour = colour
-        #The radius of the ball
+
+        #the size of the ball
         self.radius = radius
+
+        #the size of the orbit
         self.sizeOfOrbit = sizeOfOrbit
 
-        self.image = pygame.Surface([self.radius, self.radius])
-        self.image.fill(self.colour)
+        self.image = pygame.Surface([self.radius*2, self.radius*2])
+        self.image.fill(WHITE)
+        self.image.set_colorkey(WHITE)
         self.rect = self.image.get_rect()
         
         #the x and y coordinates of the ball
         self.rect.x = x_coord
         self.rect.y = y_coord
 
-        #The "center" the sprite will orbit
-        self.center_x = x_orbit
-        self.center_y = y_orbit
+        #the "center" the sprite will orbit
+        self.center_x = center_x_orbit
+        self.center_y = center_y_orbit
 
         #current angle in radians
         self.angle = 0
 
         #how fast to orbit in radians per frame
         self.speed = 0.08
+
+        pygame.draw.circle(self.image, self.colour, [self.radius, self.radius], self.radius)
     #end procedure
 
     #class methods
@@ -308,11 +325,10 @@ class Ball(pygame.sprite.Sprite):
  
         # Increase the angle in prep for the next round.
         self.angle += self.speed
-
-    def draw(self, screen):
-        pygame.draw.circle(screen, self.colour, [self.rect.x, self.rect.y], self.radius)
+        
     #end procedure
 #end class
+
 
 class Wall(pygame.sprite.Sprite):
     def __init__(self, x_coord, y_coord):
@@ -376,7 +392,7 @@ while not level1Finished:
             pygame.quit()
 
     screen.fill(BLACK)
-
+    
     #game updates inside the loop 
     level1Finished = game.update()
     pygame.display.flip()
