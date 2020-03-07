@@ -135,7 +135,7 @@ class Game(pygame.sprite.Sprite):
             self.all_sprites_group.add(self.player)
 
             #instantiate a ball which moves around in a circle
-            self.ball = Ball(RED, 30, 100, 100, 360, 610, 100)
+            self.ball = Ball(WHITE, 10, 100, 100, 360, 610, 100)
             self.ball_group.add(self.ball)
             self.all_sprites_group.add(self.ball)
 
@@ -294,8 +294,8 @@ class Ball(pygame.sprite.Sprite):
         self.sizeOfOrbit = sizeOfOrbit
 
         self.image = pygame.Surface([self.radius*2, self.radius*2])
-        self.image.fill(WHITE)
-        self.image.set_colorkey(WHITE)
+        self.image.fill(BLACK)
+        self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
         
         #the x and y coordinates of the ball

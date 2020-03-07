@@ -61,12 +61,52 @@ class Ball(pygame.sprite.Sprite):
         self.angle += self.speed
 
     def draw(self):
-        pygame.draw.ellipse(screen, RED, [self.rect.x, self.rect.y], self.size)
+        pygame.draw.circle(screen, RED, [self.rect.x, self.rect.y], self.size)
     #end procedure
 #end class
 
 class Ball(pygame.sprite.Sprite):
-    def __init__(self, colour, size, x_coord, y_coord, )
+    def __init__(self, colour, size, x_coord, y_coord, center_x_orbit, center_y_orbit, sizeOfOrbit):
+        super().__init__()
+        self.colour = colour
+
+        #the size of the ball
+        self.size = size
+
+        #the size of the orbit
+        self.sizeOfOrbit = sizeOfOrbit
+        self.image = pygame.Surface([self.size, self.size])
+        #the x and y coordinates of the ball
+        self.rect.x = x_coord
+        self.rect.y = y_coord
+
+        #the "center" the sprite will orbit
+        self.center_x = center_x_orbit
+        self.center_y = center_y_orbit
+
+        #current angle in radians
+        self.angle = 0
+
+        #how fast to orbit in radians per frame
+        self.speed = 0.08
+    #end procedure
+
+    #class methods
+    def update(self):
+        #Update the ball's position
+
+        # Calculate a new x, y
+        self.rect.x = self.sizeOfOrbit * math.sin(self.angle) + self.center_x
+        self.rect.y = self.sizeOfOrbit * math.cos(self.angle) + self.center_y
+ 
+        # Increase the angle in prep for the next round.
+        self.angle += self.speed
+
+    def draw(self):
+        pygame.draw.ellipse(screen, RED, [self.rect.x, self.rect.y], self.size)
+    #end procedure
+#end class
+
 
 all_sprites_group = pygame.sprite.Group()
 ball_group = pygame.sprite.Group()
