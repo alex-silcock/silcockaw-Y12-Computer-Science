@@ -10,9 +10,9 @@
 import pygame, random, json, math
 
 # -- Global constants
+level0Finished = False
 level1Finished = False
 level2Finished = False
-level3Finished = False
 
 
 # -- Colours
@@ -49,7 +49,7 @@ def print_text(x_pos, y_pos, screen, text_string, colour):
 #end procedure
 
 #creating a list of all the levels
-level_list = ["A-Level Project/start.JSON", "A-Level Project/level1.JSON"]
+level_list = ["A-Level Project/start.JSON", "A-Level Project/level1.JSON", "A-Level Project/level2.JSON"]
 
 class Game(pygame.sprite.Sprite):
     def __init__(self, level):
@@ -68,7 +68,7 @@ class Game(pygame.sprite.Sprite):
 
         if self.level == 0:
             #opens the map from the level list, loads it, then closes it
-            file = open(level_list[level], "r")
+            file = open(level_list[self.level], "r")
             mazeArray = json.load(file)
             file.close()
 
@@ -94,6 +94,8 @@ class Game(pygame.sprite.Sprite):
             self.all_sprites_group.add(self.endzone)
 
             #instantiate the information bars so when the player goes over them they get tips
+            #new attribute 1 through 5 which determines the message displayed
+            #move function print_text into class for each message
             self.informationbar = [InformationBars(300 + 180 * i, 310, 5, 170)for i in range(5)]
             self.informationBars_group.add(self.informationbar)
             self.all_sprites_group.add(self.informationbar)
@@ -108,9 +110,11 @@ class Game(pygame.sprite.Sprite):
         
         elif self.level == 1:
             #opens the map from the level list, loads it, then closes it
-            file = open(level_list[level], "r")
+            file = open(level_list[self.level], "r")
             mazeArray = json.load(file)
             file.close()
+
+            #declare the inital amount of attempts
             self.attempts = 0
             
             #instantiate the walls
@@ -138,6 +142,31 @@ class Game(pygame.sprite.Sprite):
             self.ball = Ball(WHITE, 10, 100, 100, 360, 610, 100)
             self.ball_group.add(self.ball)
             self.all_sprites_group.add(self.ball)
+        
+        elif self.level == 2:
+            file = open(level_list[self.level], "r")
+            mazeArray = json.load(file)
+            file.close()
+
+            #declare the inital amount of attempts
+            self.attempts = 0
+
+            #instantiate the walls
+            for i in range (len(mazeArray)):
+                for j in range (len(mazeArray[i])):
+                    if mazeArray[i][j] == 1:
+                        self.newwall = Wall(j*10,i*10)
+                        self.wall_group.add(self.newwall)
+                        self.all_sprites_group.add(self.newwall)
+                    #end if
+                #next j
+            #next i
+
+            #instantiate the player in the start zone
+            self.player = Player(0, 115)
+            self.player_group.add(self.player)
+            self.all_sprites_group.add(self.player)
+
 
 
         #end if
@@ -178,7 +207,6 @@ class Game(pygame.sprite.Sprite):
             self.player_hit_endZone_list = pygame.sprite.spritecollide(self.player, self.endZone_group, False)
             if len(self.player_hit_endZone_list) > 0:
                 return True
-            #end if
 
             self.player_hit_informationbar1_list = pygame.sprite.spritecollide(self.player, self.informationBars_group, False)
             if len(self.player_hit_informationbar1_list) > 0:
@@ -201,7 +229,6 @@ class Game(pygame.sprite.Sprite):
             #boundaries for end zone
             if (self.player.rect.y >= 60 and self.player.rect.y <= 175) and self.player.rect.x > 1300:
                 return True
-            #end if
 
             self.player_hit_moving_circles = pygame.sprite.groupcollide(self.player_group, self.ball_group, True, False)
             if len (self.player_hit_moving_circles) > 0:
@@ -385,6 +412,23 @@ class InformationBars(pygame.sprite.Sprite):
 #instantiate the game class for the starting "level" 
 game = Game(0)
 #game loop for the starting "level"
+while not level0Finished:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            level0Finished = True
+            pygame.quit()
+
+    screen.fill(BLACK)
+    
+    #game updates inside the loop 
+    level0Finished = game.update()
+    pygame.display.flip()
+    clock.tick(60) 
+#end while
+
+#instantiate the game class for the first level
+game = Game(1)
+#game loop for the first level
 while not level1Finished:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -392,15 +436,15 @@ while not level1Finished:
             pygame.quit()
 
     screen.fill(BLACK)
-    
+
     #game updates inside the loop 
     level1Finished = game.update()
     pygame.display.flip()
     clock.tick(60) 
 #end while
 
-#instantiate the game class for the first level
-game = Game(1)
+#instantiate the game class for the second level
+game = Game(2)
 #game loop for the first level
 while not level2Finished:
     for event in pygame.event.get():
