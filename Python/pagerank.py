@@ -28,6 +28,7 @@ for a in range(iterations):
 
         # calculates the page rank of the page
         ranks[x] = round(0.15 + sum, 2)
+        
     # updates the page rank so they can be used for the next iteration
     for n in range(len(pageRank)):
         pageRank[n] = ranks[n]
