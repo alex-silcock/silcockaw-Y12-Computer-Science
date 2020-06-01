@@ -1,0 +1,35 @@
+<html>
+    <head>
+        <title>Vue js</title>
+        <script src="./js/vue.js"></script>
+    </head>
+    <body>
+        <div id="app">
+            <ul>
+                <li v-for="band in bands">
+                    name: {{ band.name }} origin: {{ band.origin }}
+                    <input v-model="newBand" placeholder="Add artist"/>
+                    <button v-on:click="addBand($index)">Add artist</button>
+                </li>
+            </ul>
+        </div>
+
+        <script>
+            new Vue ({
+                el: '#app',
+                data: {
+                    bands: [
+                        {name: "Bayside", origin: "London"},
+                        {name: "Alex", origin: "London"},
+                        {name: "Maestro", origin: "France"}
+                    ]
+                },
+                methods: {
+                    addBand: function (index) {
+                        alert(index)
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>
