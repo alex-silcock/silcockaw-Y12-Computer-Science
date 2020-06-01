@@ -240,6 +240,20 @@ class Game(pygame.sprite.Sprite):
 
             #drawing the number of attempts on the screen
             print_text(10, 10, screen, "Attempts: {}".format(self.attempts), RED)
+
+        elif self.level == 2:
+
+
+
+
+
+
+
+
+
+
+            #drawing the number of attempts on the screen
+            print_text(10, 10, screen, "Attempts: {}".format(self.attempts), RED)
     #end procedure
 #end class
 
