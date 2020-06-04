@@ -1,8 +1,14 @@
+
+
+
+
+
 public class MyClass {
   public static void main(String[] args){
-      System.out.println("Hello world");
-      intnumber = input.nextInt();
-      
+    String name = "Alex";
+    System.out.println(name);   
   }
+}
 
-  }
+
+

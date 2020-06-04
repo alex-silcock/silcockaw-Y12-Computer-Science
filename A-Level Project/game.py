@@ -56,7 +56,7 @@ class Game(pygame.sprite.Sprite):
         super().__init__()
         # anything that is used for all levels goes here
         self.level = level
-        self.box_group = pygame.sprite.Group()
+        self.enemy_group = pygame.sprite.Group()
         self.wall_group = pygame.sprite.Group()
         self.player_group = pygame.sprite.Group()
         self.ball_group = pygame.sprite.Group()
@@ -294,7 +294,7 @@ class Player(pygame.sprite.Sprite):
     #end procedure
 #end class
     
-class Box(pygame.sprite.Sprite):
+class Enemy(pygame.sprite.Sprite):
     def __init__(self, x_coord, y_coord, x_speed, y_speed, width, height):
         super().__init__()
         self.change_x = x_speed
@@ -423,9 +423,9 @@ class InformationBars(pygame.sprite.Sprite):
     #end procedure
 #end class
 
-#instantiate the game class for the starting "level" 
+#instantiate the game class for the starting level
 game = Game(0)
-#game loop for the starting "level"
+#game loop for the starting / information level
 while not level0Finished:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -459,7 +459,7 @@ while not level1Finished:
 
 #instantiate the game class for the second level
 game = Game(2)
-#game loop for the first level
+#game loop for the second level
 while not level2Finished:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
