@@ -107,6 +107,7 @@ class Game(pygame.sprite.Sprite):
 
 
 
+
         
         elif self.level == 1:
             #opens the map from the level list, loads it, then closes it
@@ -198,7 +199,7 @@ class Game(pygame.sprite.Sprite):
                 self.player.rect.y = self.player_old_y
             #end if
             
-            
+
             #necessary for collisions
             self.player_old_x = self.player.rect.x
             self.player_old_y = self.player.rect.y
@@ -210,7 +211,7 @@ class Game(pygame.sprite.Sprite):
 
             self.player_hit_informationbar1_list = pygame.sprite.spritecollide(self.player, self.informationBars_group, False)
             if len(self.player_hit_informationbar1_list) > 0:
-                print_text(size[0]//2, 30, screen, "Use the arrow keys to move", WHITE)
+                print_text(size[0]//2, 30, screen, InformationBars.display_information(self, 0), WHITE)
 
 
 
@@ -324,7 +325,7 @@ class Enemy(pygame.sprite.Sprite):
 #end class
 
 class Ball(pygame.sprite.Sprite):
-    def __init__(self, colour, radius, x_coord, y_coord, center_x_orbit, center_y_orbit, sizeOfOrbit):
+    def __init__(self, colour, radius, x_coord, y_coord, centre_x_orbit, centre_y_orbit, sizeOfOrbit):
         super().__init__()
         self.colour = colour
 
@@ -344,8 +345,8 @@ class Ball(pygame.sprite.Sprite):
         self.rect.y = y_coord
 
         #the "center" the sprite will orbit
-        self.center_x = center_x_orbit
-        self.center_y = center_y_orbit
+        self.centre_x = centre_x_orbit
+        self.centre_y = centre_y_orbit
 
         #current angle in radians
         self.angle = 0
@@ -361,8 +362,8 @@ class Ball(pygame.sprite.Sprite):
         #Update the ball's position
 
         # Calculate a new x, y
-        self.rect.x = self.sizeOfOrbit * math.sin(self.angle) + self.center_x
-        self.rect.y = self.sizeOfOrbit * math.cos(self.angle) + self.center_y
+        self.rect.x = self.sizeOfOrbit * math.sin(self.angle) + self.centre_x
+        self.rect.y = self.sizeOfOrbit * math.cos(self.angle) + self.centre_y
  
         # Increase the angle in prep for the next round.
         self.angle += self.speed
@@ -420,7 +421,14 @@ class InformationBars(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x_coord
         self.rect.y = y_coord
+        self.messages = ["Avoid the enemies", "Watch out for the lasers"]
+        
     #end procedure
+
+    def display_information(self, val):
+
+        self.current_message = self.messages[val]
+        return self.current_message
 #end class
 
 #instantiate the game class for the starting level

@@ -215,7 +215,7 @@ while not done:
     for p in player_hit_group:
         my_player.decrease_lives(1)
     #next p
-    if my_player.lives == 0 or my_player.bullet_count == 0:
+    if my_player.lives == 0 or my_player.bullet_count < 0:
         done = True
     #end if
 
