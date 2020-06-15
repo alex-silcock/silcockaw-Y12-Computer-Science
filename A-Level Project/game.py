@@ -49,7 +49,7 @@ def print_text(x_pos, y_pos, screen, text_string, colour):
 #end procedure
 
 #creating a list of all the levels
-level_list = ["A-Level Project/start.JSON", "A-Level Project/level1.JSON", "A-Level Project/level2.JSON"]
+level_list = ["A-Level Project/level0.JSON", "A-Level Project/level1.JSON", "A-Level Project/level2.JSON"]
 
 class Game(pygame.sprite.Sprite):
     def __init__(self, level):
@@ -105,7 +105,8 @@ class Game(pygame.sprite.Sprite):
             self.player_group.add(self.player)
             self.all_sprites_group.add(self.player)
 
-
+            # define the current message being displayed on the screen by the information bars
+            self.current_message = 0 
 
 
         
@@ -151,6 +152,7 @@ class Game(pygame.sprite.Sprite):
 
             #declare the inital amount of attempts
             self.attempts = 0
+            
 
             #instantiate the walls
             for i in range (len(mazeArray)):
@@ -209,12 +211,13 @@ class Game(pygame.sprite.Sprite):
             if len(self.player_hit_endZone_list) > 0:
                 return True
 
-            self.player_hit_informationbar1_list = pygame.sprite.spritecollide(self.player, self.informationBars_group, False)
-            if len(self.player_hit_informationbar1_list) > 0:
-                print_text(size[0]//2, 30, screen, InformationBars.display_information(self, 0), WHITE)
-
-
-
+            self.player_hit_informationbar_list = pygame.sprite.spritecollide(self.player, self.informationBars_group, False)
+            
+            if len(self.player_hit_informationbar_list) > 0:
+                print_text(size[0]//2, 30, screen, InformationBars.display_information(self, self.current_message), WHITE)
+                current_message =+ 1
+            
+        
         elif self.level == 1:
             #collisions for player with walls
             self.player_hit_wall_list = pygame.sprite.spritecollide(self.player, self.wall_group, False)
@@ -243,6 +246,16 @@ class Game(pygame.sprite.Sprite):
             print_text(10, 10, screen, "Attempts: {}".format(self.attempts), RED)
 
         elif self.level == 2:
+            #collisions for player with walls
+            self.player_hit_wall_list = pygame.sprite.spritecollide(self.player, self.wall_group, False)
+            if len (self.player_hit_wall_list) > 0:
+                self.player.set_speed(0, 0)
+                self.player.rect.x = self.player_old_x
+                self.player.rect.y = self.player_old_y
+                #end if
+            #necessary for collisions
+            self.player_old_x = self.player.rect.x
+            self.player_old_y = self.player.rect.y
 
 
 
@@ -420,13 +433,11 @@ class InformationBars(pygame.sprite.Sprite):
         self.image.fill(WHITE)
         self.rect = self.image.get_rect()
         self.rect.x = x_coord
-        self.rect.y = y_coord
-        self.messages = ["Avoid the enemies", "Watch out for the lasers"]
-        
+        self.rect.y = y_coord  
     #end procedure
 
     def display_information(self, val):
-
+        self.messages = ["Watch out for the enemies", "Collect the coins for points", ""]
         self.current_message = self.messages[val]
         return self.current_message
 #end class
