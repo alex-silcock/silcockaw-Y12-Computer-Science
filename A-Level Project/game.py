@@ -63,6 +63,7 @@ class Game(pygame.sprite.Sprite):
         self.startZone_group = pygame.sprite.Group()
         self.endZone_group = pygame.sprite.Group()
         self.informationBars_group = pygame.sprite.Group()
+        self.bullet_group = pygame.sprite.Group()
         self.all_sprites_group = pygame.sprite.Group()
 
 
@@ -106,7 +107,8 @@ class Game(pygame.sprite.Sprite):
             self.all_sprites_group.add(self.player)
 
             # define the current message being displayed on the screen by the information bars
-            self.current_message = 0 
+            self.messageNumber = 0 
+            self.first = 0
 
 
         
@@ -213,10 +215,17 @@ class Game(pygame.sprite.Sprite):
 
             self.player_hit_informationbar_list = pygame.sprite.spritecollide(self.player, self.informationBars_group, False)
             
-            if len(self.player_hit_informationbar_list) > 0:
-                print_text(size[0]//2, 30, screen, InformationBars.display_information(self, self.current_message), WHITE)
-                current_message =+ 1
+            print(self.messageNumber)
             
+            if len(self.player_hit_informationbar_list) > 0:
+                if self.first == True:
+                    print_text(size[0]//2, 30, screen, InformationBars.display_information(self, self.messageNumber), WHITE)
+                    self.first = False
+                    
+                else:
+                    self.messageNumber =+ 1
+                    print_text(size[0]//2, 30, screen, InformationBars.display_information(self, self.messageNumber), WHITE)
+    
         
         elif self.level == 1:
             #collisions for player with walls
@@ -441,6 +450,26 @@ class InformationBars(pygame.sprite.Sprite):
         self.current_message = self.messages[val]
         return self.current_message
 #end class
+
+class Bullet(pygame.sprite.Sprite):
+    def __init__(self, x_speed, y_speed):
+        super().__init__()
+        self.width = 5
+        self.height = 5
+        self.colour = RED
+        self.x_speed = x_speed
+        self.y_speed = y_speed
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.fill(self.colour)
+        self.rect = self.image.get_rect()
+        self.rect.x = Player.rect.x
+        self.rect.y = Player.rect.y
+
+    #update function will move the bullet
+    def update(self):
+        self.rect.x =+ self.x_speed
+        self.rect.y =+ self.y_speed
+    #end function 
 
 #instantiate the game class for the starting level
 game = Game(0)
