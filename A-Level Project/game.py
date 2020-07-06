@@ -261,7 +261,8 @@ class Game(pygame.sprite.Sprite):
                 self.player.set_speed(0, 0)
                 self.player.rect.x = self.player_old_x
                 self.player.rect.y = self.player_old_y
-                #end if
+            #end if
+            
             #necessary for collisions
             self.player_old_x = self.player.rect.x
             self.player_old_y = self.player.rect.y
