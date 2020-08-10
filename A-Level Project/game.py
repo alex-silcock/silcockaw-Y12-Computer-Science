@@ -49,20 +49,21 @@ def print_text(x_pos, y_pos, screen, text_string, colour):
 #end procedure
 
 #creating a list of all the levels
-level_list = ["A-Level Project/start.JSON", "A-Level Project/level1.JSON", "A-Level Project/level2.JSON"]
+level_list = ["A-Level Project/level0.JSON", "A-Level Project/level1.JSON", "A-Level Project/level2.JSON"]
 
 class Game(pygame.sprite.Sprite):
     def __init__(self, level):
         super().__init__()
         # anything that is used for all levels goes here
         self.level = level
-        self.box_group = pygame.sprite.Group()
+        self.enemy_group = pygame.sprite.Group()
         self.wall_group = pygame.sprite.Group()
         self.player_group = pygame.sprite.Group()
         self.ball_group = pygame.sprite.Group()
         self.startZone_group = pygame.sprite.Group()
         self.endZone_group = pygame.sprite.Group()
         self.informationBars_group = pygame.sprite.Group()
+        self.bullet_group = pygame.sprite.Group()
         self.all_sprites_group = pygame.sprite.Group()
 
 
@@ -105,6 +106,9 @@ class Game(pygame.sprite.Sprite):
             self.player_group.add(self.player)
             self.all_sprites_group.add(self.player)
 
+            # define the current message being displayed on the screen by the information bars
+            self.messageNumber = 0 
+            self.first = 0
 
 
         
@@ -150,6 +154,7 @@ class Game(pygame.sprite.Sprite):
 
             #declare the inital amount of attempts
             self.attempts = 0
+            
 
             #instantiate the walls
             for i in range (len(mazeArray)):
@@ -198,7 +203,7 @@ class Game(pygame.sprite.Sprite):
                 self.player.rect.y = self.player_old_y
             #end if
             
-            
+
             #necessary for collisions
             self.player_old_x = self.player.rect.x
             self.player_old_y = self.player.rect.y
@@ -208,12 +213,20 @@ class Game(pygame.sprite.Sprite):
             if len(self.player_hit_endZone_list) > 0:
                 return True
 
-            self.player_hit_informationbar1_list = pygame.sprite.spritecollide(self.player, self.informationBars_group, False)
-            if len(self.player_hit_informationbar1_list) > 0:
-                print_text(size[0]//2, 30, screen, "Use the arrow keys to move", WHITE)
-
-
-
+            self.player_hit_informationbar_list = pygame.sprite.spritecollide(self.player, self.informationBars_group, False)
+            
+            print(self.messageNumber)
+            
+            if len(self.player_hit_informationbar_list) > 0:
+                if self.first == True:
+                    print_text(size[0]//2, 30, screen, InformationBars.display_information(self, self.messageNumber), WHITE)
+                    self.first = False
+                    
+                else:
+                    self.messageNumber =+ 1
+                    print_text(size[0]//2, 30, screen, InformationBars.display_information(self, self.messageNumber), WHITE)
+    
+        
         elif self.level == 1:
             #collisions for player with walls
             self.player_hit_wall_list = pygame.sprite.spritecollide(self.player, self.wall_group, False)
@@ -237,6 +250,31 @@ class Game(pygame.sprite.Sprite):
                 self.player_group.add(self.player)
                 self.all_sprites_group.add(self.player)
                 self.attempts += 1
+
+            #drawing the number of attempts on the screen
+            print_text(10, 10, screen, "Attempts: {}".format(self.attempts), RED)
+
+        elif self.level == 2:
+            #collisions for player with walls
+            self.player_hit_wall_list = pygame.sprite.spritecollide(self.player, self.wall_group, False)
+            if len (self.player_hit_wall_list) > 0:
+                self.player.set_speed(0, 0)
+                self.player.rect.x = self.player_old_x
+                self.player.rect.y = self.player_old_y
+            #end if
+            
+            #necessary for collisions
+            self.player_old_x = self.player.rect.x
+            self.player_old_y = self.player.rect.y
+
+
+
+
+
+
+
+
+
 
             #drawing the number of attempts on the screen
             print_text(10, 10, screen, "Attempts: {}".format(self.attempts), RED)
@@ -280,7 +318,7 @@ class Player(pygame.sprite.Sprite):
     #end procedure
 #end class
     
-class Box(pygame.sprite.Sprite):
+class Enemy(pygame.sprite.Sprite):
     def __init__(self, x_coord, y_coord, x_speed, y_speed, width, height):
         super().__init__()
         self.change_x = x_speed
@@ -310,7 +348,7 @@ class Box(pygame.sprite.Sprite):
 #end class
 
 class Ball(pygame.sprite.Sprite):
-    def __init__(self, colour, radius, x_coord, y_coord, center_x_orbit, center_y_orbit, sizeOfOrbit):
+    def __init__(self, colour, radius, x_coord, y_coord, centre_x_orbit, centre_y_orbit, sizeOfOrbit):
         super().__init__()
         self.colour = colour
 
@@ -330,8 +368,8 @@ class Ball(pygame.sprite.Sprite):
         self.rect.y = y_coord
 
         #the "center" the sprite will orbit
-        self.center_x = center_x_orbit
-        self.center_y = center_y_orbit
+        self.centre_x = centre_x_orbit
+        self.centre_y = centre_y_orbit
 
         #current angle in radians
         self.angle = 0
@@ -347,8 +385,8 @@ class Ball(pygame.sprite.Sprite):
         #Update the ball's position
 
         # Calculate a new x, y
-        self.rect.x = self.sizeOfOrbit * math.sin(self.angle) + self.center_x
-        self.rect.y = self.sizeOfOrbit * math.cos(self.angle) + self.center_y
+        self.rect.x = self.sizeOfOrbit * math.sin(self.angle) + self.centre_x
+        self.rect.y = self.sizeOfOrbit * math.cos(self.angle) + self.centre_y
  
         # Increase the angle in prep for the next round.
         self.angle += self.speed
@@ -405,13 +443,38 @@ class InformationBars(pygame.sprite.Sprite):
         self.image.fill(WHITE)
         self.rect = self.image.get_rect()
         self.rect.x = x_coord
-        self.rect.y = y_coord
+        self.rect.y = y_coord  
     #end procedure
+
+    def display_information(self, val):
+        self.messages = ["Watch out for the enemies", "Collect the coins for points", ""]
+        self.current_message = self.messages[val]
+        return self.current_message
 #end class
 
-#instantiate the game class for the starting "level" 
+class Bullet(pygame.sprite.Sprite):
+    def __init__(self, x_speed, y_speed):
+        super().__init__()
+        self.width = 5
+        self.height = 5
+        self.colour = RED
+        self.x_speed = x_speed
+        self.y_speed = y_speed
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.fill(self.colour)
+        self.rect = self.image.get_rect()
+        self.rect.x = Player.rect.x
+        self.rect.y = Player.rect.y
+
+    #update function will move the bullet
+    def update(self):
+        self.rect.x =+ self.x_speed
+        self.rect.y =+ self.y_speed
+    #end function 
+
+#instantiate the game class for the starting level
 game = Game(0)
-#game loop for the starting "level"
+#game loop for the starting / information level
 while not level0Finished:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -445,7 +508,7 @@ while not level1Finished:
 
 #instantiate the game class for the second level
 game = Game(2)
-#game loop for the first level
+#game loop for the second level
 while not level2Finished:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
