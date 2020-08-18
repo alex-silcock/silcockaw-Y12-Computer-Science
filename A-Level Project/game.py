@@ -55,6 +55,7 @@ class Game(pygame.sprite.Sprite):
     def __init__(self, level):
         super().__init__()
         # anything that is used for all levels goes here
+        # create all sprite groups that need to be used in the game
         self.level = level
         self.enemy_group = pygame.sprite.Group()
         self.wall_group = pygame.sprite.Group()
@@ -74,6 +75,7 @@ class Game(pygame.sprite.Sprite):
             file.close()
 
             #instantiate the walls
+            #changes x and y coordinates accordingly
             for i in range (len(mazeArray)):
                 for j in range (len(mazeArray[i])):
                     if mazeArray[i][j] == 1:
@@ -84,12 +86,12 @@ class Game(pygame.sprite.Sprite):
                 #next j
             #next i
 
-            #instantiate the start zone
+            #instantiate the start zone, add to start zone group and all sprites group
             self.startzone = StartZone(60, 310, 110, 170)
             self.startZone_group.add(self.startzone)
             self.all_sprites_group.add(self.startzone)
 
-            #instantiate the end zone
+            #instantiate the end zone, add to end zone group and all sprites group
             self.endzone = EndZone(1130, 310, 110, 170)
             self.endZone_group.add(self.endzone)
             self.all_sprites_group.add(self.endzone)
@@ -97,18 +99,14 @@ class Game(pygame.sprite.Sprite):
             #instantiate the information bars so when the player goes over them they get tips
             #new attribute 1 through 5 which determines the message displayed
             #move function print_text into class for each message
-            self.informationbar = [InformationBars(300 + 180 * i, 310, 5, 170)for i in range(5)]
+            self.informationbar = [InformationBars(300 + 180 * i, 310, 5, 170, i)for i in range(5)]
             self.informationBars_group.add(self.informationbar)
             self.all_sprites_group.add(self.informationbar)
 
-            #instantiate the player in the start zone
+            #instantiate the player in the start zone, add to necessary groups
             self.player = Player(100, 380)
             self.player_group.add(self.player)
             self.all_sprites_group.add(self.player)
-
-            # define the current message being displayed on the screen by the information bars
-            self.messageNumber = 0 
-            self.first = 0
 
 
         
@@ -132,22 +130,23 @@ class Game(pygame.sprite.Sprite):
                 #next j
             #next i
 
-            #instantiate the start zone
+            #instantiate the start zone, add to necessary groups
             self.startzone = StartZone(70, 50, 150, 180)
             self.startZone_group.add(self.startzone)
             self.all_sprites_group.add(self.startzone)
 
-            #instantiate the player in the start zone
+            #instantiate the player in the start zone, add to necessary groups
             self.player = Player(125, 115)
             self.player_group.add(self.player)
             self.all_sprites_group.add(self.player)
 
-            #instantiate a ball which moves around in a circle
+            #instantiate a ball which moves around in a circle, add to necessary groups
             self.ball = Ball(WHITE, 10, 100, 100, 360, 610, 100)
             self.ball_group.add(self.ball)
             self.all_sprites_group.add(self.ball)
         
         elif self.level == 2:
+            #open map for level
             file = open(level_list[self.level], "r")
             mazeArray = json.load(file)
             file.close()
@@ -167,7 +166,7 @@ class Game(pygame.sprite.Sprite):
                 #next j
             #next i
 
-            #instantiate the player in the start zone
+            #instantiate the player in the start zone, add to necessary groups
             self.player = Player(0, 115)
             self.player_group.add(self.player)
             self.all_sprites_group.add(self.player)
@@ -213,18 +212,15 @@ class Game(pygame.sprite.Sprite):
             if len(self.player_hit_endZone_list) > 0:
                 return True
 
+            # trying to get the info bars on first level to change the text for each bar
             self.player_hit_informationbar_list = pygame.sprite.spritecollide(self.player, self.informationBars_group, False)
-            
-            print(self.messageNumber)
-            
+        
+            '''messages:list = ["hello", "2"]
+            messageno = 0
             if len(self.player_hit_informationbar_list) > 0:
-                if self.first == True:
-                    print_text(size[0]//2, 30, screen, InformationBars.display_information(self, self.messageNumber), WHITE)
-                    self.first = False
-                    
-                else:
-                    self.messageNumber =+ 1
-                    print_text(size[0]//2, 30, screen, InformationBars.display_information(self, self.messageNumber), WHITE)
+                print_text(100,100,screen, messages[messageno], WHITE)    
+                messageno =+ 1
+            '''
     
         
         elif self.level == 1:
@@ -234,7 +230,8 @@ class Game(pygame.sprite.Sprite):
                 self.player.set_speed(0, 0)
                 self.player.rect.x = self.player_old_x
                 self.player.rect.y = self.player_old_y
-                #end if
+            #end if
+
             #necessary for collisions
             self.player_old_x = self.player.rect.x
             self.player_old_y = self.player.rect.y
@@ -243,6 +240,7 @@ class Game(pygame.sprite.Sprite):
             if (self.player.rect.y >= 60 and self.player.rect.y <= 175) and self.player.rect.x > 1300:
                 return True
 
+            # player collisions with the moving circles
             self.player_hit_moving_circles = pygame.sprite.groupcollide(self.player_group, self.ball_group, True, False)
             if len (self.player_hit_moving_circles) > 0:
                 #reinstantiate the player in the start zone
@@ -281,6 +279,7 @@ class Game(pygame.sprite.Sprite):
     #end procedure
 #end class
 
+#define Player class with necessary attributes and methods 
 class Player(pygame.sprite.Sprite):
     def __init__(self, x_coord, y_coord):
         super().__init__()
@@ -317,7 +316,8 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += y_speed
     #end procedure
 #end class
-    
+
+#define Enemy class with necessary attributes and methods 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x_coord, y_coord, x_speed, y_speed, width, height):
         super().__init__()
@@ -347,6 +347,7 @@ class Enemy(pygame.sprite.Sprite):
     #end procedure
 #end class
 
+#define Ball class with necessary attributes and methods 
 class Ball(pygame.sprite.Sprite):
     def __init__(self, colour, radius, x_coord, y_coord, centre_x_orbit, centre_y_orbit, sizeOfOrbit):
         super().__init__()
@@ -395,6 +396,7 @@ class Ball(pygame.sprite.Sprite):
 #end class
 
 
+#define Wall class with necessary attributes and methods 
 class Wall(pygame.sprite.Sprite):
     def __init__(self, x_coord, y_coord):
         super().__init__()
@@ -408,6 +410,8 @@ class Wall(pygame.sprite.Sprite):
     #end procedure
 #end class
 
+
+#define StartZone class with necessary attributes and methods 
 class StartZone(pygame.sprite.Sprite):
     def __init__(self, x_coord, y_coord, width, height):
         super().__init__()
@@ -421,6 +425,7 @@ class StartZone(pygame.sprite.Sprite):
     #end procedure
 #end class
 
+#define EndZone class with necessary attributes and methods 
 class EndZone(pygame.sprite.Sprite):
     def __init__(self, x_coord, y_coord, width, height):
         super().__init__()
@@ -434,8 +439,10 @@ class EndZone(pygame.sprite.Sprite):
     #end procedure
 #end class
 
+
+#define InformationBars class with necessary attributes and methods 
 class InformationBars(pygame.sprite.Sprite):
-    def __init__(self, x_coord, y_coord, width, height):
+    def __init__(self, x_coord, y_coord, width, height, message):
         super().__init__()
         self.width = width
         self.height = height
@@ -443,15 +450,18 @@ class InformationBars(pygame.sprite.Sprite):
         self.image.fill(WHITE)
         self.rect = self.image.get_rect()
         self.rect.x = x_coord
-        self.rect.y = y_coord  
+        self.rect.y = y_coord
+        self.messages = ["Watch out for the enemies", "Collect the coins for points"]
     #end procedure
 
     def display_information(self, val):
-        self.messages = ["Watch out for the enemies", "Collect the coins for points", ""]
+        self.messages = ["Watch out for the enemies", "Collect the coins for points"]
         self.current_message = self.messages[val]
-        return self.current_message
+        print_text(100, 100, screen, self.current_message, WHITE)
+    # end procedure
 #end class
 
+#define Bullet class with necessary attributes and methods 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x_speed, y_speed):
         super().__init__()
