@@ -7,13 +7,12 @@
 ## program starts
 
 # -- Library imports
-import pygame, random, json, math
+import pygame, random, json, math, time
 
 # -- Global constants
 level0Finished = False
 level1Finished = False
 level2Finished = False
-
 
 # -- Colours
 BLACK = (0,0,0)
@@ -116,7 +115,7 @@ class Game(pygame.sprite.Sprite):
             mazeArray = json.load(file)
             file.close()
 
-            #declare the inital amount of attempts
+            #declare the initial amount of attempts
             self.attempts = 0
             
             #instantiate the walls
@@ -251,6 +250,7 @@ class Game(pygame.sprite.Sprite):
 
             #drawing the number of attempts on the screen
             print_text(10, 10, screen, "Attempts: {}".format(self.attempts), RED)
+
 
         elif self.level == 2:
             #collisions for player with walls
@@ -481,7 +481,22 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.x =+ self.x_speed
         self.rect.y =+ self.y_speed
     #end function 
+#end class
 
+class Laser(pygame.sprite.Sprite):
+    def __init__(self, color, x1, y1, x2, y2):
+        # Call the parent class (Sprite) constructor
+        pygame.sprite.Sprite.__init__(self)
+        
+        self.image = pygame.Surface([math.fabs(x2-x1), math.fabs(y2-y1)])
+        #self.image.fill(white)
+        #self.image.set_colorkey(white)
+        
+        #pygame.draw.line(self.image, white, (x1, y1), (x2,y2), 3)
+        pygame.draw.line(screen, RED, (x1, y1), (x2,y2), 3)     
+        self.rect=pygame.Rect(x1,y1,x2-x1,y2-y1)
+
+'''
 #instantiate the game class for the starting level
 game = Game(0)
 #game loop for the starting / information level
@@ -498,7 +513,7 @@ while not level0Finished:
     pygame.display.flip()
     clock.tick(60) 
 #end while
-
+'''
 #instantiate the game class for the first level
 game = Game(1)
 #game loop for the first level
