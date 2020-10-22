@@ -64,6 +64,8 @@ class Game(pygame.sprite.Sprite):
         self.endZone_group = pygame.sprite.Group()
         self.informationBars_group = pygame.sprite.Group()
         self.bullet_group = pygame.sprite.Group()
+        self.laser_group = pygame.sprite.RenderPlain()
+        self.block_group = pygame.sprite.Group()
         self.all_sprites_group = pygame.sprite.Group()
 
 
@@ -143,14 +145,25 @@ class Game(pygame.sprite.Sprite):
             self.ball = Ball(WHITE, 10, 100, 100, 360, 610, 100)
             self.ball_group.add(self.ball)
             self.all_sprites_group.add(self.ball)
-        
+
+            self.enemy = Enemy(830, 700, 0, 4, 30, 30)
+            self.enemy_group.add(self.enemy)
+            self.all_sprites_group.add(self.enemy)
+
+            self.laser = Laser(100, 300)
+            self.laser_group.add(self.laser)
+            self.all_sprites_group.add(self.laser)
+            #self.t0 = time.time()
+
+
+
         elif self.level == 2:
             #open map for level
             file = open(level_list[self.level], "r")
             mazeArray = json.load(file)
             file.close()
 
-            #declare the inital amount of attempts
+            #declare variables for the level
             self.attempts = 0
             
 
@@ -180,7 +193,7 @@ class Game(pygame.sprite.Sprite):
         self.all_sprites_group.update()
         self.all_sprites_group.draw(screen)
 
-        #player movement, data hiding, only allows the attributes to be changed through a function
+        #player movement + events
         keys = pygame.key.get_pressed()
         if keys[pygame.K_UP]:
             self.player.move_up()
@@ -190,7 +203,17 @@ class Game(pygame.sprite.Sprite):
             self.player.move_right()
         elif keys[pygame.K_LEFT]:
             self.player.move_left()
+
+        if event.type == pygame.KEYDOWN:
+            if (event.key == pygame.K_SPACE) and (self.player.bullet_count > 0):
+                self.bullet = Bullet(2, 0, self.player.rect.x, self.player.rect.y) 
+                self.bullet_group.add(self.bullet)
+                #self.player.decrease_bullets()
+                self.all_sprites_group.add(self.bullet)
+            #end if
         #end if
+        
+
 
         if self.level == 0:
             #collisions for player with walls
@@ -223,6 +246,7 @@ class Game(pygame.sprite.Sprite):
     
         
         elif self.level == 1:
+
             #collisions for player with walls
             self.player_hit_wall_list = pygame.sprite.spritecollide(self.player, self.wall_group, False)
             if len (self.player_hit_wall_list) > 0:
@@ -248,9 +272,47 @@ class Game(pygame.sprite.Sprite):
                 self.all_sprites_group.add(self.player)
                 self.attempts += 1
 
+
+            # if enemy collides with the wall and it's only moving on the y plane
+            self.enemy_collide_wall_y = pygame.sprite.spritecollide(self.enemy, self.wall_group, False)
+            if len(self.enemy_collide_wall_y) > 0:
+                self.enemy.change_y_direction()
+
+            # player colliding with one plane enemy
+            self.enemy_collide_player = pygame.sprite.groupcollide(self.player_group, self.enemy_group, True, False)
+            if len(self.enemy_collide_player) > 0:
+                #reinstantiate the player in the start zone
+                self.player = Player(125, 115)
+                self.player_group.add(self.player)
+                self.all_sprites_group.add(self.player)
+                self.attempts += 1
+
+            #create new timer 
+            self.t1 = time.time()
+            #global t0
+
+            #find the difference in the times
+            dt = self.laser.time_of_creation - self.t1
+
+            #if the difference (time ran for) is greater than 3 then remove the laser
+            #after another 2 seconds, 
+            if abs(dt) > 3:
+                self.laser.remove()
+
+            if abs(dt) > 5:
+                self.laser = Laser(100,300)
+                self.laser_group.add(self.laser)
+                self.all_sprites_group.add(self.laser)
+                self.laser.time_of_creation = self.t1
+
+
+            
+
             #drawing the number of attempts on the screen
             print_text(10, 10, screen, "Attempts: {}".format(self.attempts), RED)
 
+
+        
 
         elif self.level == 2:
             #collisions for player with walls
@@ -264,15 +326,6 @@ class Game(pygame.sprite.Sprite):
             #necessary for collisions
             self.player_old_x = self.player.rect.x
             self.player_old_y = self.player.rect.y
-
-
-
-
-
-
-
-
-
 
             #drawing the number of attempts on the screen
             print_text(10, 10, screen, "Attempts: {}".format(self.attempts), RED)
@@ -291,6 +344,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = x_coord
         self.rect.y = y_coord
         self.speed = 5
+        self.bullet_count = 10
     #end procedure
     
     # class methods
@@ -326,7 +380,7 @@ class Enemy(pygame.sprite.Sprite):
         self.width = width
         self.height = height
         self.image = pygame.Surface([self.width, self.height])
-        self.image.fill(BLUE)
+        self.image.fill(WHITE)
         self.rect = self.image.get_rect()
         self.rect.x = x_coord
         self.rect.y = y_coord
@@ -463,7 +517,7 @@ class InformationBars(pygame.sprite.Sprite):
 
 #define Bullet class with necessary attributes and methods 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, x_speed, y_speed):
+    def __init__(self, x_speed, y_speed, PlayerRectX, PlayerRectY):
         super().__init__()
         self.width = 5
         self.height = 5
@@ -473,28 +527,36 @@ class Bullet(pygame.sprite.Sprite):
         self.image = pygame.Surface([self.width, self.height])
         self.image.fill(self.colour)
         self.rect = self.image.get_rect()
-        self.rect.x = Player.rect.x
-        self.rect.y = Player.rect.y
+        self.rect.x = PlayerRectX
+        self.rect.y = PlayerRectY
 
     #update function will move the bullet
     def update(self):
-        self.rect.x =+ self.x_speed
-        self.rect.y =+ self.y_speed
+        self.rect.x = self.rect.x + self.x_speed
+        self.rect.y = self.rect.y + self.y_speed
     #end function 
 #end class
 
 class Laser(pygame.sprite.Sprite):
-    def __init__(self, color, x1, y1, x2, y2):
-        # Call the parent class (Sprite) constructor
-        pygame.sprite.Sprite.__init__(self)
+    def __init__(self, x1, y1):
+
+        super().__init__()
         
-        self.image = pygame.Surface([math.fabs(x2-x1), math.fabs(y2-y1)])
-        #self.image.fill(white)
-        #self.image.set_colorkey(white)
-        
-        #pygame.draw.line(self.image, white, (x1, y1), (x2,y2), 3)
-        pygame.draw.line(screen, RED, (x1, y1), (x2,y2), 3)     
-        self.rect=pygame.Rect(x1,y1,x2-x1,y2-y1)
+        self.width = 5
+        self.height = 30
+        self.color = RED
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.fill(self.color)
+        self.rect = self.image.get_rect()
+        self.rect.x = x1
+        self.rect.y = y1
+        self.time_of_creation = time.time()
+
+    def remove(self):
+        self.kill()
+
+
+
 
 '''
 #instantiate the game class for the starting level
@@ -514,6 +576,7 @@ while not level0Finished:
     clock.tick(60) 
 #end while
 '''
+
 #instantiate the game class for the first level
 game = Game(1)
 #game loop for the first level
