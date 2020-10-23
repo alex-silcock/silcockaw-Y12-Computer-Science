@@ -142,7 +142,7 @@ class Game(pygame.sprite.Sprite):
             self.all_sprites_group.add(self.player)
 
             #instantiate a ball which moves around in a circle, add to necessary groups
-            self.ball = Ball(WHITE, 10, 100, 100, 360, 610, 100)
+            self.ball = Ball(WHITE, 10, 100, 100, 360, 610, 100, 0.08)
             self.ball_group.add(self.ball)
             self.all_sprites_group.add(self.ball)
 
@@ -150,12 +150,13 @@ class Game(pygame.sprite.Sprite):
             self.enemy_group.add(self.enemy)
             self.all_sprites_group.add(self.enemy)
 
-            self.laser = Laser(100, 300)
+            self.laser = Laser(555, 160)
             self.laser_group.add(self.laser)
             self.all_sprites_group.add(self.laser)
-            #self.t0 = time.time()
 
-
+            self.ball = Ball(WHITE, 10, 900, 700, 830, 635, 70, 0.06)
+            self.ball_group.add(self.ball)
+            self.all_sprites_group.add(self.ball)
 
         elif self.level == 2:
             #open map for level
@@ -289,24 +290,29 @@ class Game(pygame.sprite.Sprite):
 
             #create new timer 
             self.t1 = time.time()
-            #global t0
 
             #find the difference in the times
             dt = self.laser.time_of_creation - self.t1
 
             #if the difference (time ran for) is greater than 3 then remove the laser
-            #after another 2 seconds, 
+            #after another 2 seconds, turn the laser back on
             if abs(dt) > 3:
                 self.laser.remove()
 
-            if abs(dt) > 5:
-                self.laser = Laser(100,300)
+            if abs(dt) > 3.6:
+                self.laser = Laser(555,160)
                 self.laser_group.add(self.laser)
                 self.all_sprites_group.add(self.laser)
                 self.laser.time_of_creation = self.t1
 
+            self.player_collide_with_laser = pygame.sprite.groupcollide(self.player_group, self.laser_group, True, False)
+            if len(self.player_collide_with_laser) > 0:
+                #reinstantiate the player in the start zone
+                self.player = Player(125, 115)
+                self.player_group.add(self.player)
+                self.all_sprites_group.add(self.player)
+                self.attempts += 1
 
-            
 
             #drawing the number of attempts on the screen
             print_text(10, 10, screen, "Attempts: {}".format(self.attempts), RED)
@@ -403,7 +409,7 @@ class Enemy(pygame.sprite.Sprite):
 
 #define Ball class with necessary attributes and methods 
 class Ball(pygame.sprite.Sprite):
-    def __init__(self, colour, radius, x_coord, y_coord, centre_x_orbit, centre_y_orbit, sizeOfOrbit):
+    def __init__(self, colour, radius, x_coord, y_coord, centre_x_orbit, centre_y_orbit, sizeOfOrbit, speed):
         super().__init__()
         self.colour = colour
 
@@ -430,7 +436,7 @@ class Ball(pygame.sprite.Sprite):
         self.angle = 0
 
         #how fast to orbit in radians per frame
-        self.speed = 0.08
+        self.speed = speed
 
         pygame.draw.circle(self.image, self.colour, [self.radius, self.radius], self.radius)
     #end procedure
@@ -542,8 +548,8 @@ class Laser(pygame.sprite.Sprite):
 
         super().__init__()
         
-        self.width = 5
-        self.height = 30
+        self.width = 3
+        self.height = 130
         self.color = RED
         self.image = pygame.Surface([self.width, self.height])
         self.image.fill(self.color)
@@ -575,7 +581,7 @@ while not level0Finished:
     pygame.display.flip()
     clock.tick(60) 
 #end while
-'''
+
 
 #instantiate the game class for the first level
 game = Game(1)
@@ -593,7 +599,7 @@ while not level1Finished:
     pygame.display.flip()
     clock.tick(60) 
 #end while
-
+'''
 #instantiate the game class for the second level
 game = Game(2)
 #game loop for the second level
