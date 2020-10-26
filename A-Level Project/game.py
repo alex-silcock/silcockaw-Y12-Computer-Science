@@ -22,7 +22,8 @@ YELLOW = (255,255,0)
 RED = (255,0,0)
 LIGHTGREEN = (100,255,100)
 LIGHTBLUE = (100,100,255)
-coloursList = [BLACK, WHITE, BLUE, YELLOW, RED, LIGHTGREEN, LIGHTBLUE]
+PURPLE =(153, 50, 204)
+coloursList = [BLACK, WHITE, BLUE, YELLOW, RED, LIGHTGREEN, LIGHTBLUE, PURPLE]
 
 # -- Initialise PyGame
 pygame.init()
@@ -64,8 +65,10 @@ class Game(pygame.sprite.Sprite):
         self.endZone_group = pygame.sprite.Group()
         self.informationBars_group = pygame.sprite.Group()
         self.bullet_group = pygame.sprite.Group()
-        self.laser_group = pygame.sprite.RenderPlain()
+        self.laser_group = pygame.sprite.Group()
         self.block_group = pygame.sprite.Group()
+        self.door_group = pygame.sprite.Group()
+        self.key_group = pygame.sprite.Group()
         self.all_sprites_group = pygame.sprite.Group()
 
 
@@ -150,7 +153,7 @@ class Game(pygame.sprite.Sprite):
             self.enemy_group.add(self.enemy)
             self.all_sprites_group.add(self.enemy)
 
-            self.laser = Laser(555, 160)
+            self.laser = Laser(555, 160, 3, 130)
             self.laser_group.add(self.laser)
             self.all_sprites_group.add(self.laser)
 
@@ -166,6 +169,8 @@ class Game(pygame.sprite.Sprite):
 
             #declare variables for the level
             self.attempts = 0
+            self.keys = 0
+            self.door_locked = True
             
 
             #instantiate the walls
@@ -184,8 +189,29 @@ class Game(pygame.sprite.Sprite):
             self.player_group.add(self.player)
             self.all_sprites_group.add(self.player)
 
+            self.laser1 = Laser(350, 560, 3, 200)
+            self.laser_group.add(self.laser1)
+            self.all_sprites_group.add(self.laser1)
+            
+            self.laser2 = Laser(450, 560, 3, 200)
+            self.laser_group.add(self.laser2)
+            self.all_sprites_group.add(self.laser2)
 
+            self.laser3 = Laser(550, 560, 3, 200)
+            self.laser_group.add(self.laser3)
+            self.all_sprites_group.add(self.laser3)
 
+            self.ball = Ball(WHITE, 10, 900, 700, 710, 220, 130, 0.1)
+            self.ball_group.add(self.ball)
+            self.all_sprites_group.add(self.ball)
+
+            self.door = Door(620, 450, 260, 5, PURPLE)
+            self.door_group.add(self.door)
+            self.all_sprites_group.add(self.door)
+
+            self.key = Key(320, 420)
+            self.key_group.add(self.key)
+            self.all_sprites_group.add(self.key)
         #end if
     #end procedure
 
@@ -333,6 +359,83 @@ class Game(pygame.sprite.Sprite):
             self.player_old_x = self.player.rect.x
             self.player_old_y = self.player.rect.y
 
+            #create new timers for each laser 
+            self.t1 = time.time()
+            self.t2 = time.time()
+            self.t3 = time.time()
+
+            #find the difference in the times for each laser
+            dt1 = self.laser1.time_of_creation - self.t1
+            dt2 = self.laser2.time_of_creation - self.t2
+            dt3 = self.laser3.time_of_creation - self.t3
+
+            #ithis controls when the lasers turn on and off
+            if abs(dt1) > 3:
+                self.laser1.remove()
+
+            if abs(dt1) > 3.6:
+                self.laser1 = Laser(350, 560, 3, 200)
+                self.laser_group.add(self.laser1)
+                self.all_sprites_group.add(self.laser1)
+                self.laser1.time_of_creation = self.t1
+
+            if abs(dt2) > 3.2:
+                self.laser2.remove()
+
+            if abs(dt2) > 3.8:
+                self.laser2 = Laser(450, 560, 3, 200)
+                self.laser_group.add(self.laser2)
+                self.all_sprites_group.add(self.laser2)
+                self.laser2.time_of_creation = self.t2
+
+            if abs(dt3) > 3.4:
+                self.laser3.remove()
+
+            if abs(dt3) > 4:
+                self.laser3 = Laser(550, 560, 3, 200)
+                self.laser_group.add(self.laser3)
+                self.all_sprites_group.add(self.laser3)
+                self.laser3.time_of_creation = self.t3
+
+            self.player_collide_key = pygame.sprite.spritecollide(self.player, self.key_group, True)
+            if len(self.player_collide_key) > 0:
+                self.keys += 1
+                self.door_locked = False
+
+            #player collisions with the laser
+            self.player_collide_with_laser = pygame.sprite.groupcollide(self.player_group, self.laser_group, True, False)
+            if len(self.player_collide_with_laser) > 0:
+                #reinstantiate the player in the start zone
+                self.player = Player(125, 115)
+                self.player_group.add(self.player)
+                self.all_sprites_group.add(self.player)
+                self.attempts += 1
+
+            #player collisions with the door
+            self.player_collide_door = pygame.sprite.spritecollide(self.player, self.door_group, False)
+            if self.door_locked == True and len(self.player_collide_door) > 0:
+                self.player.set_speed(0, 0)
+                self.player.rect.x = self.player_old_x1
+                self.player.rect.y = self.player_old_y1
+            
+            elif self.door_locked == False and len(self.player_collide_door) > 0:
+                self.door.open_door()
+
+            #end if
+            
+            #necessary for collisions
+            self.player_old_x1 = self.player.rect.x
+            self.player_old_y1 = self.player.rect.y
+
+            self.player_hit_moving_circles = pygame.sprite.groupcollide(self.player_group, self.ball_group, True, False)
+            if len (self.player_hit_moving_circles) > 0:
+                #reinstantiate the player in the start zone
+                self.player = Player(125, 115)
+                self.player_group.add(self.player)
+                self.all_sprites_group.add(self.player)
+                self.attempts += 1
+
+
             #drawing the number of attempts on the screen
             print_text(10, 10, screen, "Attempts: {}".format(self.attempts), RED)
     #end procedure
@@ -375,6 +478,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.x += x_speed
         self.rect.y += y_speed
     #end procedure
+
 #end class
 
 #define Enemy class with necessary attributes and methods 
@@ -544,12 +648,12 @@ class Bullet(pygame.sprite.Sprite):
 #end class
 
 class Laser(pygame.sprite.Sprite):
-    def __init__(self, x1, y1):
+    def __init__(self, x1, y1, width, height):
 
         super().__init__()
         
-        self.width = 3
-        self.height = 130
+        self.width = width
+        self.height = height
         self.color = RED
         self.image = pygame.Surface([self.width, self.height])
         self.image.fill(self.color)
@@ -560,6 +664,37 @@ class Laser(pygame.sprite.Sprite):
 
     def remove(self):
         self.kill()
+
+class Door(pygame.sprite.Sprite):
+    def __init__(self, x, y, width, height, color):
+        super().__init__()
+
+        self.width = width
+        self.height = height
+        self.color = color
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.fill(self.color)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+    def open_door(self):
+        self.kill()
+
+class Key(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.width = 10
+        self.height = 10
+        self.color = RED
+        self.image = pygame.image.load("A-Level Project/Files/key2.png")
+        #self.image = pygame.Surface([self.width, self.height])
+        #self.image.fill(self.color)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+
 
 
 
