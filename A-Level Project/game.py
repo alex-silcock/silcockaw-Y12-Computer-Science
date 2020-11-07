@@ -59,7 +59,6 @@ class Game(pygame.sprite.Sprite):
         self.ball_group = pygame.sprite.Group()
         self.startZone_group = pygame.sprite.Group()
         self.endZone_group = pygame.sprite.Group()
-        self.informationBars_group = pygame.sprite.Group()
         self.bullet_group = pygame.sprite.Group()
         self.laser_group = pygame.sprite.Group()
         self.block_group = pygame.sprite.Group()
@@ -99,13 +98,6 @@ class Game(pygame.sprite.Sprite):
             self.endzone = EndZone(1130, 310, 110, 170)
             self.endZone_group.add(self.endzone)
             self.all_sprites_group.add(self.endzone)
-
-            #instantiate the information bars so when the player goes over them they get tips
-            #new attribute 1 through 5 which determines the message displayed
-            #move function print_text into class for each message
-            self.informationbar = [InformationBars(300 + 180 * i, 310, 5, 170, i)for i in range(5)]
-            self.informationBars_group.add(self.informationbar)
-            self.all_sprites_group.add(self.informationbar)
 
             #instantiate the player in the start zone, add to necessary groups
             self.player = Player(100, 380, 25, 25)
@@ -291,26 +283,7 @@ class Game(pygame.sprite.Sprite):
                 f.write('\n' "Timer " + str(timer))
                 f.close()
                 return True 
-
-
-
-            '''
-            # trying to get the info bars on first level to change the text for each bar
-            self.player_hit_informationbar_list = pygame.sprite.spritecollide(self.player, self.informationBars_group, False)
-            if len(self.player_hit_informationbar_list) > 0:
-                self.informationbar.display_information(0)
-
-            
-            messages:list = ["hello", "2"]
-            messageno = 0
-            if len(self.player_hit_informationbar_list) > 0:
-                print_text(100,100,screen, messages[messageno], WHITE)    
-                messageno =+ 1
-            '''
-
-
-    
-        
+   
         elif self.level == 1:
 
             #collisions for player with walls
