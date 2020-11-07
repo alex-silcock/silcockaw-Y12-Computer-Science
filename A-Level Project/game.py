@@ -1,11 +1,3 @@
-# zen mode = CTRL + K then press Z
-# don't forget to put end tags for everything e.g. end if
-# use meaningful variable names
-# don't forget to add comments for what i am doing
-
-
-## program starts
-
 # -- Library imports
 import pygame, random, json, math, time
 
@@ -29,7 +21,9 @@ coloursList = [BLACK, WHITE, BLUE, YELLOW, RED, LIGHTGREEN, LIGHTBLUE, PURPLE]
 pygame.init()
 
 # -- Blank Screen
-size = (1300, 800)
+screen_width = 1300
+screen_height = 800
+size = (screen_width, screen_height)
 screen = pygame.display.set_mode(size)
 # To make game fullscreen use this:
 #screen = pygame.display.set_mode((size), pygame.FULLSCREEN)
@@ -51,6 +45,8 @@ def print_text(x_pos, y_pos, screen, text_string, colour):
 #creating a list of all the levels
 level_list = ["A-Level Project/level0.JSON", "A-Level Project/level1.JSON", "A-Level Project/level2.JSON"]
 
+totaltime = time.time()
+
 class Game(pygame.sprite.Sprite):
     def __init__(self, level):
         super().__init__()
@@ -69,8 +65,12 @@ class Game(pygame.sprite.Sprite):
         self.block_group = pygame.sprite.Group()
         self.door_group = pygame.sprite.Group()
         self.key_group = pygame.sprite.Group()
+        self.coin_group = pygame.sprite.Group()
+        self.inputbox_group = pygame.sprite.Group()
         self.all_sprites_group = pygame.sprite.Group()
 
+        #declare the starting score
+        self.score = 0
 
         if self.level == 0:
             #opens the map from the level list, loads it, then closes it
@@ -108,7 +108,7 @@ class Game(pygame.sprite.Sprite):
             self.all_sprites_group.add(self.informationbar)
 
             #instantiate the player in the start zone, add to necessary groups
-            self.player = Player(100, 380)
+            self.player = Player(100, 380, 25, 25)
             self.player_group.add(self.player)
             self.all_sprites_group.add(self.player)
 
@@ -140,7 +140,7 @@ class Game(pygame.sprite.Sprite):
             self.all_sprites_group.add(self.startzone)
 
             #instantiate the player in the start zone, add to necessary groups
-            self.player = Player(125, 115)
+            self.player = Player(125, 115, 25, 25)
             self.player_group.add(self.player)
             self.all_sprites_group.add(self.player)
 
@@ -161,6 +161,18 @@ class Game(pygame.sprite.Sprite):
             self.ball_group.add(self.ball)
             self.all_sprites_group.add(self.ball)
 
+            self.coin = Coin(100, 720)
+            self.coin_group.add(self.coin)
+            self.all_sprites_group.add(self.coin)
+
+            self.coin = Coin(370, 200)
+            self.coin_group.add(self.coin)
+            self.all_sprites_group.add(self.coin)
+
+            self.coin = Coin(650, 720)
+            self.coin_group.add(self.coin)
+            self.all_sprites_group.add(self.coin)
+
         elif self.level == 2:
             #open map for level
             file = open(level_list[self.level], "r")
@@ -171,6 +183,7 @@ class Game(pygame.sprite.Sprite):
             self.attempts = 0
             self.keys = 0
             self.door_locked = True
+            self.level_2_starting_time = time.time()
             
 
             #instantiate the walls
@@ -185,7 +198,7 @@ class Game(pygame.sprite.Sprite):
             #next i
 
             #instantiate the player in the start zone, add to necessary groups
-            self.player = Player(0, 115)
+            self.player = Player(0, 115, 25, 25)
             self.player_group.add(self.player)
             self.all_sprites_group.add(self.player)
 
@@ -212,6 +225,18 @@ class Game(pygame.sprite.Sprite):
             self.key = Key(320, 420)
             self.key_group.add(self.key)
             self.all_sprites_group.add(self.key)
+
+            self.coin = Coin(120, 430)
+            self.coin_group.add(self.coin)
+            self.all_sprites_group.add(self.coin)
+
+            self.coin = Coin(830, 720)
+            self.coin_group.add(self.coin)
+            self.all_sprites_group.add(self.coin)
+
+            self.coin = Coin(510, 320)
+            self.coin_group.add(self.coin)
+            self.all_sprites_group.add(self.coin)
         #end if
     #end procedure
 
@@ -231,16 +256,18 @@ class Game(pygame.sprite.Sprite):
         elif keys[pygame.K_LEFT]:
             self.player.move_left()
 
-        if event.type == pygame.KEYDOWN:
-            if (event.key == pygame.K_SPACE) and (self.player.bullet_count > 0):
-                self.bullet = Bullet(2, 0, self.player.rect.x, self.player.rect.y) 
-                self.bullet_group.add(self.bullet)
-                #self.player.decrease_bullets()
-                self.all_sprites_group.add(self.bullet)
-            #end if
-        #end if
-        
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if (event.key == pygame.K_SPACE) and (self.player.bullet_count > 0):
+                    self.bullet = Bullet(2, 0, self.player.rect.x, self.player.rect.y) 
+                    self.bullet_group.add(self.bullet)
+                    #self.player.decrease_bullets()
+                    self.all_sprites_group.add(self.bullet)
 
+
+        self.time = time.time()
+        timer = round(abs(self.time - totaltime),1)
+        print_text(600, 10, screen, "Timer: {}".format(timer), RED)
 
         if self.level == 0:
             #collisions for player with walls
@@ -259,17 +286,29 @@ class Game(pygame.sprite.Sprite):
             #collisions for player with end zone
             self.player_hit_endZone_list = pygame.sprite.spritecollide(self.player, self.endZone_group, False)
             if len(self.player_hit_endZone_list) > 0:
-                return True
 
+                f = open("A-Level Project/leaderboard.txt", "a")
+                f.write('\n' "Timer " + str(timer))
+                f.close()
+                return True 
+
+
+
+            '''
             # trying to get the info bars on first level to change the text for each bar
             self.player_hit_informationbar_list = pygame.sprite.spritecollide(self.player, self.informationBars_group, False)
-        
-            '''messages:list = ["hello", "2"]
+            if len(self.player_hit_informationbar_list) > 0:
+                self.informationbar.display_information(0)
+
+            
+            messages:list = ["hello", "2"]
             messageno = 0
             if len(self.player_hit_informationbar_list) > 0:
                 print_text(100,100,screen, messages[messageno], WHITE)    
                 messageno =+ 1
             '''
+
+
     
         
         elif self.level == 1:
@@ -290,11 +329,13 @@ class Game(pygame.sprite.Sprite):
             if (self.player.rect.y >= 60 and self.player.rect.y <= 175) and self.player.rect.x > 1300:
                 return True
 
+
+
             # player collisions with the moving circles
             self.player_hit_moving_circles = pygame.sprite.groupcollide(self.player_group, self.ball_group, True, False)
             if len (self.player_hit_moving_circles) > 0:
                 #reinstantiate the player in the start zone
-                self.player = Player(125, 115)
+                self.player = Player(125, 115, 25, 25)
                 self.player_group.add(self.player)
                 self.all_sprites_group.add(self.player)
                 self.attempts += 1
@@ -309,7 +350,7 @@ class Game(pygame.sprite.Sprite):
             self.enemy_collide_player = pygame.sprite.groupcollide(self.player_group, self.enemy_group, True, False)
             if len(self.enemy_collide_player) > 0:
                 #reinstantiate the player in the start zone
-                self.player = Player(125, 115)
+                self.player = Player(125, 115, 25, 25)
                 self.player_group.add(self.player)
                 self.all_sprites_group.add(self.player)
                 self.attempts += 1
@@ -326,7 +367,7 @@ class Game(pygame.sprite.Sprite):
                 self.laser.remove()
 
             if abs(dt) > 3.6:
-                self.laser = Laser(555,160)
+                self.laser = Laser(555,160, 3, 130)
                 self.laser_group.add(self.laser)
                 self.all_sprites_group.add(self.laser)
                 self.laser.time_of_creation = self.t1
@@ -334,17 +375,22 @@ class Game(pygame.sprite.Sprite):
             self.player_collide_with_laser = pygame.sprite.groupcollide(self.player_group, self.laser_group, True, False)
             if len(self.player_collide_with_laser) > 0:
                 #reinstantiate the player in the start zone
-                self.player = Player(125, 115)
+                self.player = Player(125, 115, 25, 25)
                 self.player_group.add(self.player)
                 self.all_sprites_group.add(self.player)
                 self.attempts += 1
 
+            self.player_collide_with_coin = pygame.sprite.groupcollide(self.player_group, self.coin_group, False, True)
+            if len(self.player_collide_with_coin) > 0:
+                #add one to the score
+                self.score += 1
 
             #drawing the number of attempts on the screen
             print_text(10, 10, screen, "Attempts: {}".format(self.attempts), RED)
+            #drawing the score on the screen
+            print_text(300, 10, screen, "Score: {}".format(self.score), RED)
 
 
-        
 
         elif self.level == 2:
             #collisions for player with walls
@@ -406,7 +452,7 @@ class Game(pygame.sprite.Sprite):
             self.player_collide_with_laser = pygame.sprite.groupcollide(self.player_group, self.laser_group, True, False)
             if len(self.player_collide_with_laser) > 0:
                 #reinstantiate the player in the start zone
-                self.player = Player(125, 115)
+                self.player = Player(125, 115, 25, 25)
                 self.player_group.add(self.player)
                 self.all_sprites_group.add(self.player)
                 self.attempts += 1
@@ -430,23 +476,30 @@ class Game(pygame.sprite.Sprite):
             self.player_hit_moving_circles = pygame.sprite.groupcollide(self.player_group, self.ball_group, True, False)
             if len (self.player_hit_moving_circles) > 0:
                 #reinstantiate the player in the start zone
-                self.player = Player(125, 115)
+                self.player = Player(125, 115, 25, 25)
                 self.player_group.add(self.player)
                 self.all_sprites_group.add(self.player)
                 self.attempts += 1
 
+            self.player_collide_with_coin = pygame.sprite.groupcollide(self.player_group, self.coin_group, False, True)
+            if len(self.player_collide_with_coin) > 0:
+                #add one to the score
+                self.score += 1
 
             #drawing the number of attempts on the screen
             print_text(10, 10, screen, "Attempts: {}".format(self.attempts), RED)
+            #drawing the score on the screen
+            print_text(300, 10, screen, "Score: {}".format(self.score), RED)
+
     #end procedure
 #end class
 
 #define Player class with necessary attributes and methods 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, x_coord, y_coord):
+    def __init__(self, x_coord, y_coord, width, height):
         super().__init__()
-        self.width = 25
-        self.height = 25
+        self.width = width
+        self.height = height
         self.image = pygame.Surface([self.width, self.height])
         self.image.fill(RED)
         self.rect = self.image.get_rect()
@@ -478,6 +531,10 @@ class Player(pygame.sprite.Sprite):
         self.rect.x += x_speed
         self.rect.y += y_speed
     #end procedure
+
+    def enlarge(self):
+        self.width = 40
+        self.height = 40
 
 #end class
 
@@ -603,28 +660,6 @@ class EndZone(pygame.sprite.Sprite):
     #end procedure
 #end class
 
-
-#define InformationBars class with necessary attributes and methods 
-class InformationBars(pygame.sprite.Sprite):
-    def __init__(self, x_coord, y_coord, width, height, message):
-        super().__init__()
-        self.width = width
-        self.height = height
-        self.image = pygame.Surface([self.width, self.height])
-        self.image.fill(WHITE)
-        self.rect = self.image.get_rect()
-        self.rect.x = x_coord
-        self.rect.y = y_coord
-        self.messages = ["Watch out for the enemies", "Collect the coins for points"]
-    #end procedure
-
-    def display_information(self, val):
-        self.messages = ["Watch out for the enemies", "Collect the coins for points"]
-        self.current_message = self.messages[val]
-        print_text(100, 100, screen, self.current_message, WHITE)
-    # end procedure
-#end class
-
 #define Bullet class with necessary attributes and methods 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x_speed, y_speed, PlayerRectX, PlayerRectY):
@@ -694,12 +729,77 @@ class Key(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
+class Coin(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.width = 10
+        self.height = 10
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.fill(YELLOW)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+class Powerup(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.width = 15
+        self.height = 15
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.fill(PURPLE)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+        self.powerups = ["Enlarge player", "Faster player", "Slower player"]
+        self.chosenpowerup = self.powerups[(random.randrange(0, 2))]
+
+    def powerup(self):
+        if self.chosenpowerup == "Enlarge player":
+            Player.enlarge()
+
+name = ''
+def menu(screen):
+    finished = False
+    textcolour = WHITE
+    textcolour_2 = WHITE
+    textcolour_3 = WHITE
+    
+    while finished == False:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_m:
+                    finished = True
+                #end if
+            #end if
+        #next event
+        # Background Image
+        screen.fill(BLACK)
+
+        mouse = pygame.mouse.get_pos()
+
+        print_text(500, 300, screen, "USE THE ARROW KEYS TO MOVE", WHITE)
+        print_text(500, 300 + 30, screen, "PRESS SPACE TO SHOOT BULLETS", WHITE)
+        print_text(500, 300 + 60, screen, "AVOID THE ENEMIES", WHITE)
+        print_text(500, 300 + 90, screen, "USE THE ARROW KEYS TO MOVE", WHITE)
+        print_text(500, 300 + 120, screen, "PRESS M TO START", WHITE)
+
+        print_text(500, 300 + 200, screen, "LEADERBOARD", WHITE)
+
+        
+
+        #reset the timer
+        global totaltime
+        totaltime = time.time()
+
+        pygame.display.flip()
 
 
 
 
-
-'''
+menu(screen)
 #instantiate the game class for the starting level
 game = Game(0)
 #game loop for the starting / information level
@@ -717,14 +817,14 @@ while not level0Finished:
     clock.tick(60) 
 #end while
 
-
 #instantiate the game class for the first level
+
 game = Game(1)
 #game loop for the first level
 while not level1Finished:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            level1Finished = True
+            level2Finished = True
             pygame.quit()
 
     screen.fill(BLACK)
@@ -734,7 +834,7 @@ while not level1Finished:
     pygame.display.flip()
     clock.tick(60) 
 #end while
-'''
+
 #instantiate the game class for the second level
 game = Game(2)
 #game loop for the second level
