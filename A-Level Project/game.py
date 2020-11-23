@@ -724,12 +724,7 @@ class Door(pygame.sprite.Sprite):
 class Key(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
-        self.width = 10
-        self.height = 10
-        self.color = RED
         self.image = pygame.image.load("A-Level Project/Files/key2.png")
-        #self.image = pygame.Surface([self.width, self.height])
-        #self.image.fill(self.color)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -796,7 +791,6 @@ class InputBox:
             inp_keydown = True
             if self.active:
                 if event.key == pygame.K_RETURN and nameEntered == False:
-                    print(self.text)
                     user_name = self.text
                     self.text = ''
                     nameEntered = True
@@ -804,13 +798,14 @@ class InputBox:
                     self.text = self.text[:-1]
                 else:
                     self.text += event.unicode
+                    
                 if nameEntered == True:
                     self.active = False
                 # Re-render the text.
                 self.txt_surface = font.render(self.text, True, self.color)
 
-            elif event.type == pygame.KEYUP:
-                inp_keydown = False
+        elif event.type == pygame.KEYUP:
+            inp_keydown = False
 
         #if the user doesn't enter a name, theyre assigned a random username
         if user_name == '':
@@ -919,7 +914,8 @@ def leaderboard_screen(screen):
             elif event.type == pygame.KEYDOWN:
                 #if b key is pressed go back to the menu
                 if event.key == pygame.K_b:
-                    menu(screen)
+                    #menu(screen)
+                    finished = True
         
         draw_txt_file()
         # Background Image
