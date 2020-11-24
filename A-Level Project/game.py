@@ -48,6 +48,8 @@ totaltime = time.time()
 #declare the number of attempts the user has taken
 user_attempts = 0
 
+poweruptimestart = time.time()
+powerupactive = False
 #Game class, houses everything thats instantiatiated and updated within the game
 class Game(pygame.sprite.Sprite):
     def __init__(self, level):
@@ -69,6 +71,7 @@ class Game(pygame.sprite.Sprite):
         self.key_group = pygame.sprite.Group()
         self.coin_group = pygame.sprite.Group()
         self.inputbox_group = pygame.sprite.Group()
+        self.powerup_group = pygame.sprite.Group()
         self.all_sprites_group = pygame.sprite.Group()
 
         #declare the starting score
@@ -80,6 +83,7 @@ class Game(pygame.sprite.Sprite):
             file = open(level_list[self.level], "r")
             mazeArray = json.load(file)
             file.close()
+
 
             #instantiate the walls
             #changes x and y coordinates accordingly
@@ -169,6 +173,10 @@ class Game(pygame.sprite.Sprite):
             self.coin = Coin(650, 720)
             self.coin_group.add(self.coin)
             self.all_sprites_group.add(self.coin)
+
+            self.powerup = Powerup(150, 350)
+            self.powerup_group.add(self.powerup)
+            self.all_sprites_group.add(self.powerup)
 
         #instantiating classes for level 2, which is the third level of the game
         elif self.level == 2:
@@ -307,7 +315,7 @@ class Game(pygame.sprite.Sprite):
    
         #updates needed for the second level
         elif self.level == 1:
-
+            
             #collisions for player with walls
             self.player_hit_wall_list = pygame.sprite.spritecollide(self.player, self.wall_group, False)
             #checks if player collided with wall, if they have then set their speed to 0
@@ -385,6 +393,47 @@ class Game(pygame.sprite.Sprite):
             if len(self.player_collide_with_coin) > 0:
                 #add one to the score
                 self.score += 1
+
+            
+            #player colliding with powerup
+            global poweruptimestart, powerupactive
+            self.player_collide_with_powerup = pygame.sprite.groupcollide(self.player_group, self.powerup_group, False, True)
+            if len(self.player_collide_with_powerup) > 0 and powerupactive == False:
+                poweruptimestart = time.time()
+                powerupactive = True
+                powerupvalue = self.powerup.call_powerup()
+
+                #if the powerup value is 0, then enlarge the player
+                if powerupvalue == 0:
+                    playerx = self.player.rect.x
+                    playery = self.player.rect.y
+                    self.player.kill()
+                    self.player = Player(playerx, playery, 40, 40)
+                    self.player_group.add(self.player)
+                    self.all_sprites_group.add(self.player)
+
+                #if the powerup value is 1, then speedup the player
+                elif powerupvalue == 1:
+                    self.player.speedup()
+
+                #if the powerup value is 2, then enlarge the player
+                elif powerupvalue == 2:
+                    self.player.slowdown()
+                #end if
+
+            currentpoweruptime = time.time()
+            timerunningpowerup = abs(currentpoweruptime - poweruptimestart)
+
+            if timerunningpowerup > 3:
+                playerx = self.player.rect.x
+                playery = self.player.rect.y
+                self.player.kill()
+                self.player = Player(playerx, playery, 25, 25)
+                self.player_group.add(self.player)
+                self.all_sprites_group.add(self.player) 
+                self.player.change_speed(5) 
+                powerupactive = False    
+
 
             #drawing the number of attempts on the screen
             print_text(10, 10, screen, "Attempts: {}".format(user_attempts), RED)
@@ -515,7 +564,6 @@ class Player(pygame.sprite.Sprite):
     #end procedure
     
     # class methods
-
     def move_up(self):
         self.rect.y -= self.speed
     #end procedure
@@ -536,10 +584,18 @@ class Player(pygame.sprite.Sprite):
         self.rect.x += x_speed
         self.rect.y += y_speed
     #end procedure
+    
+    def speedup(self):
+        self.speed = 7
+    #end procedure
 
-    def enlarge(self):
-        self.width = 40
-        self.height = 40
+    def slowdown(self):
+        self.speed = 3
+    #end procedure
+
+    def change_speed(self, speed):
+        self.speed = speed
+    #end procedure
 
 #end class
 
@@ -751,12 +807,19 @@ class Powerup(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
-        self.powerups = ["Enlarge player", "Faster player", "Slower player"]
-        self.chosenpowerup = self.powerups[(random.randrange(0, 2))]
 
-    def powerup(self):
-        if self.chosenpowerup == "Enlarge player":
-            Player.enlarge()
+    def call_powerup(self):
+        self.chosenpowerup = (random.randrange(0, 2))
+        #powerup 0 will enlarge the player
+        if self.chosenpowerup == 0:
+            return 0
+        #powerup 1 will speed up the player
+        elif self.chosenpowerup == 1:
+            return 1
+        #powerup 2 will slow down the player
+        elif self.chosenpowerup == 2:
+            return 2
+        
 
 
 #flag to determine whether key is being pressed
