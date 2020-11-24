@@ -160,7 +160,7 @@ class Game(pygame.sprite.Sprite):
             self.ball = Ball(WHITE, 10, 900, 700, 830, 635, 70, 0.06)
             self.ball_group.add(self.ball)
             self.all_sprites_group.add(self.ball)
-
+            
             #instantiate the different coins in different positions and add to necessary groups
             self.coin = Coin(100, 720)
             self.coin_group.add(self.coin)
@@ -174,7 +174,7 @@ class Game(pygame.sprite.Sprite):
             self.coin_group.add(self.coin)
             self.all_sprites_group.add(self.coin)
 
-            self.powerup = Powerup(150, 350)
+            self.powerup = Powerup(360, 610)
             self.powerup_group.add(self.powerup)
             self.all_sprites_group.add(self.powerup)
 
@@ -396,18 +396,27 @@ class Game(pygame.sprite.Sprite):
 
             
             #player colliding with powerup
+            #get global variables defined outside Game class
             global poweruptimestart, powerupactive
+            #player colliding with powerup list
             self.player_collide_with_powerup = pygame.sprite.groupcollide(self.player_group, self.powerup_group, False, True)
+            #if the player collides with the powerup...
             if len(self.player_collide_with_powerup) > 0 and powerupactive == False:
+                #reset timestamp to time when player collided
                 poweruptimestart = time.time()
+                #set flag of powerupactive to True
                 powerupactive = True
+                #get which powerup is going to be used
                 powerupvalue = self.powerup.call_powerup()
 
                 #if the powerup value is 0, then enlarge the player
                 if powerupvalue == 0:
+                    #get old x and y coordinates
                     playerx = self.player.rect.x
                     playery = self.player.rect.y
+                    #kill player
                     self.player.kill()
+                    #reinstantiate with enlarged size and add to necessary groups
                     self.player = Player(playerx, playery, 40, 40)
                     self.player_group.add(self.player)
                     self.all_sprites_group.add(self.player)
@@ -421,18 +430,26 @@ class Game(pygame.sprite.Sprite):
                     self.player.slowdown()
                 #end if
 
+            #handles time since powerup to know when to stop powerup
             currentpoweruptime = time.time()
             timerunningpowerup = abs(currentpoweruptime - poweruptimestart)
-
-            if timerunningpowerup > 3:
+            
+            #if powerup running for more than 5 seconds then...
+            if timerunningpowerup > 5:
+                #get old x and y coordinates
                 playerx = self.player.rect.x
                 playery = self.player.rect.y
+                #kill player
                 self.player.kill()
+                #reinstantiate player at same position with normal size
                 self.player = Player(playerx, playery, 25, 25)
                 self.player_group.add(self.player)
                 self.all_sprites_group.add(self.player) 
+                #set speed back to 5
                 self.player.change_speed(5) 
+                #make flag false for powerupactive
                 powerupactive = False    
+            #end if
 
 
             #drawing the number of attempts on the screen
@@ -539,6 +556,62 @@ class Game(pygame.sprite.Sprite):
             if len(self.player_collide_with_coin) > 0:
                 #add one to the score
                 self.score += 1
+
+            #player colliding with powerup
+            #get global variables defined outside Game class
+            #global poweruptimestart, powerupactive
+            #player colliding with powerup list
+            self.player_collide_with_powerup = pygame.sprite.groupcollide(self.player_group, self.powerup_group, False, True)
+            #if the player collides with the powerup...
+            if len(self.player_collide_with_powerup) > 0 and powerupactive == False:
+                #reset timestamp to time when player collided
+                poweruptimestart = time.time()
+                #set flag of powerupactive to True
+                powerupactive = True
+                #get which powerup is going to be used
+                powerupvalue = self.powerup.call_powerup()
+
+                #if the powerup value is 0, then enlarge the player
+                if powerupvalue == 0:
+                    #get old x and y coordinates
+                    playerx = self.player.rect.x
+                    playery = self.player.rect.y
+                    #kill player
+                    self.player.kill()
+                    #reinstantiate with enlarged size and add to necessary groups
+                    self.player = Player(playerx, playery, 40, 40)
+                    self.player_group.add(self.player)
+                    self.all_sprites_group.add(self.player)
+
+                #if the powerup value is 1, then speedup the player
+                elif powerupvalue == 1:
+                    self.player.speedup()
+
+                #if the powerup value is 2, then enlarge the player
+                elif powerupvalue == 2:
+                    self.player.slowdown()
+                #end if
+
+            #handles time since powerup to know when to stop powerup
+            currentpoweruptime = time.time()
+            timerunningpowerup = abs(currentpoweruptime - poweruptimestart)
+            
+            #if powerup running for more than 5 seconds then...
+            if timerunningpowerup > 5:
+                #get old x and y coordinates
+                playerx = self.player.rect.x
+                playery = self.player.rect.y
+                #kill player
+                self.player.kill()
+                #reinstantiate player at same position with normal size
+                self.player = Player(playerx, playery, 25, 25)
+                self.player_group.add(self.player)
+                self.all_sprites_group.add(self.player) 
+                #set speed back to 5
+                self.player.change_speed(5) 
+                #make flag false for powerupactive
+                powerupactive = False    
+            #end if
 
             #drawing the number of attempts on the screen
             print_text(10, 10, screen, "Attempts: {}".format(user_attempts), RED)
@@ -1041,7 +1114,7 @@ def end_game(screen):
 
 
 
-
+'''
 menu(screen)
 #instantiate the game class for the starting level
 game = Game(0)
@@ -1059,7 +1132,7 @@ while not level0Finished:
     pygame.display.flip()
     clock.tick(60) 
 #end while
-
+'''
 #instantiate the game class for the first level
 
 game = Game(1)
