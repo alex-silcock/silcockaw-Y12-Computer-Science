@@ -48,7 +48,9 @@ totaltime = time.time()
 #declare the number of attempts the user has taken
 user_attempts = 0
 
+#timestamp for when the powerup is started
 poweruptimestart = time.time()
+#flag for when the powerup is active or disabled
 powerupactive = False
 #Game class, houses everything thats instantiatiated and updated within the game
 class Game(pygame.sprite.Sprite):
@@ -252,6 +254,11 @@ class Game(pygame.sprite.Sprite):
             self.endzone = EndZone(1110, 400, 180, 120)
             self.endZone_group.add(self.endzone)
             self.all_sprites_group.add(self.endzone)
+
+            self.powerup = Powerup(380, 660)
+            self.powerup_group.add(self.powerup)
+            self.all_sprites_group.add(self.powerup)
+
         #end if
     #end procedure
 
@@ -435,7 +442,7 @@ class Game(pygame.sprite.Sprite):
             timerunningpowerup = abs(currentpoweruptime - poweruptimestart)
             
             #if powerup running for more than 5 seconds then...
-            if timerunningpowerup > 5:
+            if timerunningpowerup > 7:
                 #get old x and y coordinates
                 playerx = self.player.rect.x
                 playery = self.player.rect.y
@@ -597,7 +604,7 @@ class Game(pygame.sprite.Sprite):
             timerunningpowerup = abs(currentpoweruptime - poweruptimestart)
             
             #if powerup running for more than 5 seconds then...
-            if timerunningpowerup > 5:
+            if timerunningpowerup > 7:
                 #get old x and y coordinates
                 playerx = self.player.rect.x
                 playery = self.player.rect.y
@@ -880,18 +887,13 @@ class Powerup(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
-
+    #method that chooses which powerup will be used
     def call_powerup(self):
         self.chosenpowerup = (random.randrange(0, 2))
-        #powerup 0 will enlarge the player
-        if self.chosenpowerup == 0:
-            return 0
-        #powerup 1 will speed up the player
-        elif self.chosenpowerup == 1:
-            return 1
-        #powerup 2 will slow down the player
-        elif self.chosenpowerup == 2:
-            return 2
+        return (self.chosenpowerup)
+        #if self.chosenpowerup = 1, the player will enlarge
+        #if self.chosenpowerup = 2, the player will speed up
+        #if self.chosenpowerup = 3, the player will slow down
         
 
 
@@ -1028,20 +1030,38 @@ def menu(screen):
         pygame.display.flip()
         clock.tick(60)
 
-instructions = [line.strip('\n') for line in open("A-Level Project/leaderboard.txt", "r").readlines()]
+#leaderboard = [line.strip('\n') for line in open("A-Level Project/leaderboard.txt", "r").readlines()]
+with open("A-Level Project/leaderboard.txt", "r") as leaderboard:
+    leaderboardread = leaderboard.read()
 
-def draw_txt_file():
-    for n, line in enumerate(instructions):
+
+def draw_txt_file(screen):
+    for n, line in enumerate(leaderboardread):
         text = font.render(line, 1, WHITE)
         text_rect = text.get_rect()
         text_rect.centerx = screen_width//2
         text_rect.centery = n*25 + 50
         screen.blit(text, text_rect)
 
+def readfile(name, string = False):
+    with open(name, "r") as file:
+        try:
+            if not string:
+                return int(file.read())
+            else: return file.read()
+        except:
+            return 0
+
+def writefile(self, file_name, text):
+    with open(file_name, "w") as file:
+        file.write(str(text))
+
+
+
 def leaderboard_screen(screen):
     finished = False
     textcolour = WHITE
-      
+    
 
     while finished == False:
         for event in pygame.event.get():
@@ -1050,10 +1070,9 @@ def leaderboard_screen(screen):
             elif event.type == pygame.KEYDOWN:
                 #if b key is pressed go back to the menu
                 if event.key == pygame.K_b:
-                    #menu(screen)
-                    finished = True
+                    menu(screen)
         
-        draw_txt_file()
+        print_text(50, 50, screen, leaderboardread, WHITE)
         # Background Image
         screen.fill(BLACK)
                 
@@ -1075,9 +1094,13 @@ def end_game(screen):
                 pygame.quit()
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if textRect.collidepoint(mouse):
+                    finished = True
                     menu(screen)
+                    
                 if textRect_2.collidepoint(mouse):
+                    finished = True
                     leaderboard_screen(screen)
+                    
 
         
         # Background Image
@@ -1114,7 +1137,7 @@ def end_game(screen):
 
 
 
-'''
+
 menu(screen)
 #instantiate the game class for the starting level
 game = Game(0)
@@ -1132,7 +1155,7 @@ while not level0Finished:
     pygame.display.flip()
     clock.tick(60) 
 #end while
-'''
+
 #instantiate the game class for the first level
 
 game = Game(1)
