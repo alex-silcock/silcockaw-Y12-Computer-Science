@@ -32,7 +32,7 @@ pygame.display.set_caption("Maze Kingdom")
 # -- Manages how fast the screen refreshes
 clock = pygame.time.Clock()
 
-# creating a function that draws text on the screen in the x_pos and y_pos taken as arguments
+# creating a procedure that draws text on the screen in the x_pos and y_pos taken as arguments
 font = pygame.font.SysFont("freesansbold.ttf", 30)
 def print_text(x_pos, y_pos, screen, text_string, colour):
     #Draw text onto the screen
@@ -322,7 +322,6 @@ class Game(pygame.sprite.Sprite):
    
         #updates needed for the second level
         elif self.level == 1:
-            
             #collisions for player with walls
             self.player_hit_wall_list = pygame.sprite.spritecollide(self.player, self.wall_group, False)
             #checks if player collided with wall, if they have then set their speed to 0
@@ -350,7 +349,6 @@ class Game(pygame.sprite.Sprite):
                 self.player_group.add(self.player)
                 self.all_sprites_group.add(self.player)
                 user_attempts += 1
-
 
             #if enemy collides with the wall and it's only moving on the y plane, then only change it's y direction
             self.enemy_collide_wall_y = pygame.sprite.spritecollide(self.enemy, self.wall_group, False)
@@ -441,11 +439,11 @@ class Game(pygame.sprite.Sprite):
             currentpoweruptime = time.time()
             timerunningpowerup = abs(currentpoweruptime - poweruptimestart)
             
-            #if powerup running for more than 5 seconds then...
+            #if powerup running for more than 7 seconds then...
             if timerunningpowerup > 7:
                 #get old x and y coordinates
-                playerx = self.player.rect.x
-                playery = self.player.rect.y
+                playerx = self.player.get_x_coordinate()
+                playery = self.player.get_y_coordinate()
                 #kill player
                 self.player.kill()
                 #reinstantiate player at same position with normal size
@@ -493,15 +491,17 @@ class Game(pygame.sprite.Sprite):
             dt2 = self.laser2.time_of_creation - self.t2
             dt3 = self.laser3.time_of_creation - self.t3
 
-            #ithis controls when the lasers turn on and off
+            #controls when the lasers turn on and off
             if abs(dt1) > 3:
                 self.laser1.remove()
+            #end if
 
             if abs(dt1) > 3.6:
                 self.laser1 = Laser(350, 560, 3, 200)
                 self.laser_group.add(self.laser1)
                 self.all_sprites_group.add(self.laser1)
-                self.laser1.time_of_creation = self.t1
+                #self.laser1.time_of_creation = self.t1
+            #end if
 
             if abs(dt2) > 3.2:
                 self.laser2.remove()
@@ -510,7 +510,7 @@ class Game(pygame.sprite.Sprite):
                 self.laser2 = Laser(450, 560, 3, 200)
                 self.laser_group.add(self.laser2)
                 self.all_sprites_group.add(self.laser2)
-                self.laser2.time_of_creation = self.t2
+                #self.laser2.time_of_creation = self.t2
 
             if abs(dt3) > 3.4:
                 self.laser3.remove()
@@ -519,9 +519,11 @@ class Game(pygame.sprite.Sprite):
                 self.laser3 = Laser(550, 560, 3, 200)
                 self.laser_group.add(self.laser3)
                 self.all_sprites_group.add(self.laser3)
-                self.laser3.time_of_creation = self.t3
+                #self.laser3.time_of_creation = self.t3
 
+            #player collisions with the key
             self.player_collide_key = pygame.sprite.spritecollide(self.player, self.key_group, True)
+            #check for collisions, add one to the value of keys and change the state of the door
             if len(self.player_collide_key) > 0:
                 self.keys += 1
                 self.door_locked = False
@@ -544,7 +546,6 @@ class Game(pygame.sprite.Sprite):
             
             elif self.door_locked == False and len(self.player_collide_door) > 0:
                 self.door.open_door()
-
             #end if
             
             #necessary for collisions
@@ -581,8 +582,8 @@ class Game(pygame.sprite.Sprite):
                 #if the powerup value is 0, then enlarge the player
                 if powerupvalue == 0:
                     #get old x and y coordinates
-                    playerx = self.player.rect.x
-                    playery = self.player.rect.y
+                    playerx = self.player.get_x_coordinate()
+                    playery = self.player.get_y_coordinate()
                     #kill player
                     self.player.kill()
                     #reinstantiate with enlarged size and add to necessary groups
@@ -676,6 +677,14 @@ class Player(pygame.sprite.Sprite):
     def change_speed(self, speed):
         self.speed = speed
     #end procedure
+
+    def get_x_coordinate(self):
+        return self.rect.x
+    #end function
+
+    def get_y_coordinate(self):
+        return self.rect.y
+    #end function
 
 #end class
 
@@ -837,14 +846,17 @@ class Laser(pygame.sprite.Sprite):
         self.rect.x = x1
         self.rect.y = y1
         self.time_of_creation = time.time()
+    #end procedure
 
     def remove(self):
         self.kill()
+    #end procedure
+#end class
 
 class Door(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height, color):
         super().__init__()
-
+        #attributes
         self.width = width
         self.height = height
         self.color = color
@@ -853,9 +865,15 @@ class Door(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+    #end procedure
 
+    #methods
+
+    #method to open the door
     def open_door(self):
         self.kill()
+    #end procedure
+#end class
 
 class Key(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -864,6 +882,8 @@ class Key(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+    #end procedure
+#end class
 
 class Coin(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -889,7 +909,7 @@ class Powerup(pygame.sprite.Sprite):
 
     #method that chooses which powerup will be used
     def call_powerup(self):
-        self.chosenpowerup = (random.randrange(0, 2))
+        self.chosenpowerup = (random.randrange(0, 3))
         return (self.chosenpowerup)
         #if self.chosenpowerup = 1, the player will enlarge
         #if self.chosenpowerup = 2, the player will speed up
@@ -961,24 +981,30 @@ class InputBox:
         pygame.draw.rect(screen, self.color, self.rect, 2)
 
 
-
+#create the menu function
 def menu(screen):
+    #boolean variable to be used in the while loop
     finished = False
+    #define the textcolours
     textcolour = WHITE
     textcolour_2 = WHITE
     textcolour_3 = WHITE
     
-    
+    #instantiate the inputbox
     inputbox = InputBox(500, 150, 30, 30)
 
+    #while loop to run the menu
     while finished == False:
         for event in pygame.event.get():
             inputbox.handle_event(event)
+            #if window closed, exit the game
             if event.type == pygame.QUIT:
                 pygame.quit()
             elif event.type == pygame.KEYDOWN:
+                #if right shift is pressed, start the levels
                 if event.key == pygame.K_RSHIFT:
                     finished = True
+            #if the leaderboard button is clicked, show the leaderboard
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if textRect.collidepoint(mouse):
                     leaderboard_screen(screen)
@@ -989,20 +1015,22 @@ def menu(screen):
         # Background Image
         screen.fill(BLACK)
 
-
+        #update and draw the input box
         inputbox.update()
         inputbox.draw(screen)
 
 
-
+        #get mouse input 
         mouse = pygame.mouse.get_pos()
 
         global nameEntered
 
+        #if the user has entered a name, display that the name has been entered
         if nameEntered == True:
             print_text(510, 160, screen, "NAME ENTERED", RED)
 
         
+        #text to be printed on the screen
         print_text(500, 110, screen, "ENTER NAME BELOW", WHITE)
         print_text(500, 300, screen, "USE THE ARROW KEYS TO MOVE", WHITE)
         print_text(500, 300 + 30, screen, "PRESS SPACE TO SHOOT BULLETS", WHITE)
@@ -1011,16 +1039,19 @@ def menu(screen):
         print_text(500, 300 + 120, screen, "COLLECT THE COINS FOR EXTRA POINTS", WHITE)
         print_text(500, 300 + 150, screen, "PRESS RIGHT SHIFT TO START", WHITE)
 
+
+        #leaderboard button
         text = font.render("LEADERBOARD", 5, textcolour)
         textRect = text.get_rect()
         textRect.center = (577, 600)
         screen.blit(text, textRect)
 
+        #if mouse hovers over leaderboard, turn the text colour to red
         if textRect.collidepoint(mouse):
             textcolour = RED
         else:
             textcolour = WHITE
-
+        #end if
         
 
         #reset the timer
@@ -1072,7 +1103,7 @@ def leaderboard_screen(screen):
                 if event.key == pygame.K_b:
                     menu(screen)
         
-        print_text(50, 50, screen, leaderboardread, WHITE)
+        #print_text(50, 50, screen, leaderboardread, WHITE)
         # Background Image
         screen.fill(BLACK)
                 
@@ -1083,31 +1114,39 @@ def leaderboard_screen(screen):
         pygame.display.flip()
         clock.tick(60)
 
+#end game screen
 def end_game(screen):
     finished = False
     textcolour = WHITE
     textcolour_2 = WHITE
 
+    #while loop to run the screen
     while finished == False:
         for event in pygame.event.get():
+            #if quit clicked then quit the game
             if event.type == pygame.QUIT:
                 pygame.quit()
+            #if menu button clicked, return to menu
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if textRect.collidepoint(mouse):
                     finished = True
                     menu(screen)
-                    
+                #if leaderboard button clicked, show leaderboard
                 if textRect_2.collidepoint(mouse):
                     finished = True
                     leaderboard_screen(screen)
-                    
+                #end if
+            #end if
+        #next event
 
         
         # Background Image
         screen.fill(BLACK)
                 
+        #text to be displayed on the screen
         print_text(500, 150, screen, "CONGRATULATIONS", WHITE)
 
+        #get the user mouse position
         mouse = pygame.mouse.get_pos()
 
         text = font.render("MENU", 5, textcolour)
@@ -1120,76 +1159,80 @@ def end_game(screen):
         textRect_2.center = (600, 350)
         screen.blit(text_2, textRect_2)
 
+        #change the colour of the buttons if the user hovers over them, to indicate there's a button
         if textRect.collidepoint(mouse):
             textcolour = RED
         else:
             textcolour = WHITE
+        #end if
 
         if textRect_2.collidepoint(mouse):
             textcolour_2 = RED
         else:
             textcolour_2 = WHITE
+        #end if
 
         pygame.display.flip()
         clock.tick(60)
+    #end while
 
+def gameplay(screen):
+    global level0Finished, level1Finished, level2Finished
+    '''
+    #instantiate the game class for the starting level
+    game = Game(0)
+    #game loop for the starting / information level
+    while not level0Finished:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                level0Finished = True
+                pygame.quit()
 
+        screen.fill(BLACK)
+        
+        #game updates inside the loop 
+        level0Finished = game.update()
+        pygame.display.flip()
+        clock.tick(60) 
+    #end while
+    '''
+    #instantiate the game class for the first level
 
+    game = Game(1)
+    #game loop for the first level
+    while not level1Finished:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                level2Finished = True
+                pygame.quit()
 
+        screen.fill(BLACK)
 
+        #game updates inside the loop 
+        level1Finished = game.update()
+        pygame.display.flip()
+        clock.tick(60) 
+    #end while
+    #instantiate the game class for the second level
+    game = Game(2)
+    #game loop for the second level
+    while not level2Finished:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                level2Finished = True
+                pygame.quit()
+
+        screen.fill(BLACK)
+
+        #game updates inside the loop 
+        level2Finished = game.update()
+        pygame.display.flip()
+        clock.tick(60) 
+    #end while
+
+#end procedure
 
 menu(screen)
-#instantiate the game class for the starting level
-game = Game(0)
-#game loop for the starting / information level
-while not level0Finished:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            level0Finished = True
-            pygame.quit()
-
-    screen.fill(BLACK)
-    
-    #game updates inside the loop 
-    level0Finished = game.update()
-    pygame.display.flip()
-    clock.tick(60) 
-#end while
-
-#instantiate the game class for the first level
-
-game = Game(1)
-#game loop for the first level
-while not level1Finished:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            level2Finished = True
-            pygame.quit()
-
-    screen.fill(BLACK)
-
-    #game updates inside the loop 
-    level1Finished = game.update()
-    pygame.display.flip()
-    clock.tick(60) 
-#end while
-
-#instantiate the game class for the second level
-game = Game(2)
-#game loop for the second level
-while not level2Finished:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            level2Finished = True
-            pygame.quit()
-
-    screen.fill(BLACK)
-
-    #game updates inside the loop 
-    level2Finished = game.update()
-    pygame.display.flip()
-    clock.tick(60) 
-#end while
-
-end_game(screen)
+gameplay(screen)
+end_game(screen)      
 pygame.quit()
